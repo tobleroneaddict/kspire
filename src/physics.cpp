@@ -42,18 +42,18 @@ linalg::vec<float,3> Phys::grav_f() {
 void Phys::leap_frog(float sdl_dt) {
 
     //Accumulation maybe?
-    
-    linalg::vec<float,3> acc_curr;
-    float ddt = (float) step_time * sdl_dt;
+    for (int phys_step_count = 0; phys_step_count < step_time; phys_step_count++) {
+        linalg::vec<float,3> acc_curr;
+        float ddt = (float) sdl_dt;
 
-    //Current time sep acceleration
-    acc_curr = grav_f(); 
-    VEL += (float)0.5 * ddt* acc_curr; //Kick
-    POS += ddt*VEL; //Drift
-    acc_curr = grav_f(); //New Kick
-    //Propagate
-    VEL += (float)0.5 * ddt* acc_curr;
-
+        //Current time sep acceleration
+        acc_curr = grav_f(); 
+        VEL += (float)0.5 * ddt* acc_curr; //Kick
+        POS += ddt*VEL; //Drift
+        acc_curr = grav_f(); //New Kick
+        //Propagate
+        VEL += (float)0.5 * ddt* acc_curr;
+    }
     return;
 }
 
