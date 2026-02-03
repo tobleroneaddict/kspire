@@ -1,5 +1,5 @@
 #pragma once
-#include "../include/linalg.h"
+#include "../../include/linalg.h"
 
 //  Trying new comment style
 //  Satellite motions

@@ -1,6 +1,5 @@
 #include "globals.h"
-
-using namespace::angel;
+#include "universe.h"
 
 
 
@@ -17,46 +16,41 @@ inline float clamp(float x, float min, float max) {
     return x;
 }
 
-Phys physics;
-
-struct Camera {
-    float pitch,roll,yaw = 0;
-    linalg::vec<float,3> pos;
-    linalg::vec<float,3>  wrapper();
-
-    private:
-    float clamp_rotation_helper(float in);
-};
-
-float Camera::clamp_rotation_helper(float in) {
-    in = fmod(in, 360.0f);
-    if (in < 0) in += 360.0f;
-    return in;
-}
-//Fix under/over rotation
-linalg::vec<float,3> Camera::wrapper() {
-    return linalg::vec<float,3> {clamp_rotation_helper(-pitch), clamp_rotation_helper(-yaw), clamp_rotation_helper(-roll)};
-}
 
 
-Camera cam;
 
+
+
+Universe uni;
 
 int main()
 {
 
-    DT clock;	
+    if (uni.load_bundles()) {return 1;}
+
 	if (!is_touchpad) { return 0;} //Only CX/CXII supported
 	SDL_Init(SDL_INIT_VIDEO); //Using SDL for timing
     
+    // Initialize nGL
+    nglInit();
+    // Allocate the framebuffer
+    TEXTURE *screen = newTexture(SCREEN_WIDTH, SCREEN_HEIGHT, 0, false);
+    nglSetBuffer(screen->bitmap);
+    ProcessedPosition *processed = new ProcessedPosition[9999];
+    uni.processed = processed;
 
-    //Load
-    Bundle assets;
-
-    if (assets.load_asset_bundle("mars.tar.gz.tns")) {
-        printf("Asset load error!!");
-        return 1;
+    
+    #ifdef _TINSPIRE
+    while(!isKeyPressed(KEY_NSPIRE_ESC))
+    #else
+    for(unsigned int i = 1300;--i;)
+    #endif
+    {
+        uni.step();
     }
+
+    /*
+        
 
     //All assets in a file can be viewed this way. This includes every file in the tarball.
     printf("Assets:\n");
@@ -132,7 +126,7 @@ int main()
     for(unsigned int i = 1300;--i;)
     #endif
     {
-        clock.tick(); //deltatime
+        
         angle += 1;
 
 
@@ -174,13 +168,6 @@ int main()
             if (cam.pitch < -89) cam.pitch = -89;
              
         }
-        // }if (isKeyPressed(KEY_NSPIRE_Q)) {
-        //     cam.roll -= .30f;
-        // }
-        // if (isKeyPressed(KEY_NSPIRE_E)) {
-        //     cam.roll += .30f;
-        // }
-
 
 
         glPushMatrix(); //World inverse
@@ -279,10 +266,15 @@ int main()
     group_mars.free_group();
     group_cap.free_group();
 
+    
+    */
     delete[] processed;
     // Deinitialize nGL
     nglUninit();
     deleteTexture(screen);
+    
+
+    uni.free_bundles();
     SDL_Quit();
     return 0;
 }

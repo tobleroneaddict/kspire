@@ -2,10 +2,15 @@
 #include "../globals.h"
 #include "ProtoVessel.h"
 #include "Part.h"
-
+#include "../World/orbit.h"
+#include "../World/physics.h"
 
 class Vessel {
     public:
+
+    Orbit orbit; //rails
+    Phys physics;    
+
 
     enum Situation {
         LANDED,

@@ -1,9 +1,11 @@
 #pragma once
 #include "../include/angel/angel.h"
-#include "physics.h"
 #include <SDL/SDL_config.h>
 #include <SDL/SDL.h>
 #include <os.h>
+#include "../include/linalg.h"
+
+using namespace::angel;
 
 struct DT {
     float dt = 0;
