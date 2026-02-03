@@ -81,6 +81,9 @@ int main()
     ModelGroup group_mars;
     ModelGroup group_cap;
 
+    ngl_object* planet;
+    ngl_object* capsule;
+
     //Define the name of the obj file to load into your group. This can be modified in a program like blender, or in the .obj itself.
     //notice: .obj extension is ommited! house.obj becomes house, as house.mtl and house.png are all likely to coexist. and make it easier to keep track in my head
     //Objects and groups in the .obj file are treated as *the same* (for now).
@@ -95,8 +98,8 @@ int main()
     printf("----\n");
 
         //Load our objects from the group
-    ngl_object* planet = group_mars.get_object("Sphere");
-    ngl_object* capsule = group_cap.get_object("MK1");
+    planet = group_mars.get_object("Sphere");
+    capsule = group_cap.get_object("MK1");
 
 
     //Neat way to store all ngl_objects.
@@ -107,6 +110,13 @@ int main()
     };
     for(auto &&obj : scene) {if (obj == nullptr) { return 1;} } //Exit if any objects are missing
 
+
+    
+
+    //CLEANUP TEST
+    //group_mars.free_group();
+    //group_cap.free_group();
+    
 
     //Unload tar
     assets.free();
@@ -153,7 +163,7 @@ int main()
 
         //This chunk could use a LOT of optimization.
         {
-            float rot_speed = 1.16f;
+            float rot_speed = 160.0f * clock.dt;
             linalg::vec<float,2> dpad_vector = { 0,0 };
             if (isKeyPressed(KEY_NSPIRE_W)) {
                 dpad_vector.y -= rot_speed;
