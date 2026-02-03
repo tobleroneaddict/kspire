@@ -10,11 +10,9 @@ class CelestialBody {
     
 
     //Load ANGEL model
-    int load_model();
+    int load_model(Bundle* assets);
 
-    int render(float distance);
-
-
+    void clear_model();
 
     ngl_object* me;
 

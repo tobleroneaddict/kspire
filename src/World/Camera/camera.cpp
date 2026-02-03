@@ -12,13 +12,13 @@ linalg::vec<float,3> Camera::wrapper() {
 
 //Camera controller for each mode.
 //0: AUTO 1: FREE 2: ORBIT 3: LOCKED 4: VAB
-void Camera::camera_controller(int mode) {
-    int sub_mode = mode;
-    if (mode == 0) { //AUTO handler
+void Camera::camera_controller(Camera::Mode mode) {
+    Camera::Mode sub_mode = mode;
+    if (mode == Camera::AUTO) { //AUTO handler
         if (1 == 1) {
-            sub_mode = 1;
+            sub_mode = Camera::FREE;
         } else {
-            sub_mode = 2;
+            sub_mode = Camera::ORBIT;
         }
     }
 
@@ -42,29 +42,29 @@ void Camera::camera_controller(int mode) {
         dpad_vector /= dpad_norm;
         dpad_vector *= rot_speed;
     }
-    
+
     //Apply
     yaw += dpad_vector.x;
     pitch += dpad_vector.y;
     //clamp pitch
     if (pitch > 89) pitch = 89;
     if (pitch < -89) pitch = -89;
-        
 
+    //USE THE ENUM
     //Unused ATM
     switch (sub_mode) {
-        case 1: //Free
+        case Camera::FREE: //Free
 
         break;
-        case 2: //Orbit
-
-        break;
-
-        case 3: //Locked
+        case Camera::ORBIT: //Orbit
 
         break;
 
-        case 4: //VAB
+        case Camera::LOCKED: //Locked
+
+        break;
+
+        case Camera::VAB: //VAB
 
         break;
 

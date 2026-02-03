@@ -1,5 +1,10 @@
 #include "universe.h"
 void Universe::render_celestials() {
+    
+    if (focused_vessel == nullptr) { printf("E 218754: Cannot render planets!\n");return;}
+    if (celestials.size() == 0) { printf("E 128585: Cannot render planets!\n");return;}
+
+    //Should i do distance from CAMERA instead??????
 
     for (CelestialBody& c : celestials) {
         int mode = 0;
@@ -37,24 +42,30 @@ void Universe::render_celestials() {
                 -(v_y  / len)* fixed_bubble        * 1,
                 -(v_z   / len)* fixed_bubble       * 1
             );
+
+
+
             //Debug rotation
             //GLFix normd = planet_angle;
             //nglRotateY(normd.normaliseAngle());
 
             float mars_radius = 3389500;
-            float angularRadius = mars_radius / len;    //NTS: MAKE THIS REFERENCE CELESTIAL (but make sure it can do moons too so detached. run this for each visible planet?)
-            float renderRadius  = angularRadius * fixed_bubble;
+            float angular_radius = mars_radius / len;    //NTS: MAKE THIS REFERENCE CELESTIAL (but make sure it can do moons too so detached. run this for each visible planet?)
+            float render_radius  = angular_radius * fixed_bubble;
 
-            glScale3f(renderRadius, renderRadius, renderRadius);
+
+            glScale3f(render_radius, render_radius, render_radius);
             
-
+            
             //glScale3f(20, 20, 20);
             //would do planet pos here
-
+            
             auto obj = c.me;
+            if (obj == nullptr) continue;
+            
             glBindTexture(obj->texture);
-            nglDrawArray(obj->vertices, obj->count_vertices, obj->positions, obj->count_positions, processed, obj->draw_mode);
 
+            nglDrawArray(obj->vertices, obj->count_vertices, obj->positions, obj->count_positions, processed, obj->draw_mode);
 
         }
     }
@@ -68,24 +79,40 @@ void Universe::render_nearby_vessels() {
         }
     }
 }
-void Universe::step_on_rails_orbits() {
-
+void Universe::step_on_rails_orbits(Vessel* v) {
+    if ( v == nullptr) return;  //Compiler chloroform
+    //When you do this: dont forget to apply the phys warp rate to on rails, 
+    //when in phys warp.
 }
-void Universe::step_physics_orbits() {
-
+void Universe::step_physics_orbits(Vessel* v) {
+    v->physics.step(clock.dt,phys_warp_rate);
 }
 
 
 
 void Universe::step() {
     clock.tick();
+    cam.camera_controller(Camera::AUTO);
+
+    if (isKeyPressed(KEY_NSPIRE_Z)) {
+        phys_warp_rate += 10;
+    }
+    if (isKeyPressed(KEY_NSPIRE_X)) {
+        phys_warp_rate = 1; if (phys_warp_rate <= 1) phys_warp_rate = 1;
+    }
+
+
+    for (Vessel& v : vessels) {
+        if (v.is_focused) { focused_vessel = &v; break;}
+    }
 
     for (Vessel& v : vessels) {
         //Step vessel orbit after checking if its on rails or simulated
         if (v.loaded) {
-            step_physics_orbits();
+            step_physics_orbits(&v);
+            
         } else {
-            step_on_rails_orbits();
+            step_on_rails_orbits(&v);
         }
     }
 
@@ -113,12 +140,14 @@ void Universe::render() {
     nglRotateZ(out.z);
     //IN PLANETS
     glPushMatrix();
+    
 
     render_celestials();
     //OUT PLANETS
     glPopMatrix();
     //IN VESSELS
     glPushMatrix();
+
     render_nearby_vessels();
     //OUT VESSELS
     glPopMatrix();

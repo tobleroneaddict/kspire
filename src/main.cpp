@@ -39,6 +39,17 @@ int main()
     ProcessedPosition *processed = new ProcessedPosition[9999];
     uni.processed = processed;
 
+    Vessel new_vess;
+    new_vess.is_focused = new_vess.loaded = true;   //Setup for active + phys
+    uni.vessels.emplace_back(new_vess);
+    
+    CelestialBody mars;
+    mars.load_model(&uni.planet_bundle);
+    uni.celestials.emplace_back(mars);
+    
+
+    
+    printf("Loading complete!\n");
     
     #ifdef _TINSPIRE
     while(!isKeyPressed(KEY_NSPIRE_ESC))

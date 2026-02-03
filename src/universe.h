@@ -15,6 +15,7 @@ class Universe {
     //Physics range things
     Flight flight;
     Camera cam;
+    float phys_warp_rate = 1;
     
     Vessel* focused_vessel;
 
@@ -24,15 +25,15 @@ class Universe {
 
 
     void step();
-
+    
 
     ProcessedPosition *processed;
 
-    private:
     //All vessels in world. Does not contain part data, until loaded.
     //NTS: I would prefer you to do emplace back. Read up on emplace back.
     std::vector<Vessel> vessels;
     std::vector<CelestialBody> celestials;
+    
 
 
     //Mode 0 : Distant, up to LO. Mode 1: PQS
@@ -42,12 +43,12 @@ class Universe {
     void render_nearby_vessels();
 
     //Step on rails orbit sim
-    void step_on_rails_orbits();
+    void step_on_rails_orbits(Vessel* v);
     //Step physics orbits
-    void step_physics_orbits();
+    void step_physics_orbits(Vessel* v);
 
     void render();
 
     Bundle planet_bundle;
-
+    private:
 };

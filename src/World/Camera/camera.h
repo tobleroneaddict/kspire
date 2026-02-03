@@ -6,9 +6,18 @@ struct Camera {
     linalg::vec<float,3> pos;
     linalg::vec<float,3>  wrapper();
 
+    enum Mode {
+        AUTO,
+        FREE,
+        ORBIT,
+        LOCKED,
+        VAB
+    };
+
+
     float dt;
 
-    void camera_controller(int mode);
+    void camera_controller(Camera::Mode mode);
 
     private:
     float clamp_rotation_helper(float in);
