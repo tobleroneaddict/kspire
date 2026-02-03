@@ -92,7 +92,7 @@ void Universe::step_physics_orbits(Vessel* v) {
 
 void Universe::step() {
     clock.tick();
-    cam.camera_controller(Camera::AUTO);
+    cam.camera_controller(Camera::FREE);
 
     if (isKeyPressed(KEY_NSPIRE_Z)) {
         phys_warp_rate += 10;
@@ -134,10 +134,16 @@ void Universe::render() {
     cam.pos.z = -200;
     glTranslatef(-cam.pos.x, -cam.pos.y, -cam.pos.z);
     //Camera rotation
-    linalg::vec<float,3> out = cam.wrapper();   //Outputs rpy as actual clamped values good for ngl
-    nglRotateX(out.x);
-    nglRotateY(out.y);
-    nglRotateZ(out.z);
+    
+
+    //Gonna have to configulate this for orbit mode
+    //camera.cpp has kinda a way to do the auto mode using sub modes.
+    if (cam.mode == Camera::FREE) {
+        linalg::vec<float,3> out = cam.wrapper();   //Outputs rpy as actual clamped values good for ngl
+        nglRotateX(out.x);
+        nglRotateY(out.y);
+        nglRotateZ(out.z);
+    }
     //IN PLANETS
     glPushMatrix();
     

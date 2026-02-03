@@ -10,9 +10,10 @@ linalg::vec<float,3> Camera::wrapper() {
     return linalg::vec<float,3> {clamp_rotation_helper(-pitch), clamp_rotation_helper(-yaw), clamp_rotation_helper(-roll)};
 }
 
-//Camera controller for each mode.
+//Camera controller for each mode. Also sets mode.
 //0: AUTO 1: FREE 2: ORBIT 3: LOCKED 4: VAB
-void Camera::camera_controller(Camera::Mode mode) {
+void Camera::camera_controller(Camera::Mode set_mode) {
+    this->mode = set_mode;
     Camera::Mode sub_mode = mode;
     if (mode == Camera::AUTO) { //AUTO handler
         if (1 == 1) {
