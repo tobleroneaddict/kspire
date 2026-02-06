@@ -11,17 +11,15 @@ class Universe {
 
     
     DT clock;
+    double universal_time = 0;
 
     //Physics range things
     Flight flight;
     Camera cam;
     float phys_warp_rate = 1;
+    float rails_warp_rate = 1;
     
     Vessel* focused_vessel;
-
-    //Angel Asset Loading
-    int load_bundles();
-    void free_bundles();
 
 
     void step();
@@ -49,7 +47,9 @@ class Universe {
 
     void render();
 
-    Bundle planet_bundle;
-    Bundle resource_bundle;
+    Bundle *planet_bundle;
+    Bundle *resource_bundle;
+    Bundle *parts_bundle;
+    
     private:
 };

@@ -29,6 +29,11 @@ Universe uni;
 
 Fonts fonts;
 
+//Angel Asset bundles
+Bundle resource_bundle; //RESOURCE
+Bundle planet_bundle;   //BODY  
+Bundle parts_bundle;    //PARTS
+
 int main()
 {
 
@@ -41,14 +46,45 @@ int main()
     TEXTURE *screen = newTexture(SCREEN_WIDTH, SCREEN_HEIGHT, 0, false);
     nglSetBuffer(screen->bitmap);
 
-    printf("Showing loading screen...\n");
+    if (resource_bundle.load_asset_bundle("resources.tar.gz.tns")) {
+        printf("Asset load error!!");
+        return 1;
+    }
+
+    //Load font data
+    if (fonts.init(&resource_bundle) != 0) {
+        printf("Error loading fonts!\n");
+    }
+
+    glColor3f(0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    fonts.drawString("Loading planets...",0xFFFF,*screen,10,220);
+    nglDisplay();
+
+    load_celestial_bodies(&uni.celestials,&resource_bundle);
 
     //will this explode i hope not....
     ProcessedPosition *processed = new ProcessedPosition[9999];
     uni.processed = processed;
 
-    //Load game
-    if (uni.load_bundles()) {return 1;}
+    if (planet_bundle.load_asset_bundle("body.tar.gz.tns")) {
+        printf("Asset load error!!");
+        return 1;
+    }
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    fonts.drawString("Loading parts...",0xFFFF,*screen,10,220);
+    nglDisplay();
+
+    if (parts_bundle.load_asset_bundle("parts.tar.gz.tns")) {
+        printf("Asset load error!!");
+        return 1;
+    }
+
+    //Set pointers to bundles
+    uni.planet_bundle = &planet_bundle;
+    uni.resource_bundle = &resource_bundle;
+    uni.parts_bundle = &parts_bundle;
 
 
     //DEBUG SHIHH
@@ -57,15 +93,13 @@ int main()
     uni.vessels.emplace_back(new_vess);
     
     CelestialBody body;
-    body.load_model(&uni.planet_bundle);
+    body.load_model(&planet_bundle);
     uni.celestials.emplace_back(body);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    fonts.drawString("Loading complete!",0xFFFF,*screen,10,220);
+    nglDisplay();
     
-
-    //Load font data
-    if (fonts.init(&uni.resource_bundle) != 0) {
-        printf("Error loading fonts!\n");
-    }
-
     printf("Loading complete!\n");
     
     #ifdef _TINSPIRE
@@ -74,9 +108,22 @@ int main()
     for(unsigned int i = 1300;--i;)
     #endif
     {
-        uni.step();
+        //Contains physics and render code for the flight scene
+        uni.step(); 
 
-        
+
+        fonts.drawString("DEMO BUILD",0xFFFF,*screen,10,220);
+
+        std::string warp_string = "WARP ";
+        warp_string.append(std::to_string(uni.phys_warp_rate));
+        fonts.drawString(warp_string.c_str(),0xFFFF,*screen,10,20);
+
+
+        std::string time_string = "GameTime ";
+        time_string.append(std::to_string(uni.universal_time));
+        fonts.drawString(time_string.c_str(),0xFFFF,*screen,10,50);
+
+        nglDisplay();
     }
 
     /*
@@ -125,7 +172,11 @@ int main()
     deleteTexture(screen);
     
 
-    uni.free_bundles();
+
+    resource_bundle.free();
+    planet_bundle.free();
+    parts_bundle.free();
+
     SDL_Quit();
     return 0;
 }

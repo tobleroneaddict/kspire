@@ -3,7 +3,6 @@
 int Fonts::init(Bundle* resources) {
     
     //Load font data file
-    resources->debug_list_assets();
     font_dat = resources->load_raw_data("resources/fonts/font.dat");
     if (font_dat.size() != 273) { printf("Font data size wrong! at %d",font_dat.size()); return 1;}
     //Load texture atlas

@@ -20,20 +20,14 @@ void Universe::render_celestials() {
             //Mode 0 Distant
             //Planet renderer works by scaling the glscale3f, and keeping the planet at a fixed distance
 
+            //Vessel coordinate in planet space, per planet
             float v_x = focused_vessel->physics.POS.x;
             float v_y = focused_vessel->physics.POS.y;
             float v_z = focused_vessel->physics.POS.z;
             
-
             float len = sqrtf(v_x*v_x +
             v_y*v_y +
             v_z*v_z);
-            
-            // float len = sqrtf(physics.POS.x*physics.POS.x +
-            //     physics.POS.y*physics.POS.y +
-            //     physics.POS.z*physics.POS.z);
-                
-            //distance_from_planet *= altitude_multiplier;
 
             //3000 meter bubble
             float fixed_bubble = 3000;
@@ -107,7 +101,7 @@ void Universe::step() {
 
     //Timewarp keys, move this to a TimewarpController
     if (isKeyPressed(KEY_NSPIRE_Z)) {
-        phys_warp_rate += 10;
+        phys_warp_rate *= 2;
     }
     if (isKeyPressed(KEY_NSPIRE_X)) {
         phys_warp_rate = 1; if (phys_warp_rate <= 1) phys_warp_rate = 1;
@@ -135,7 +129,7 @@ void Universe::step() {
 
     //Deltatime stuff
     cam.dt = clock.dt;
-
+    universal_time += (clock.dt * phys_warp_rate) * rails_warp_rate;
 
     //Render
     render();
@@ -178,22 +172,6 @@ void Universe::render() {
     //OUT CAM
     glPopMatrix();
     
-
-    nglDisplay();
 }
 
 
-int Universe::load_bundles() {
-    if (resource_bundle.load_asset_bundle("resources.tar.gz.tns")) {
-        printf("Asset load error!!");
-        return 1;
-    }
-    if (planet_bundle.load_asset_bundle("body.tar.gz.tns")) {
-        printf("Asset load error!!");
-        return 1;
-    }
-    return 0;
-}
-void Universe::free_bundles() {
-    planet_bundle.free();
-}

@@ -1,0 +1,45 @@
+{
+    "Bodies": [
+        {
+            "name": "Sol",
+            "parent": "",
+            "radius": "695700000",
+            "mass": "1989000000000000000000000000000",
+            "rotation_rate": "1",
+            "has_atmosphere": "1",
+            "atmosphere_height": "1",
+            "sea_level_Pressure": "1"
+        },
+        {
+            "name": "Earth",
+            "parent": "Sol",
+            "radius": "6378137",
+            "mass": "5972000000000000000000000",
+            "rotation_rate": "1",
+            "has_atmosphere": "1",
+            "atmosphere_height": "1",
+            "sea_level_Pressure": "1"
+        },
+        {
+            "name": "Moon",
+            "parent": "Earth",
+            "radius": "1737400",
+            "mass": "73480000000000000000000",
+            "rotation_rate": "1",
+            "has_atmosphere": "1",
+            "atmosphere_height": "1",
+            "sea_level_Pressure": "1"
+        }
+
+
+
+
+
+
+
+
+    ]
+
+
+
+}
