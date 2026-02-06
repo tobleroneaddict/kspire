@@ -20,11 +20,20 @@ namespace angel {
         *   You should pass "Suzanne" into this function to retrieve your monkey. Alternatively, access with objects[n]
         *   Usage: ngl_object* obj_player = group.get_object("Tux");
         */
-        ngl_object* get_object(const char* name);
+        ngl_object* get_object(std::string name);
+        /*
+        *   Swap the texture of object [name] with [texture name]. Returns 0 on success.
+        *   Does not yet support UV remapping. Only use textures of the same size for now.
+        *   Usage: swap_texture(&assets,"_0_0","textures/roomitems_014_color.png");
+        */
+        int swap_texture(Bundle* asset_bundle, std::string model_name,std::string texture_name);
+
+
         //Print all the objects in the group.
         void debug_list_objects();
         //Frees all data in the group from memory.
         void free_group();
+        ~ModelGroup();
         /*
         *   Loads a .obj file into the ModelGroup.
         *   asset_bundle: pointer to the Bundle

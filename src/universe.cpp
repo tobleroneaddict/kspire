@@ -101,6 +101,11 @@ void Universe::step() {
         phys_warp_rate = 1; if (phys_warp_rate <= 1) phys_warp_rate = 1;
     }
 
+    if(isKeyPressed(KEY_NSPIRE_ENTER)) {
+        if (celestials[0].switch_texture("mars.png") != 0) {
+            printf("ERROR\n");
+        }
+    }
 
     for (Vessel& v : vessels) {
         if (v.is_focused) { focused_vessel = &v; break;}
@@ -166,7 +171,7 @@ void Universe::render() {
 
 
 int Universe::load_bundles() {
-    if (planet_bundle.load_asset_bundle("mars.tar.gz.tns")) {
+    if (planet_bundle.load_asset_bundle("body.tar.gz.tns")) {
         printf("Asset load error!!");
         return 1;
     }

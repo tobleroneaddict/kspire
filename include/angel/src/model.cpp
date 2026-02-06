@@ -2,18 +2,17 @@
 
 namespace angel {
 
-    ngl_object* ModelGroup::get_object(const char* name) {
-    //hey i should make this the same as get_material_by_name
+    ngl_object* ModelGroup::get_object(std::string name) {
+        rtrim(name);
         ngl_object* found = nullptr;
         for (ngl_object& n : objects) {
-            if (name == n.name) {
-
+            rtrim(n.name);
+            if (n.name == name) {
                 found = &n;break;
             }
         }
         return found;
     }
-
 
     anGL_MATERIAL* ModelGroup::get_material_by_name(std::string name) {
         rtrim(name);
@@ -24,7 +23,6 @@ namespace angel {
                 found = &n;break;
             }
         }
-
         return found;
     }
 
@@ -35,6 +33,7 @@ namespace angel {
     }
 
     int ModelGroup::load_texture_into_material(Bundle* asset_bundle,std::string name,anGL_MATERIAL *mat) {
+        mat->diffuse_texture.data.clear();  //make sure it's empty
 
         //Explode trailing chars
         name.erase(std::find_if(name.rbegin(), name.rend(), [](unsigned char ch) {
@@ -57,6 +56,7 @@ namespace angel {
             if (!error) {
                 mat->diffuse_texture.data.resize(width * height);
 
+                //Snatch pixel data and store it
                 unsigned int pixel = 0;
                 for (unsigned int i = 0; i < width * height; i++) {
                     unsigned char r = image[pixel + 0];
@@ -83,7 +83,20 @@ namespace angel {
         return 1;
     }
 
+    int ModelGroup::swap_texture(Bundle* asset_bundle, std::string model_name,std::string texture_name) {
+        ngl_object* obj = get_object(model_name);
+ 
+        if (obj == nullptr) { printf("58581: swap error\n"); return 1;}
 
+        //Gonna have to add uv prescaling to affix new textures that might differ from the originally loaded textures, do later.
+
+        printf("Using texture: %s\n",texture_name.c_str());          
+        int error = load_texture_into_material(asset_bundle,texture_name,get_material_by_name(obj->material));
+        if (error) {printf("Error loading texture %s into material.\n",texture_name.c_str());}
+        //printf("Applied to %s\n",group_materials.back().name.c_str());
+
+        return 0;
+    }
 
     void ModelGroup::free_group() {
         //Clear objects thouroughly
@@ -112,6 +125,9 @@ namespace angel {
         //make a texture atlas module
     }
 
+    ModelGroup::~ModelGroup() {
+        free_group();
+    }
 
     int ModelGroup::load_group(Bundle* asset_bundle,const char* name) {
         this->free_group(); //Clear data

@@ -15,6 +15,7 @@ namespace angel {
 
     /*
     *   Asset bundle format for nGL.
+    *   TODO: Convert c style string usage to std::string.
     */
     struct Bundle {
         public:
@@ -40,13 +41,10 @@ namespace angel {
 
 
         private:
-        int unzip_ab(const char* name);
-        void journal();
 
         bool compare(const char filename[100], const char* test);
-        std::vector<uint8_t> raw;   //Raw tar
         std::vector<Asset> assets;  //List of assets
-
+        std::string bundle_name;    //Name of bundle, used for load_raw_data 
     };
 
 }
