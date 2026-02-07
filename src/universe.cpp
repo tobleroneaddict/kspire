@@ -1,4 +1,10 @@
 #include "universe.h"
+#include "../include/rapidjson/document.h"
+#include "../include/rapidjson/writer.h"
+#include "../include/rapidjson/stringbuffer.h"
+
+using namespace rapidjson;
+
 void Universe::render_celestials() {
     
     if (focused_vessel == nullptr) { printf("E 218754: Cannot render planets!\n");return;}
@@ -175,3 +181,71 @@ void Universe::render() {
 }
 
 
+int Universe::load_celestial_bodies(std::vector<CelestialBody> *celestials, Bundle* resources) {
+    printf("LOADING BODIES FROM JSON\n");
+    std::vector<uint8_t> raw = resources->load_raw_data("resources/system/system.json");
+    std::string json(raw.begin(),raw.end());
+
+    Document d;
+    d.Parse(json.c_str(),json.size());
+
+    if (!d.HasMember("Bodies") || !d["Bodies"].IsArray()) {
+        printf("Missing celestials!\n");
+        return 2;
+    }
+
+    const rapidjson::Value& bodies = d["Bodies"];
+
+    //Iterate bodies
+    for (rapidjson::SizeType i = 0; i < bodies.Size(); i++) {
+        const rapidjson::Value& body = bodies[i];
+        if (!body.IsObject()) continue;
+
+        CelestialBody cb;
+
+        //Grab values
+        const char* s_name = body["name"].GetString();
+        const char* s_parent = body["parent"].GetString();
+        const char* s_radius = body["radius"].GetString();
+        const char* s_mass = body["mass"].GetString();
+        const char* s_rr = body["rotation_rate"].GetString();
+        const char* s_ha = body["has_atmosphere"].GetString();
+        const char* s_atmh = body["atmosphere_height"].GetString();
+        const char* s_slp = body["sea_level_pressure"].GetString();
+
+        //Check
+        if (
+            s_name   == nullptr ||
+            s_parent == nullptr ||
+            s_radius == nullptr ||
+            s_mass   == nullptr ||
+            s_rr     == nullptr ||
+            s_ha     == nullptr ||
+            s_atmh   == nullptr ||
+            s_slp    == nullptr
+        ) { printf("Error parsing object!\n"); return 1; }
+
+        if (sizeof(s_name) < 64)
+            cb.name = std::string(s_name);
+        if (sizeof(s_parent) < 64)
+            cb.parent = std::string(s_parent);
+        if (sizeof(s_radius) < 64)
+            cb.radius = std::stod(s_radius);
+        if (sizeof(s_mass) < 64)
+            cb.mass = std::stod(s_mass);
+        if (sizeof(s_rr) < 64)
+            cb.rotation_rate = std::stof(s_rr);
+        if (sizeof(s_ha) < 64)
+            cb.atmosphere = std::stoi(s_ha);
+        if (sizeof(s_atmh) < 64)
+            cb.atmosphere_height = std::stoi(s_atmh);
+        if (sizeof(s_slp) < 64)
+            cb.sea_level_pressure = std::stof(s_slp);
+
+        celestials->push_back(cb);
+        printf("Added body %s.\n",cb.name.c_str());
+
+    }
+
+    return 0;
+}

@@ -9,7 +9,6 @@ int CelestialBody::load_model(Bundle* assets) {
     //Store ngl pointer
     me = group.get_object("Sphere");
 
-
     return 0;
 }
 
@@ -20,13 +19,4 @@ int CelestialBody::switch_texture(std::string name) {
 
 void CelestialBody::clear_model() {
     group.free_group();
-}
-
-void load_celestial_bodies(std::vector<CelestialBody> *celestials, Bundle* resources) {
-    printf("LOADING BODIES FROM JSON\n");
-    std::vector<uint8_t> raw = resources->load_raw_data("resources/system/system.json");
-
-    printf("JSON LOADER HERE\n");
-
-    return;
 }

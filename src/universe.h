@@ -51,5 +51,6 @@ class Universe {
     Bundle *resource_bundle;
     Bundle *parts_bundle;
     
+    int load_celestial_bodies(std::vector<CelestialBody> *celestials, Bundle* resources);
     private:
 };

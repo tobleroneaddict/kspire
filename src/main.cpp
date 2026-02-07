@@ -56,12 +56,15 @@ int main()
         printf("Error loading fonts!\n");
     }
 
+
+    //LOAD PLANETS
     glColor3f(0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     fonts.drawString("Loading planets...",0xFFFF,*screen,10,220);
     nglDisplay();
 
-    load_celestial_bodies(&uni.celestials,&resource_bundle);
+    if (uni.load_celestial_bodies(&uni.celestials,&resource_bundle)) return 1;
+    
 
     //will this explode i hope not....
     ProcessedPosition *processed = new ProcessedPosition[9999];
@@ -92,9 +95,6 @@ int main()
     new_vess.is_focused = new_vess.loaded = true;   //Setup for active + phys
     uni.vessels.emplace_back(new_vess);
     
-    CelestialBody body;
-    body.load_model(&planet_bundle);
-    uni.celestials.emplace_back(body);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     fonts.drawString("Loading complete!",0xFFFF,*screen,10,220);

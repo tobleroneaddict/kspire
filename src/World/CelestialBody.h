@@ -2,21 +2,22 @@
 #include "../globals.h"
 #include "orbit.h"
 
-struct Planet_Data {
-    double radius; //Meters
-    double mass;    //kg
-    float rotation_rate; //Radians
-    
-    bool atmosphere;
-    int atmosphere_height;
-    float sea_level_pressure;
-};
-
 //Uses system / Proto_body for storing relationships. this stores data.
 class CelestialBody {
     public:
     
-    std::string name;
+    std::string name = "";
+
+    std::string parent = "";
+
+    double radius = -1; //Meters
+    double mass = -1;    //kg
+    float rotation_rate = -1; //Radians
+    
+    int atmosphere = -1;
+    int atmosphere_height = -1;
+    float sea_level_pressure = -1;
+
     bool is_home_body = false;
     Orbit orbit; //rails
 
@@ -36,5 +37,3 @@ class CelestialBody {
 
 };
 
-//Load celestials from system.json
-void load_celestial_bodies(std::vector<CelestialBody> *celestials, Bundle* resources);

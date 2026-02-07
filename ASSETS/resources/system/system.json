@@ -8,7 +8,7 @@
             "rotation_rate": "1",
             "has_atmosphere": "1",
             "atmosphere_height": "1",
-            "sea_level_Pressure": "1"
+            "sea_level_pressure": "1"
         },
         {
             "name": "Earth",
@@ -18,7 +18,7 @@
             "rotation_rate": "1",
             "has_atmosphere": "1",
             "atmosphere_height": "1",
-            "sea_level_Pressure": "1"
+            "sea_level_pressure": "1"
         },
         {
             "name": "Moon",
@@ -28,7 +28,7 @@
             "rotation_rate": "1",
             "has_atmosphere": "1",
             "atmosphere_height": "1",
-            "sea_level_Pressure": "1"
+            "sea_level_pressure": "1"
         }
 
 
