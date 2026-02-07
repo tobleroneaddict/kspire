@@ -25,7 +25,7 @@ public:
     Earth planet;
     Sun home;
     //  Earth Centered Inertial, Cartesian coordinates pulled from GMAT
-    linalg::vec<float,3> POS = {1799.209 * 1000, -3960.856 * 1000, 45797.431 * 1000};    //  m
+    linalg::vec<float,3> POS = {170099.209 * 1000, -396000.856 * 1000, 45797.431 * 1000};    //  m
     linalg::vec<float,3> VEL = {-2.08207 * 1000, 2.3215701 * 1000, 2.413379 * 1000};    //  m/s
     linalg::vec<float,3> T_ACC = {0,0,0}; //Thruster acceleration
 

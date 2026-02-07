@@ -27,9 +27,9 @@ void Universe::render_celestials() {
             //Planet renderer works by scaling the glscale3f, and keeping the planet at a fixed distance
 
             //Vessel coordinate in planet space, per planet
-            float v_x = focused_vessel->physics.POS.x;
-            float v_y = focused_vessel->physics.POS.y;
-            float v_z = focused_vessel->physics.POS.z;
+            float v_x = focused_vessel->physics.POS.x + c.POS.x;
+            float v_y = focused_vessel->physics.POS.y + c.POS.y;
+            float v_z = focused_vessel->physics.POS.z + c.POS.z;
             
             float len = sqrtf(v_x*v_x +
             v_y*v_y +
@@ -38,26 +38,19 @@ void Universe::render_celestials() {
             //3000 meter bubble
             float fixed_bubble = 3000;
             glTranslatef(
-                -(v_x  / len)* fixed_bubble        * 1,
-                -(v_y  / len)* fixed_bubble        * 1,
-                -(v_z   / len)* fixed_bubble       * 1
+                -(v_x  / len)* fixed_bubble        * 0,
+                -(v_y  / len)* fixed_bubble        * 0,
+                -(v_z   / len)* fixed_bubble       * 0
             );
 
+            glTranslatef(
+                0,0,fixed_bubble
+            );
 
-
-            //Debug rotation
-            //GLFix normd = planet_angle;
-            //nglRotateY(normd.normaliseAngle());
-
-            float mars_radius = 3389500;
-            float angular_radius = mars_radius / len;    //NTS: MAKE THIS REFERENCE CELESTIAL (but make sure it can do moons too so detached. run this for each visible planet?)
-            float render_radius  = angular_radius * fixed_bubble;
-
-
+            float angular_radius = c.radius / len;  
+            float render_radius = angular_radius * fixed_bubble;
+            render_radius /= 10;
             glScale3f(render_radius, render_radius, render_radius);
-            
-            
-            //glScale3f(20, 20, 20);
             //would do planet pos here
             
             auto obj = c.me;

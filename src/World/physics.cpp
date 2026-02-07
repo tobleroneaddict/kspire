@@ -13,14 +13,6 @@ void Phys::step(float sdl_dt , float phys_warp_rate) {
     
     //Zero acc before stepping next
     T_ACC = linalg::vec<float,3> { 0,0,0 };
-
-
-    //Reset if below earth for testing
-    if (sqrt( dot(POS,POS)) < planet.radius) {
-        //std::cout << "Crash!\n";
-        POS = {1799.209 * 1000, -3960.856 * 1000, 5797.431 * 1000};
-        VEL = {-4.08207 * 1000, 4.3215701 * 1000, 4.413379 * 1000};
-    }
 }
 
 
