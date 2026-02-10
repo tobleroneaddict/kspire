@@ -148,6 +148,12 @@ namespace angel {
         substr.append("/");
         path = substr;
 
+        //Assign materials path if were over a layer deep
+        if (found != (size_t)-1) {
+            path = substr;
+        }   //This appears to work beautifully
+        //Fixes models at the root
+        
         //Sanity check
         if (obj.size() == 0)
             {printf("Model::load_model(2) : Object size is zero!\nCheck your file name.\n");
