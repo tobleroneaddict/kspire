@@ -69,6 +69,74 @@ void Planetarium::render_celestials() {
     }
 }
 
+
+
+
+//Get index of celestial by name
+int Planetarium::find_body_by_name(std::string name) {
+    int i = 0;
+    for (CelestialBody &c : celestials) {
+        if (c.name == name) {
+            return i;
+        }
+        i++;
+    }
+    return -1;
+}
+
+//get the SOI of a celestial
+double Planetarium::get_soi(int index) {
+    double soi = INFINITY;
+    //Sun
+    if (celestials[index].parent == "") {
+        return soi;
+    }
+    //Other planets
+    CelestialBody* me;
+    CelestialBody* parent;
+    me = &celestials[index];
+
+    //Optimization: save time and dont do repeated recalcs
+    if (me->_SOI != -1)
+        return me->_SOI;
+
+    parent = &celestials[find_body_by_name(me->parent)];
+    
+    //Solve
+    //rSOI = a(m/M)^(2/5)
+    double sma = me->orbit.semi_major_axis;
+    double num1 = (me->mass / parent->mass);
+    double num2 = 2.0/5.0;
+    soi = linalg::pow(num1,num2);
+    soi *= sma;
+    me->_SOI = soi;
+
+    return soi;
+}
+
+//Find closest attractor to a vessel
+int Planetarium::get_attractor(Vessel *v) {
+    int best = 0;
+    int lowest = INFINITY;
+    int i = 0;
+    for (CelestialBody &c : celestials) {
+        double soi = get_soi(i);
+        //HOW TO FIND THIS???
+        double distance_to_planet = 67000;
+        //Golf        
+        double ans = distance_to_planet / soi;
+        if (ans < lowest) {
+            best = i;
+            lowest = ans;
+        }
+
+        i++;
+    }
+    return best;
+}
+
+
+
 //Move this to celestialbody?
 int Planetarium::load_celestial_bodies(std::vector<CelestialBody> *celestials, Bundle* resources) {
     printf("LOADING BODIES FROM JSON\n");
@@ -139,37 +207,43 @@ int Planetarium::load_celestial_bodies(std::vector<CelestialBody> *celestials, B
             s_ep     == nullptr
         ) { printf("E 15123: Error parsing orbit!\n"); return 1; }
 
-        if (sizeof(s_name) < 64)
+        
+
+        //If these values cant parse ittl just crash the app which, ig whatever
+        //better than the entire calc...... ^ [Like putting a "+" for a double]
+        //Do i even bother? I woulda just had it close the whole app either way
+        
+        if (std::strlen(s_name) < 64)
             cb.name = std::string(s_name);
-        if (sizeof(s_parent) < 64)
+        if (std::strlen(s_parent) < 64)
             cb.parent = std::string(s_parent);
-        if (sizeof(s_radius) < 64)
+        if (std::strlen(s_radius) < 64)
             cb.radius = std::stod(s_radius);
-        if (sizeof(s_mass) < 64)
+        if (std::strlen(s_mass) < 64)
             cb.mass = std::stod(s_mass);
-        if (sizeof(s_rr) < 64)
+        if (std::strlen(s_rr) < 64)
             cb.rotation_rate = std::stof(s_rr);
-        if (sizeof(s_ha) < 64)
+        if (std::strlen(s_ha) < 64)
             cb.atmosphere = std::stoi(s_ha);
-        if (sizeof(s_atmh) < 64)
+        if (std::strlen(s_atmh) < 64)
             cb.atmosphere_height = std::stoi(s_atmh);
-        if (sizeof(s_slp) < 64)
+        if (std::strlen(s_slp) < 64)
             cb.sea_level_pressure = std::stof(s_slp);
-        if (sizeof(s_mu) < 64)
+        if (std::strlen(s_mu) < 64)
             cb.orbit.mu = std::stod(s_mu);
-        if (sizeof(s_sma) < 64)
+        if (std::strlen(s_sma) < 64)
             cb.orbit.semi_major_axis = std::stod(s_sma);
-        if (sizeof(s_ecc) < 64)
+        if (std::strlen(s_ecc) < 64)
             cb.orbit.eccentricity = std::stod(s_ecc);
-        if (sizeof(s_inc) < 64)
+        if (std::strlen(s_inc) < 64)
             cb.orbit.inclination = std::stod(s_inc);
-        if (sizeof(s_lan) < 64)
+        if (std::strlen(s_lan) < 64)
             cb.orbit.long_ascending_node = std::stod(s_lan);
-        if (sizeof(s_ap) < 64)
+        if (std::strlen(s_ap) < 64)
             cb.orbit.argument_of_periapsis = std::stod(s_ap);
-        if (sizeof(s_ma) < 64)
+        if (std::strlen(s_ma) < 64)
             cb.orbit.mean_anomaly = std::stod(s_ma);
-        if (sizeof(s_ep) < 64)
+        if (std::strlen(s_ep) < 64)
             cb.orbit.epoch = std::stod(s_ep);
 
         celestials->push_back(cb);

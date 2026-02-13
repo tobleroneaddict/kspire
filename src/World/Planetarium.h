@@ -19,5 +19,10 @@ public:
     //Calculated inside.
     void render_celestials();
 
+    int find_body_by_name(std::string name);
+    
 
+    double get_soi(int index);
+
+    int get_attractor(Vessel *v);
 };

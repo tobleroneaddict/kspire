@@ -24,7 +24,8 @@ class CelestialBody {
 
     bool is_home_body = false;
     Orbit orbit; //rails
-
+    double _SOI = -1;  //Calculated and replaced with Planetarium::get_soi (Optimization). Not accurate for sol
+    
     //Load ANGEL model
     int load_model(Bundle* assets);
 

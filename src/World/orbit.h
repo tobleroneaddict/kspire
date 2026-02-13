@@ -23,7 +23,11 @@ struct Orbit {
     double long_ascending_node;
     double argument_of_periapsis;
     
-    double mu = 0;  //Propogate mu from parent into here!!
+    double mu = 0;  //transfer mu from parent into here!!
+
+    //Solve keplarian prop to get this
+    linalg::vec<double,3> POS;
+    linalg::vec<double,3> VEL;
 
     void sim();
 

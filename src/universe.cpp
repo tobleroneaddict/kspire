@@ -1,9 +1,5 @@
 #include "universe.h"
 
-
-
-
-
 void Universe::render_nearby_vessels() {
     for (Vessel& v : vessels) {
         //Step vessel orbit after checking if its on rails or simulated

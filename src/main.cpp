@@ -117,6 +117,10 @@ int main()
 
     printf("Loading complete!\n");
 
+    printf("SOI of Sol: %f\n",uni.planetarium.get_soi(0));
+    printf("SOI of Earth: %f\n",uni.planetarium.get_soi(1));
+    printf("SOI of Moon: %f\n",uni.planetarium.get_soi(2));
+    
 
     #ifdef _TINSPIRE
     while(!isKeyPressed(KEY_NSPIRE_ESC))
