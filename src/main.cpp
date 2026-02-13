@@ -74,13 +74,14 @@ int main()
     fonts.drawString("Loading planets...",0xFFFF,*screen,10,220);
     nglDisplay();
 
-    if (uni.load_celestial_bodies(&uni.celestials,&resource_bundle)) return 1;
+    if (uni.planetarium.load_celestial_bodies(&uni.planetarium.celestials,&resource_bundle)) return 1;
 
 
     //will this explode i hope not....
     ProcessedPosition *processed = new ProcessedPosition[9999];
     uni.processed = processed;
-
+    uni.planetarium.processed = processed;
+  
     if (planet_bundle.load_asset_bundle("body.tar.gz.tns")) {
         printf("Asset load error!!");
         return 1;
@@ -104,11 +105,11 @@ int main()
     Vessel new_vess;
     new_vess.is_focused = new_vess.loaded = true;   //Setup for active + phys
     uni.vessels.emplace_back(new_vess);
-    uni.celestials[1].load_model(uni.planet_bundle);
+    uni.planetarium.celestials[1].load_model(uni.planet_bundle);
     uni.focused_vessel = &new_vess;
 
-    uni.celestials[2].load_model(uni.planet_bundle);
-    uni.celestials[2].POS.z -= 10000000;
+    uni.planetarium.celestials[2].load_model(uni.planet_bundle);
+    uni.planetarium.celestials[2].POS.z -= 10000000;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     fonts.drawString("Loading complete!",0xFFFF,*screen,10,220);

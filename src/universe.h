@@ -5,6 +5,8 @@
 #include "World/CelestialBody.h"
 #include "World/Camera/camera.h"
 #include "Utility/timewarp_controller.h"
+#include "World/Planetarium.h"
+
 //Contains all vessels.
 class Universe {
     public:
@@ -23,7 +25,7 @@ class Universe {
     Vessel* focused_vessel;
 
 
-    void step();
+    
     
 
     ProcessedPosition *processed;
@@ -31,13 +33,11 @@ class Universe {
     //All vessels in world. Does not contain part data, until loaded.
     //NTS: I would prefer you to do emplace back. Read up on emplace back.
     std::vector<Vessel> vessels;
-    std::vector<CelestialBody> celestials;
     
+    Planetarium planetarium;
 
-
-    //Mode 0 : Distant, up to LO. Mode 1: PQS
-    //Calculated inside.
-    void render_celestials();
+    void step();
+    
     //Render focused vessel & any surrounding vessels
     void render_nearby_vessels();
 
@@ -52,6 +52,5 @@ class Universe {
     Bundle *resource_bundle;
     Bundle *parts_bundle;
     
-    int load_celestial_bodies(std::vector<CelestialBody> *celestials, Bundle* resources);
     private:
 };
