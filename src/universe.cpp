@@ -27,11 +27,16 @@ void Universe::step() {
     timewarp.tick(0);
     timewarp.lerp_rate(clock.dt);
 
+    //planetarium.update_planet_positions(universal_time);
+    planetarium.celestials[2].orbit.calculate_state_from_keplers(universal_time);
+
     //Rails enter/exit handling
 
     if (timewarp.entered_rails) {
         for (Vessel &v : vessels) {
             if (v.loaded) {
+                
+                
                 v.orbit.physics_to_rails(v.physics.POS,v.physics.VEL,universal_time);
             }
         }
@@ -39,11 +44,30 @@ void Universe::step() {
     if (timewarp.exited_rails) {
         for (Vessel &v : vessels) {
             if (v.loaded) {
-
+                //v.physics.POS = v.orbit.POS;
+                //v.physics.VEL = v.orbit.VEL;
+                
                 //Need to do rails to physics
             }
         }
 
+    }
+
+    //Every tick that is rails
+    if (!timewarp.is_physics_warp) {
+        for (Vessel &v : vessels) {
+            if (v.loaded) {
+                //v.physics.POS = v.orbit.POS;
+                //v.physics.VEL = v.orbit.VEL;
+            }
+        }   
+    } else {
+        for (Vessel &v : vessels) {
+            if (v.loaded) {
+                v.orbit.POS = v.physics.POS;
+                v.orbit.VEL = v.physics.VEL;
+            }
+        }
     }
 
     //Update focused vessel, in case # of vessels changes. Avoids std::vector fuckery messing with the pointer i think?

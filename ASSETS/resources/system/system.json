@@ -32,12 +32,12 @@
             "Orbit": {
                 "mu": "1",
                 "semi_major_axis": "149598000000",
-                "eccentricity": "1",
+                "eccentricity": "0",
                 "inclination": "0",
                 "long_ascending_node": "1",
                 "argument_of_periapsis": "1",
                 "mean_anomaly_at_epoch": "1",
-                "epoch": "1"
+                "epoch": "0"
             }
         },
         {
@@ -52,12 +52,12 @@
             "Orbit": {
                 "mu": "1",
                 "semi_major_axis": "383398000",
-                "eccentricity": "1",
+                "eccentricity": "0",
                 "inclination": "0",
                 "long_ascending_node": "1",
                 "argument_of_periapsis": "1",
                 "mean_anomaly_at_epoch": "1",
-                "epoch": "1"
+                "epoch": "0"
             }
         }
 

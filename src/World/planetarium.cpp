@@ -31,9 +31,9 @@ void Planetarium::render_celestials() {
                 //Planet renderer works by scaling the glscale3f, and keeping the planet at a fixed distance
 
                 //Vessel coordinate in planet space, per planet
-                float v_x = focused_vessel->physics.POS.x - c.orbit.POS.x;
-                float v_y = focused_vessel->physics.POS.y - c.orbit.POS.y;
-                float v_z = focused_vessel->physics.POS.z - c.orbit.POS.z;
+                float v_x = focused_vessel->orbit.POS.x - c.orbit.POS.x;
+                float v_y = focused_vessel->orbit.POS.y - c.orbit.POS.y;
+                float v_z = focused_vessel->orbit.POS.z - c.orbit.POS.z;
                 
                 float len = linalg::length(focused_vessel->physics.POS - c.orbit.POS);
                  
@@ -41,7 +41,7 @@ void Planetarium::render_celestials() {
                 float fixed_bubble = 3000;
                 glTranslatef(
                     -(v_x  / len)* fixed_bubble        * 1,
-                    -(v_y  / len)* fixed_bubble        * 1,
+                    -(v_y  / len)* fixed_bubble        * 0,
                     -(v_z   / len)* fixed_bubble       * 1
                 );
 
@@ -138,7 +138,9 @@ int Planetarium::get_attractor(Vessel *v) {
 
 void Planetarium::update_planet_positions(double universal_time) {
     for (CelestialBody &c : celestials) { 
-        c.orbit.calculate_state_from_keplers(universal_time);
+        if (c.parent != "") {
+            c.orbit.calculate_state_from_keplers(universal_time);
+        }
     }
 }
 
