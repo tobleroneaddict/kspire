@@ -31,12 +31,12 @@ void Planetarium::render_celestials() {
                 //Planet renderer works by scaling the glscale3f, and keeping the planet at a fixed distance
 
                 //Vessel coordinate in planet space, per planet
-                float v_x = 0 - c.orbit.POS.x;
-                float v_y = 500000000 - c.orbit.POS.y;
-                float v_z = 0 - c.orbit.POS.z;
+                float v_x = 0-focused_vessel->orbit.POS.x;
+                float v_y = 0-focused_vessel->orbit.POS.y;
+                float v_z = 0-focused_vessel->orbit.POS.z;
 
                 //MODIFY THIS TO WORK WITH THE GLOBAL POSITION OF WHATEVER BODY WE ARE ON.
-                float len = linalg::length(c.orbit.POS);
+                float len = linalg::length(focused_vessel->orbit.POS);
 
                 //3000 meter bubble
                 float fixed_bubble = 3000;
