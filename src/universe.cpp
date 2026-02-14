@@ -27,8 +27,8 @@ void Universe::step() {
     timewarp.tick(0);
     timewarp.lerp_rate(clock.dt);
 
-    //planetarium.update_planet_positions(universal_time);
-    planetarium.celestials[2].orbit.calculate_state_from_keplers(universal_time);
+    planetarium.update_planet_positions(universal_time);
+
 
     //Rails enter/exit handling
 

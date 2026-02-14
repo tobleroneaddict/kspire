@@ -109,7 +109,10 @@ int main()
     uni.focused_vessel = &new_vess;
 
     uni.planetarium.celestials[2].load_model(uni.planet_bundle);
-    uni.planetarium.celestials[2].orbit.POS.z -= 10000000;
+    uni.planetarium.celestials[2].orbit.POS.z;
+
+    uni.planetarium.celestials[0].load_model(uni.planet_bundle);
+    uni.planetarium.celestials[0].orbit.POS.z;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     fonts.drawString("Loading complete!",0xFFFF,*screen,10,220);

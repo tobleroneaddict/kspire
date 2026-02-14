@@ -37,13 +37,14 @@ void Planetarium::render_celestials() {
 
                 //Vessel coordinate in planet space, per planet
                 float v_x = pp.x-vp.x;
-                float v_z = pp.y-vp.y;
-                float v_y = pp.z-vp.z;
+                float v_y = pp.y-vp.y;
+                float v_z = pp.z-vp.z;
 
                 //Get draw length of body
                 auto delta = pp - vp;
                 float len = linalg::length(delta);
-
+                printf("Dist (m) to %s:%f\n",c.name.c_str(),len);
+                printf("^ planet X is %f\n",c.orbit.POS.x);
                 //3000 meter bubble
                 float fixed_bubble = 3000;
 

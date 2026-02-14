@@ -153,11 +153,12 @@ void Orbit::calculate_state_from_keplers(double _UNIVERSAL_TIME) {
 //https://orbital-mechanics.space/classical-orbital-elements/orbital-elements-and-the-state-vector.html
 //Calculate on-rails orbital elements given keplarian elements
 void Orbit::physics_to_rails(double epoch) {
-    //Y is up
+    //Y is up Z forward!
+    linalg::vec<double,3> K = {0,1,0};
 
     if (mu == 0 ) { printf("E 134814: MU NOT SET!!!!\n");}
     //Dont use linalg::normalize() to find length.
-
+    double Omega = -1;
     double POS_mag = linalg::length(POS);
     double VEL_mag = linalg::length(VEL);
     double v_r = linalg::dot(POS, VEL) / POS_mag; //radial velocity
@@ -166,21 +167,26 @@ void Orbit::physics_to_rails(double epoch) {
     //Angular momentum (h, h_mag)
     linalg::vec<double, 3> h = linalg::cross(POS,VEL);
     double h_mag = linalg::length(h);
+    
 
     //Inclination
-    double i = acos(linalg::clamp(h[1] / h_mag, -1.0, 1.0));
+    double i = linalg::acos(linalg::clamp(linalg::dot(h, K) / h_mag, -1.0, 1.0));
 
     //Right Ascension @ Ascending Node
     //N=^K x h
-    linalg::vec<double,3> K = {0,1,0};
+    
 
     //Node line (n, n_mag)
     linalg::vec<double,3> n = linalg::cross(K, h);
     double n_mag = linalg::length(n);
 
     //LAN (Omega)
-    double Omega = atan2(n.z, n.x);
-    if (Omega < 0) Omega += 2*pi;
+    if (n_mag < 1E-7) {
+        Omega = 0.0;
+    } else {
+        Omega = atan2(n.z, n.x);
+        if (Omega < 0) Omega += 2*pi;
+    }
 
     //Eccentricity (e, e_mag)
     linalg::vec<double,3> e = (linalg::cross(VEL, h) / mu) - (POS / POS_mag);
@@ -188,14 +194,11 @@ void Orbit::physics_to_rails(double epoch) {
 
 
     //Argument of periapsis (Lowercase omega)
-    double omega = acos(linalg::clamp(dot(n, e) / (n_mag * e_mag), -1.0, 1.0));
-    if (dot(cross(n, e), h) < 0)
-        omega = 2*pi - omega;
-
+    double omega = linalg::atan2(linalg::dot(linalg::cross(n, e), h) / h_mag,linalg::dot(n, e));
+    if (omega < 0) omega += 2.0*pi;
     //True anomaly
-    double ta = acos(linalg::clamp(dot(e, POS) / (e_mag * POS_mag), -1.0, 1.0));
-    if (v_r < 0)
-        ta = 2*pi - ta;
+    double ta = linalg::atan2(v_r * h_mag / mu,linalg::dot(e, POS) / e_mag);
+    if (ta < 0) ta += 2.0*pi;
 
 
     double specific_energy = (VEL_mag*VEL_mag)/2.0 - (mu / POS_mag);
@@ -206,7 +209,7 @@ void Orbit::physics_to_rails(double epoch) {
 
     //STO SmA
     if (eccentricity < 1.0) { //CAnnot be hyperbonlic
-        semi_minor_axis = a * sqrt(1 - eccentricity*eccentricity);
+        semi_minor_axis = a * linalg::sqrt(1 - eccentricity*eccentricity);
     } else {
         semi_minor_axis = NAN;
     }
@@ -221,20 +224,26 @@ void Orbit::physics_to_rails(double epoch) {
 
     //STO Period
     if (eccentricity < 1.0) {
-        period = 2*pi * sqrt((a*a*a)/mu);
+        period = 2*pi * linalg::sqrt((a*a*a)/mu);
     } else {
         period = NAN;
     }
 
     //STO Orbital speed
-    orbital_speed = sqrt(mu * (2.0/POS_mag - 1.0/a)); //Derived from orbital elems
+    orbital_speed = linalg::sqrt(mu * (2.0/POS_mag - 1.0/a)); //Derived from orbital elems
 
     //STO INC
     inclination = i;
 
     //STO MA
-    double E = 2.0 * linalg::atan( linalg::tan(ta/2.0) *
-    linalg::sqrt((1.0 - eccentricity)/(1.0 + eccentricity)));
+    ///double E = 2.0 * linalg::atan( linalg::tan(ta/2.0) *
+    //linalg::sqrt((1.0 - eccentricity)/(1.0 + eccentricity)));
+    double E = linalg::atan2(
+        linalg::sqrt(1.0 - eccentricity*eccentricity) * linalg::sin(ta),
+        eccentricity + linalg::cos(ta)
+    );
+    
+
     mean_anomaly = E - eccentricity * linalg::sin(E);
 
     //STO MA-E
