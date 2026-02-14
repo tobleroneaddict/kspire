@@ -10,6 +10,7 @@ class Vessel {
 
     Orbit orbit; //Both rails and phys
 
+    int home_body = 1;
 
 
     enum Situation {
