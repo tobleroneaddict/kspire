@@ -147,7 +147,6 @@ void Orbit::calculate_state_from_keplers(double _UNIVERSAL_TIME) {
     //Matrix multiplication
     POS = linalg::mul(RM,r_pf);
     VEL = linalg::mul(RM,v_pf);
-
 }
 
 //https://orbital-mechanics.space/classical-orbital-elements/orbital-elements-and-the-state-vector.html

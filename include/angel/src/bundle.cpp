@@ -72,13 +72,13 @@ namespace angel {
 
 
     int Bundle::load_asset_bundle(const char* name) {
-
+        free();
         gzFile file;
         unsigned int  n = 0;
         uint8_t buf[512];
 
 
-
+        
         file = gzopen(name, "rb");
 
         //Return if borked

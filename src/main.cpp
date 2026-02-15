@@ -13,6 +13,7 @@ enum GameStates {
 
 
 GameStates current_state = MENU;
+bool loading = true;
 
 Universe uni;
 VAB vab;
@@ -42,7 +43,11 @@ template <typename T> void debug_print(T value, int x, int y, TEXTURE *screen) {
 
 //TO BE MOVED
 
+
+
 int scene_load_flight() {
+    loading = true;
+
     glColor3f(0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     current_state = GameStates::FLIGHT;
@@ -50,17 +55,17 @@ int scene_load_flight() {
     
     fonts.drawString("Loading planets...",0xFFFF,*screen,10,220);
     nglDisplay();
-
-    if (uni.planetarium.load_celestial_bodies(&resource_bundle)) return 1;
-
+    
     if (planet_bundle.load_asset_bundle("body.tar.gz.tns")) {
         printf("Asset load error!!");
         return 1;
     }
-
+    
+    if (uni.planetarium.load_celestial_bodies(&resource_bundle)) return 1;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     fonts.drawString("Loading parts...",0xFFFF,*screen,10,220);
     nglDisplay();
+    
 
     if (parts_bundle.load_asset_bundle("parts.tar.gz.tns")) {
         printf("Asset load error!!");
@@ -76,27 +81,25 @@ int scene_load_flight() {
     Vessel new_vess;
     new_vess.is_focused = new_vess.loaded = true;   //Setup for active + phys
     uni.vessels.emplace_back(new_vess);
-    uni.planetarium.celestials[1].load_model(uni.planet_bundle);
     uni.focused_vessel = &new_vess;
-
+    
+    
+    uni.planetarium.celestials[0].load_model(uni.planet_bundle);
     uni.planetarium.celestials[2].load_model(uni.planet_bundle);
-    uni.planetarium.celestials[2].orbit.POS.z;
 
-    //uni.planetarium.celestials[0].load_model(uni.planet_bundle);
-    uni.planetarium.celestials[0].orbit.POS.z;
+    uni.planetarium.celestials[1].load_model(uni.planet_bundle);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     fonts.drawString("Loading complete!",0xFFFF,*screen,10,220);
     nglDisplay();
     printf("Loading complete!\n");
+    loading = false;
     return 0;
 }
-int scene_pack_flight() {
-    uni.pack();
-    return 0;
-}
+
 int scene_load_vab() {
+    loading = true;
     glColor3f(0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     current_state = GameStates::EDITOR;
@@ -104,15 +107,20 @@ int scene_load_vab() {
     nglDisplay();
     printf("Loading VAB...\n");
     vab.load_model(&resource_bundle);
+    loading = false;
+    return 0;
+}
+
+
+
+int scene_pack_flight() {
+    uni.pack();
     return 0;
 }
 int scene_pack_vab() {
     vab.destroy_model();
     return 0;
 }
-
-
-
 
 
 int main()
@@ -144,8 +152,9 @@ int main()
     }
 
 
-    scene_load_flight();
-    //scene_load_vab();
+    //Debug init scene
+    //scene_load_flight();
+    scene_load_vab();
 
     planet_bundle.debug_list_assets();
 
@@ -165,14 +174,29 @@ int main()
         //Uni contains the main code of handling the flight scene. this is probably
         //Shitty but ill figure out how to do VAB stuff later. okay!
 
-        if (isKeyPressed(KEY_NSPIRE_1)) {
-            scene_pack_vab();
+        if (isKeyPressed(KEY_NSPIRE_1) && !loading) {
+            switch (current_state) {
+                case GameStates::EDITOR:
+                scene_pack_vab();break;
+                case GameStates::FLIGHT:
+                scene_pack_flight();break;
+                default:
+                break;
+            }
             scene_load_flight();
         }
 
         
-        if (isKeyPressed(KEY_NSPIRE_2)) {
-            scene_pack_flight();
+        if (isKeyPressed(KEY_NSPIRE_2)  && !loading) {
+            switch (current_state) {
+                case GameStates::EDITOR:
+                scene_pack_vab();break;
+                case GameStates::FLIGHT:
+                scene_pack_flight();break;
+                default:
+                break;
+
+            }
             scene_load_vab();
         }
 

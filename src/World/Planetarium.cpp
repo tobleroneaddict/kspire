@@ -37,8 +37,8 @@ void Planetarium::render_celestials() {
 
                 //Vessel coordinate in planet space, per planet
                 float v_x = pp.x-vp.x;
-                float v_y = pp.y-vp.y;
-                float v_z = pp.z-vp.z;
+                float v_z = pp.y-vp.y;
+                float v_y = pp.z-vp.z;
 
                 //Get draw length of body
                 auto delta = pp - vp;
@@ -48,14 +48,15 @@ void Planetarium::render_celestials() {
                 //3000 meter bubble
                 float fixed_bubble = 3000;
 
-                // glTranslatef(
-                //     -(v_x  / len)* fixed_bubble        * 1,
-                //     -(v_y  / len)* fixed_bubble        * 1,
-                //     -(v_z   / len)* fixed_bubble       * 1
-                // );
-                glTranslatef(0,0,fixed_bubble);
+                glTranslatef(
+                    -(v_x  / len)* fixed_bubble        * 1,
+                    -(v_y  / len)* fixed_bubble        * 1,
+                    -(v_z   / len)* fixed_bubble       * 1
+                );
 
-                nglRotateY(c.angle);
+
+                float angle = fmod(fmod(c.angle, 360.0f) + 360.0f, 360.0f);
+                nglRotateY(360.0f - angle);
 
                 float angular_diameter = 2.0f * (c.radius / len);
                 float render_radius = angular_diameter * fixed_bubble;

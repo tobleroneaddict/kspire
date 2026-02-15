@@ -1,4 +1,6 @@
 #! /bin/bash
+find . -type f -name "*~" -delete
+
 rm -rf resources.tar.gz.tns
 rm -rf body.tar.gz.tns
 rm -rf parts.tar.gz.tns
