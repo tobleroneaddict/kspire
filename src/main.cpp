@@ -27,6 +27,7 @@ enum GameStates {
 GameStates current_state = BUILD;
 
 Universe uni;
+VAB vab;
 
 Fonts fonts;
 
@@ -56,6 +57,7 @@ int main()
     // Allocate the framebuffer
     TEXTURE *screen = newTexture(SCREEN_WIDTH, SCREEN_HEIGHT, 0, false);
     nglSetBuffer(screen->bitmap);
+    vab.screen = screen;    
 
     if (resource_bundle.load_asset_bundle("resources.tar.gz.tns")) {
         printf("Asset load error!!");
@@ -127,7 +129,7 @@ int main()
     fonts.drawString("Loading VAB...",0xFFFF,*screen,10,220);
     nglDisplay();
     printf("Loading VAB...\n");
-    VAB vab;
+    
     vab.load_model(&resource_bundle);
 
     fonts.drawString("Loading complete!",0xFFFF,*screen,10,220);
