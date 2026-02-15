@@ -13,7 +13,7 @@ public:
     //Reduce pallete to just side buttons
     bool show_pallete = false;
     bool hide_vab = false;
-    
+
     //Load ANGEL model
     int Start(Bundle* assets, Bundle* parts);
     void destroy_model();
@@ -44,4 +44,8 @@ private:
   
     void render();
     void editor_controls();
+
+    //Touchpad
+    float tp_h;
+    float tp_w;
 };

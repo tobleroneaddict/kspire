@@ -10,6 +10,11 @@ void VAB::destroy_model() {
 
 int VAB::Start(Bundle* assets, Bundle* parts) {
     
+    auto tp_i = touchpad_getinfo();
+    tp_h = (float)tp_i->height;
+    tp_w = (float)tp_i->width;
+    
+
     if (!hide_vab) {
         if (me.load_group(assets,"resources/vab/vab")) return 1;
 
@@ -148,8 +153,27 @@ void VAB::render() {
 
     touchpad_report_t touchpad;
     touchpad_scan(&touchpad);
+    
 
-    glTranslatef(0,200,0);
+    //Default origin
+    glTranslatef(0,100,0);
+
+    //Touchpad offsets
+    float t_off_x = touchpad.x / tp_w;
+    float t_off_y = touchpad.y / tp_h;
+    t_off_x -= 0.5f;  t_off_y -= 0.5f;
+    
+    
+    float mult = 1.4f * abs(camera_zoom);
+
+    float c_x = t_off_x * mult * rp_y;
+    float c_z = t_off_x * mult * rp_x;
+    float c_y = t_off_y * mult * linalg::cos(out.x * 0.01745329) + camera_height;
+
+    //Later: fix this for looking down/up
+
+
+    glTranslatef(c_x,c_y,c_z);
 
     glScale3f(10,10,10);
 
