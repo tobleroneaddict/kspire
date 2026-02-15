@@ -2,7 +2,7 @@
 #include "universe.h"
 #include "Utility/font.h"
 
-
+#include "Editor/VAB.h"
 
 template <typename T> T clamp(T in, T min, T max) {
     if (in < min) { return min; }
@@ -24,7 +24,7 @@ enum GameStates {
 
 
 
-GameStates current_state = FLIGHT;
+GameStates current_state = BUILD;
 
 Universe uni;
 
@@ -105,25 +105,36 @@ int main()
     Vessel new_vess;
     new_vess.is_focused = new_vess.loaded = true;   //Setup for active + phys
     uni.vessels.emplace_back(new_vess);
-    uni.planetarium.celestials[1].load_model(uni.planet_bundle);
+    //uni.planetarium.celestials[1].load_model(uni.planet_bundle);
     uni.focused_vessel = &new_vess;
 
-    uni.planetarium.celestials[2].load_model(uni.planet_bundle);
+    //uni.planetarium.celestials[2].load_model(uni.planet_bundle);
     uni.planetarium.celestials[2].orbit.POS.z;
 
-    uni.planetarium.celestials[0].load_model(uni.planet_bundle);
+    //uni.planetarium.celestials[0].load_model(uni.planet_bundle);
     uni.planetarium.celestials[0].orbit.POS.z;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    fonts.drawString("Loading complete!",0xFFFF,*screen,10,220);
-    nglDisplay();
-
-    printf("Loading complete!\n");
-
+    
     printf("SOI of Sol: %f\n",uni.planetarium.get_soi(0));
     printf("SOI of Earth: %f\n",uni.planetarium.get_soi(1));
     printf("SOI of Moon: %f\n",uni.planetarium.get_soi(2));
     
+
+    //ALSO MAKE SEPARATE LOADING AND DELOAD FUNCS!!
+    //Load VAB
+
+    fonts.drawString("Loading VAB...",0xFFFF,*screen,10,220);
+    nglDisplay();
+    printf("Loading VAB...\n");
+    VAB vab;
+    vab.load_model(&resource_bundle);
+
+    fonts.drawString("Loading complete!",0xFFFF,*screen,10,220);
+    
+    nglDisplay();
+
+    printf("Loading complete!\n");
 
     #ifdef _TINSPIRE
     while(!isKeyPressed(KEY_NSPIRE_ESC))
@@ -165,8 +176,15 @@ int main()
             debug_print("EPC ",uni.focused_vessel->orbit.epoch,10,150,screen);
 
         }
+        if (current_state == GameStates::BUILD) {
+
+            vab.render(processed);
+    
+        }
         nglDisplay();
     }
+
+    
 
     /*
 
