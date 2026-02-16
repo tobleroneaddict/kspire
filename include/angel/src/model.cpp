@@ -79,7 +79,6 @@ namespace angel {
                 mat->diffuse_texture.texture.bitmap = mat->diffuse_texture.data.data();
                 mat->diffuse_texture.texture.width  = width;
                 mat->diffuse_texture.texture.height = height;
-                printf("sizetex is %d\n",mat->diffuse_texture.data.size());
             }
             
 
@@ -147,14 +146,13 @@ namespace angel {
         size_t found = obj_name.find_last_of("/");
         std::string substr = obj_name.substr(0,found);
         substr.append("/");
-        path = substr;
-
+        
         //Assign materials path if were over a layer deep
         if (found != (size_t)-1) {
             path = substr;
         }   //This appears to work beautifully
         //Fixes models at the root
-        
+
         //Sanity check
         if (obj.size() == 0)
             {printf("Model::load_model(2) : Object size is zero!\nCheck your file name.\n");
