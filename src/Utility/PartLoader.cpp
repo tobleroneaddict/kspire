@@ -157,6 +157,18 @@ int PartLoader::load_parts(Bundle* parts) {
         //Copy values that can't be transferred
         p.objname   = p.default_data.objname;
         p.shared_id = p.default_data.shared_id;
+
+        //And finally load the nGL model
+        
+        std::string obj_locator_string = p.path +"/" + p.objname;
+        auto obj_locator = obj_locator_string.c_str();
+
+        p.group.load_group(parts,obj_locator);
+        
+
+        printf("WARNING::::: LIST ALL OBJECTS IN THE SCENE USING ANGEL SHIT\n");
+
+
     }
 
 
@@ -164,7 +176,7 @@ int PartLoader::load_parts(Bundle* parts) {
     //Load model
 
     //Track parts
-    printf("TRACK PARTS!!\n");
+    printf("WARNIGN:::: STILL NEED TO TRACK PARTS!!\n");
 
     return 0;
 }
