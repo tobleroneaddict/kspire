@@ -199,6 +199,16 @@ ProtoPart* PartLoader::get_part_by_id(unsigned int id) {
     return &raw_parts[proto->second];
 }
 
+//Returns Shared IDs of parts of a certain category
+std::vector<int> PartLoader::get_parts_of_category(std::string category) {
+    std::vector<int> res;
+
+    for (ProtoPart &p : raw_parts) {
+        if (p.default_data.category == category) res.emplace_back(p.shared_id);
+    }
+    return res;
+}
+
 //Get part data paths
 int PartLoader::push_raw(Bundle* parts) {
     std::vector<uint8_t> raw = parts->load_raw_data("parts/database.json");

@@ -184,10 +184,10 @@ int main()
     for(unsigned int i = 1300;--i;)
     #endif
     {
-        touchpad_report_t touchpad;
-        touchpad_scan(&touchpad);
-
-        cursor.set_cursor_position(touchpad.x,touchpad.y);
+        kspire_pad.Update();
+        
+        
+        if (kspire_pad.true_contact) cursor.set_cursor_position(kspire_pad.x_screen,kspire_pad.y_screen);
         
 
         //Contains physics and render code for the flight scene
@@ -250,6 +250,18 @@ int main()
     
         }
         fonts.drawString("DEMO BUILD",0xFFFF,*screen,10,220);
+        debug_print("Tprox ",kspire_pad.proximity,10,150,screen);
+        debug_print("Tcont ",kspire_pad.true_contact,10,130,screen);
+        
+        debug_print("Tx ",kspire_pad.x_screen,10,50,screen);
+        
+        debug_print("Ty ",kspire_pad.y_screen,10,80,screen);
+        
+
+        debug_print("Swx ",kspire_pad.w,60,50,screen);
+    
+        debug_print("Shy ",kspire_pad.h,60,80,screen);
+        
 
         nglDisplay();
     }

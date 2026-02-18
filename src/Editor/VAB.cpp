@@ -4,10 +4,14 @@ void VAB::destroy_model() {
     me.free_group();
     node_g.free_group();
     full_scene.clear();
+    part_tree.clear();
+
+    test_pids.clear();
 }
 
 //Init script
 int VAB::Start(Bundle* assets) {
+    destroy_model();
     part_tree.clear();
 
     //DEBUG STUFF
@@ -22,21 +26,17 @@ int VAB::Start(Bundle* assets) {
     part_tree.push_back(std::move(part2));
     //END DEBUG STUFF
 
-    auto tp_i = touchpad_getinfo();
-    tp_h = (float)tp_i->height;
-    tp_w = (float)tp_i->width;
+    
 
-
+    //Render VAB scene For release
     if (!hide_vab) {
         if (me.load_group(assets,"resources/vab/vab")) return 1;
-
-        //Load VAB
-        //Add objects
         full_scene.push_back(me.get_object("wall"));
         full_scene.push_back(me.get_object("rails"));
         full_scene.push_back(me.get_object("floor"));
         full_scene.push_back(me.get_object("crate"));
     }
+
     side_panel.init(assets,"resources/ui/pallete.png",screen);
     page_selector.init(assets,"resources/ui/selector.png",screen);
     page_selector.tex.transparent_color = 0x00;
@@ -46,6 +46,11 @@ int VAB::Start(Bundle* assets) {
     if (node_g.load_group(assets,"resources/vab/node")) return 1;
     node = node_g.get_object("Sphere");
 
+
+    //Read part categories
+    test_pids = parts_master->get_parts_of_category("Command");
+
+
     return 0;
 }
 
@@ -53,27 +58,19 @@ int VAB::Start(Bundle* assets) {
 void VAB::editor_controls() {
     float rot_speed = 160.0f * clock.dt;
 
-    if (isKeyPressed(KEY_NSPIRE_CTRL)) {
-        camera_zoom -= rot_speed;
-    }
-    if (isKeyPressed(KEY_NSPIRE_SHIFT)) {
-        camera_zoom += rot_speed;
-    }
-    if (isKeyPressed(KEY_NSPIRE_Q)) {
-        camera_height -= rot_speed;
-    }
-    if (isKeyPressed(KEY_NSPIRE_E) ) {
-        camera_height += rot_speed;
-    }
+    //Editor specific camera controls
+    if (isKeyPressed(KEY_NSPIRE_CTRL)) camera_zoom -= rot_speed;
+    if (isKeyPressed(KEY_NSPIRE_SHIFT)) camera_zoom += rot_speed;
 
-    if (isKeyPressed(KEY_NSPIRE_G)) {
-        show_pallete = false;
-    }
-    if (isKeyPressed(KEY_NSPIRE_H)) {
-        show_pallete = true;
-    }
+    if (isKeyPressed(KEY_NSPIRE_Q)) camera_height -= rot_speed;
+    if (isKeyPressed(KEY_NSPIRE_E) ) camera_height += rot_speed;
+
+    //Keyboard pallete show hide
+    // if (isKeyPressed(KEY_NSPIRE_G)) show_pallete = false;
+    // if (isKeyPressed(KEY_NSPIRE_H)) show_pallete = true;
 
 
+    //Keyboard Paging
     if (isKeyPressed(KEY_NSPIRE_F) && page_index < 11 && !page_key_held) {
         page_index++;
         page_key_held = true;
@@ -84,6 +81,7 @@ void VAB::editor_controls() {
     }
     if (!isKeyPressed(KEY_NSPIRE_F) && !isKeyPressed(KEY_NSPIRE_R)) page_key_held = false;
 
+    //Keyboard Part selector
     if (isKeyPressed(KEY_NSPIRE_X) && part_sel_index < 17 && !part_sel_key_held) {
         part_sel_index++;
         part_sel_key_held = true;
@@ -103,7 +101,7 @@ void VAB::onClick_oneshot() {
     if (!has_grabbed_part) {
         int found = -1;
         auto point = raycast_camera(current_cam_rotation);
-
+        
         for (size_t i = 0; i < part_tree.size(); ++i) {
             float off = linalg::length(part_tree[i].attPos - point);
             if (off < part_raycast_threshold) {
@@ -127,7 +125,7 @@ void VAB::onClick_oneshot() {
 //VAB
 void VAB::Update() {
     clock.tick();
-    touchpad_scan(&touchpad);
+
     editor_controls();
 
     //Update camera from touchpad if hand is free
@@ -136,13 +134,15 @@ void VAB::Update() {
     //VAB main code
     tsx_o = tsx; tsy_o = tsy;
 
-    tsx = ((touchpad.x / tp_w) * 320.0f);
-    tsy = ((touchpad.y / tp_h) * 240.0f);
+    //READ TOUCHPAD XY
+
+    tsx = kspire_pad.x_screen;
+    tsy = kspire_pad.y_screen;
 
     //Mouse moved
     bool m_moved = (tsx != tsx_o || tsy != tsy_o);
 
-    //Mouse hover tsx
+    //Pallete::mouse to pallete
     if (tsx < 16 && !show_pallete) show_pallete = true;
     if (tsx > 115 && show_pallete) show_pallete = false;
     if (m_moved && tsx < 16)  {
@@ -184,7 +184,7 @@ void VAB::Update() {
                     auto host_pos = (mult*n_2.position) + grabbed_part->attPos;
                     float len = linalg::length(host_pos - client_pos);
                     if (len < snap_thresh) {
-
+                        
                         grabbed_part->attPos = client_pos - (mult*n_2.position);
                     }
                 }
@@ -193,20 +193,21 @@ void VAB::Update() {
         }
     }
 
-    
+
 
 
 
 
     //Click oneshot events
-    if (touchpad.pressed && !pad_held) {
+    if (kspire_pad.pressed && !pad_held) {
         pad_held = true;
         onClick_oneshot();
     }
-    if (!touchpad.pressed) pad_held = false; //Release
+    if (!kspire_pad.pressed) pad_held = false; //Release
 
     render();
     cam.dt = clock.dt;
+    pallete_r += clock.dt * 50;
 }
 
 
@@ -266,37 +267,6 @@ void VAB::render() {
     }
 
     glPopMatrix();//OUT VAB
-
-    //Sample part
-
-
-    //Contact: Touched
-    //Pressed: Button pressed
-
-
-
-
-
-
-/*
-    //Part raycast and grab detection
-    if (has_grabbed_part) {
-
-        int found = -1;
-        auto point = raycast_camera(current_cam_rotation);
-
-        float threshold = 1.0f;
-        for (Part &p : part_tree) {
-            auto off = linalg::abs(linalg::length(p.attPos-point));
-        }
-
-
-
-        if (found != -1)
-            part_tree[found].attPos = point;
-    }
-
-*/
 
     ngl_object* obj;
 
@@ -364,6 +334,39 @@ void VAB::render() {
     //Draw selector for page
     page_selector.draw(0,12+(page_index*16));
 
+
+    //Clear depth buffer before 3D rendering pallete
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    //Display pallete parts
+    if (show_pallete) {
+        for (int psi = 0; psi <= 17; psi++) {
+            int calc_col = psi % 3;
+            int calc_row = psi / 3;
+            calc_col = 20+(37*calc_col); calc_row = 12+(calc_row*37);
+            calc_row = 20 - calc_row;
+
+
+            glPushMatrix();
+
+            obj = parts_master->get_part_by_id(test_pids[0])->models[0]; //Only first object for now
+
+            glTranslatef(
+                 calc_col - 163
+                ,calc_row + 98
+                ,300
+            );
+            nglRotateY(fmod(pallete_r,360.0f));
+
+            glScale3f(10,10,10);
+            glBindTexture(obj->texture);
+            nglDrawArray(obj->vertices, obj->count_vertices, obj->positions, obj->count_positions, processed, obj->draw_mode, true);
+
+            glPopMatrix();
+
+        }
+    }
+
     //Draw selector for parts
     if (show_pallete) {
         int calc_col = part_sel_index % 3;
@@ -371,19 +374,23 @@ void VAB::render() {
         page_selector.draw(20+(32*calc_col),12+(calc_row*32),32,32);
     }
 
+
+
 }
 
 
 //Raycast point from camera to editor space, for part selection.
+//This doesnt actually raycast, it's plane changes with camera rotation about the Y. this sucks, but will suffice
+//until I can get a true raycaster working.
 linalg::vec<float,3> VAB::raycast_camera(linalg::vec<float,3> out /*camera out*/) {
 
     float rp_x = linalg::sin(out.y * 0.01745329);
     float rp_y = linalg::cos(out.y * 0.01745329);
     //Temporary solution rn
-    float t_off_x = touchpad.x / tp_w;
-    float t_off_y = touchpad.y / tp_h;
-    t_off_x -= 0.5f;  t_off_y -= 0.5f;
+    float t_off_x = kspire_pad.x_screen_normalized;
+    float t_off_y = kspire_pad.y_screen_normalized;
 
+    t_off_x -= 0.5f;  t_off_y -= 0.5f;
 
     float mult = 1.4f * abs(camera_zoom);
 

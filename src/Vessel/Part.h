@@ -19,6 +19,7 @@ struct Node {
     int size;
     int crossfeed;
     int rigid_attach;
+    unsigned int unique_id;
 };
 
 

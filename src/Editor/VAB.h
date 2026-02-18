@@ -5,6 +5,7 @@
 #include "../Vessel/Part.h"
 #include "../Utility/PartLoader.h"
 
+
 class VAB {
 public:
     TEXTURE *screen;
@@ -60,12 +61,15 @@ private:
 
     linalg::vec<float,3> raycast_camera(linalg::vec<float,3> out);
 
-    //Touchpad
-    float tp_h;
-    float tp_w;
-    touchpad_report_t touchpad;
-
     int tsx, tsy, tsx_o,tsy_o;
 
     linalg::vec<float,3> current_cam_rotation;
+
+
+    /*    PALLETE RENDERER    */
+    //Replace this with a better data type
+    std::vector<int> test_pids;
+    float pallete_r = 0.0f; //Rotator
+
+    
 };
