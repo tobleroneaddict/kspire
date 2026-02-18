@@ -1,5 +1,5 @@
 #pragma once
-#include "../globals.h"
+#include <os.h>
 
 #define PL111_cursor_ram 0xC0000800
 #define PL111_cursor_ctl 0xC0000C00
