@@ -103,9 +103,35 @@ void VAB::editor_controls() {
 //Actions for mouse click, happens once on click
 void VAB::onClick_oneshot() {
 
+    //Palette action
+    if (show_pallete && kspire_pad.x_screen > 20) {
+        printf("Grabbed new part.\n");
+        if (has_grabbed_part) { //Holding part?
+            for (size_t i = 0; i < part_tree.size(); ++i) {
+                if (&part_tree[i] == grabbed_part) {
+                    part_tree.erase(part_tree.begin() + i);
+                    has_grabbed_part = false;
+                    break;
+                }
+            }
+        } else { //Create new part
+            Part part;
+            part = parts_master->get_part_by_id(5817571)->default_data;
+            part.unique_id = (unsigned int)&part % 10000000;
+            for (unsigned int i = 0; i < part.nodes.size(); i++) {
+                part.nodes[i].unique_id = i + (part.unique_id * 10);
+            }
+            part.pos = {0,-500,0 };
+            //Shove it in tree
+            part_tree.push_back(std::move(part));
+            //Put it in the hand
+            has_grabbed_part = true;
+            grabbed_part = &part_tree.back();
+        }
+    }
 
     //Check for part grab with raycast (Uses stale camera rotation but its okay)
-    if (!has_grabbed_part) {
+    else if (!has_grabbed_part) {
         int found = -1;
         auto point = raycast_camera(current_cam_rotation);
         

@@ -185,7 +185,6 @@ int PartLoader::load_parts(Bundle* parts) {
     //Load model
 
     //Track parts
-    printf("WARNIGN:::: STILL NEED TO  TRACK PARTS!!\n");
 
     for (size_t i = 0; i < raw_parts.size(); ++i) {
         tracked_parts.emplace(raw_parts[i].shared_id, i);
