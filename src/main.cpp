@@ -7,15 +7,17 @@
 #include "Utility/PartLoader.h"
 #include "Utility/cursor.h"
 #include "Title/title.h"
+#include "Vessel/Part.h"
 
 enum GameStates {
     MENU,
     EDITOR,
     FLIGHT,
+    PRELOAD,
 };
 
 
-GameStates current_state = MENU;
+GameStates current_state = GameStates::PRELOAD;
 bool loading = true;
 bool break_game = false;
 
@@ -34,6 +36,7 @@ Bundle parts_bundle;    //PARTS
 //nGL stuff
 TEXTURE *screen;
 ProcessedPosition *processed;
+Vessel loading_vessel_buffer;
 
 template <typename T> void debug_print(std::string preamble, T value, int x, int y, TEXTURE *screen, std::string unit = "") {
     preamble.append(std::to_string(value));
@@ -56,6 +59,9 @@ int scene_pack_flight() {
 }
 int scene_pack_vab() {
     cursor.set_cursor_visibility(false);
+    //Shove vessel buffer (do other stuff like name soon)
+    //Should you clear here? (but not on revert to vab ofc)
+    loading_vessel_buffer.part_tree = std::move(vab.part_tree);
     vab.destroy_model();
     return 0;
 }
@@ -87,7 +93,8 @@ int scene_load_flight() {
     uni.vessels.emplace_back(std::move(new_vess));
     uni.focused_vessel = &uni.vessels.back();
     uni.focused_vessel->home_body = uni.planetarium.find_body_by_name("Earth");
-    
+    //Push buffer
+    uni.focused_vessel->part_tree = loading_vessel_buffer.part_tree;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -163,6 +170,7 @@ int main()
     vab.processed = processed;
     title.processed = processed;
     vab.parts_master = &Parts;
+    uni.parts_master = &Parts;
 
     //Check for firebird dev env presense to affix absolute mouse mode, otherwise stay in relative mode
     if (fopen("firebird.tns","r") != nullptr) {
@@ -184,12 +192,12 @@ int main()
     fonts.drawString("Loading parts...",0xFFFF,*screen,10,220);
     nglDisplay();
     
-
+    //Load part bundle
     if (parts_bundle.load_asset_bundle("parts.tar.gz.tns")) {
         printf("Asset load error!!\n");
         return 1;
     }
-
+    //Load definitions
     Parts.load_parts(&parts_bundle);
 
 
@@ -208,13 +216,11 @@ int main()
 
     
 
-    vab.hide_vab = true;
+    //vab.hide_vab = true;
     //Debug init scene
-
     scene_load_menu();
     //scene_load_flight();
     //scene_load_vab();
-    //scene_load_menu();
 
 
     //Move this please!!! u toopid
@@ -295,7 +301,7 @@ int main()
             auto res = title.Update(); 
             if (res == -1) break_game = true;
             if (res == 600) {
-                scene_pack_menu(); scene_load_flight();
+                scene_pack_menu(); scene_load_vab();
             }
         }
 

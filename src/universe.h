@@ -6,6 +6,7 @@
 #include "World/Camera/camera.h"
 #include "Utility/timewarp_controller.h"
 #include "World/Planetarium.h"
+#include "Utility/PartLoader.h"
 
 //Contains all vessels.
 class Universe {
@@ -29,6 +30,7 @@ class Universe {
     
 
     ProcessedPosition *processed;
+    PartLoader* parts_master;
 
     //All vessels in world. Does not contain part data, until loaded.
     //NTS: I would prefer you to do emplace back. Read up on emplace back.

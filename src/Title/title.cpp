@@ -7,6 +7,8 @@ void Title::load_title(Bundle* resources,ngl_object* _obj,ngl_object* _moon) {
     obj = _obj;
     moon = _moon;
     angle = 0.0f;
+
+    //Move this to a new delete
     texture_set.init(resources,"resources/ui/title.png",screen);
 }
 
@@ -68,7 +70,7 @@ int Title::Update() {
         case 1: drawTexture(texture_set.tex,*screen,0,249,149,23,SCREEN_WIDTH-149,SCREEN_HEIGHT-49,149,23);
         break;
         case 2: drawTexture(texture_set.tex,*screen,0,275
-            ,93,23,SCREEN_WIDTH-149,SCREEN_HEIGHT-23,93,23);
+            ,89,23,SCREEN_WIDTH-149,SCREEN_HEIGHT-23,89,23);
         break;
         case 3: drawTexture(texture_set.tex,*screen,92,275
             ,57,23,SCREEN_WIDTH-58,SCREEN_HEIGHT-23,57,23);
@@ -84,5 +86,6 @@ int Title::Update() {
 
 
 void Title::pack_title() {
-
+    texture_set.tex.bitmap = nullptr;
+    texture_set.tex_data.clear();
 }

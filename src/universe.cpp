@@ -6,7 +6,36 @@ void Universe::render_nearby_vessels() {
         if (v.loaded) {
             //RENDER CODE HERE
 
+            
         }
+        for(Part &p : v.part_tree) //Loop through AnGL scene
+        {
+
+
+            if (parts_master->get_part_by_id(p.shared_id) == nullptr) continue;
+            if (parts_master->get_part_by_id(p.shared_id)->models.size() == 0) continue;
+
+            
+            auto obj = parts_master->get_part_by_id(p.shared_id)->models[0]; //Only first object for now
+
+            glPushMatrix();
+            //Standard origin
+            glTranslatef(0,0,0);
+
+            //Offset by part pos
+            glTranslatef(p.pos.x,
+                p.pos.y,
+                p.pos.z);
+                //will need to do attPos too and in VAB
+
+            glScale3f(10,10,10);
+            glBindTexture(obj->texture);
+            nglDrawArray(obj->vertices, obj->count_vertices, obj->positions, obj->count_positions, processed, obj->draw_mode, true);
+
+            glPopMatrix();
+            
+        }
+
     }
 }
 void Universe::step_rails_orbit_for_v(Vessel* v) {
@@ -92,7 +121,6 @@ void Universe::Update() {
 
     }
 
-    
     //Render
     render();
 }
@@ -130,10 +158,6 @@ void Universe::render() {
 
 //Pack away the flight scene
 void Universe::pack() {
-    //Dont do this here mkay? :3
-    //planetarium.celestials.clear();
-
-    //This instead!!
     planetarium.clear_celestial_models();
 
     vessels.clear();

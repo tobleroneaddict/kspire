@@ -127,6 +127,7 @@ void VAB::onClick_oneshot() {
             //Put it in the hand
             has_grabbed_part = true;
             grabbed_part = &part_tree.back();
+            show_pallete = false;
         }
     }
 

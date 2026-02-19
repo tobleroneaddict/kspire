@@ -21,7 +21,6 @@ int CelestialBody::load_model(Bundle* assets) {
 }
 
 int CelestialBody::switch_texture(std::string name) {
-    return 0;
     return group.swap_texture(my_assets,"Sphere",name);
 }
 

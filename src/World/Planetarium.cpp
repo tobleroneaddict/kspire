@@ -64,11 +64,15 @@ void Planetarium::render_celestials() {
                 float render_radius = angular_diameter * fixed_bubble;
 
 
-                
+
                 glScale3f(render_radius, render_radius, render_radius);
+
+
                 glBindTexture(obj->texture);
+
                 nglDrawArray(obj->vertices, obj->count_vertices, obj->positions, obj->count_positions, processed, obj->draw_mode);
 
+        
                 //reformat
                 if (focused_vessel != nullptr) {
                     if (c.name == "Earth") {
@@ -79,10 +83,13 @@ void Planetarium::render_celestials() {
                 }
 
 
+
             }
         }
         glPopMatrix();
     }
+
+
 }
 
 
@@ -180,6 +187,8 @@ void Planetarium::clear_celestial_models() {
 }
 
 int Planetarium::load_celestial_bodies(Bundle* resources) {
+    celestials.clear();
+
     printf("LOADING BODIES FROM JSON\n");
     std::vector<uint8_t> raw = resources->load_raw_data("resources/system/system.json");
     std::string json(raw.begin(),raw.end());

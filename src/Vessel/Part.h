@@ -71,6 +71,9 @@ struct Module {
 };
 
 
+//Avoid using pointers to other parts in here. Instead, use unique ID's, and have a dict or something idfk lol
+//also nodes are uID * 10 + node INDEX
+//Pretty easy huh
 class Part {
     public:
     //Attachment
@@ -96,13 +99,13 @@ class Part {
     unsigned int unique_id = 0;
 
     //SYMM
-    std::vector<Part*> symmetry_tochters;
+    std::vector<unsigned int> symmetry_tochters_uids;
     int symmetry_mode;
     
 
     //Family
-    std::vector<Part*> children;    
-    Part* parent = nullptr;
+    std::vector<unsigned int> children;    
+    unsigned int parent = -1;
 
     //Other
     int stage;
