@@ -175,7 +175,7 @@ int PartLoader::load_parts(Bundle* parts) {
         /*..............................................*/
         p.models.emplace_back(p.group.get_object("highlight"));
 
-        if (p.group.get_object("highlight")) {
+        if (p.group.get_object("highlight") == nullptr) {
             printf("Model missing \"highlight\" object!\n");
         }
     }

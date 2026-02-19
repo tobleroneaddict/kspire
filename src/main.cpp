@@ -6,6 +6,7 @@
 #include "Utility/GameTexture.h"
 #include "Utility/PartLoader.h"
 #include "Utility/cursor.h"
+#include "Title/title.h"
 
 enum GameStates {
     MENU,
@@ -16,7 +17,9 @@ enum GameStates {
 
 GameStates current_state = MENU;
 bool loading = true;
+bool break_game = false;
 
+Title title;
 Universe uni;
 VAB vab;
 PartLoader Parts;
@@ -46,6 +49,16 @@ template <typename T> void debug_print(T value, int x, int y, TEXTURE *screen) {
 
 //TO BE MOVED
 
+int scene_pack_flight() {
+    cursor.set_cursor_visibility(false);
+    uni.pack();
+    return 0;
+}
+int scene_pack_vab() {
+    cursor.set_cursor_visibility(false);
+    vab.destroy_model();
+    return 0;
+}
 
 
 int scene_load_flight() {
@@ -54,23 +67,10 @@ int scene_load_flight() {
     glColor3f(0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     current_state = GameStates::FLIGHT;
-    //LOAD PLANETS
-    
-    fonts.drawString("Loading planets...",0xFFFF,*screen,10,220);
+    fonts.drawString("Loading...",0xFFFF,*screen,10,220);
     nglDisplay();
-    
-    if (planet_bundle.load_asset_bundle("body.tar.gz.tns")) {
-        printf("Asset load error!!");
-        return 1;
-    }
-    
-    if (uni.planetarium.load_celestial_bodies(&resource_bundle)) return 1;
 
-
-    //Set pointers to bundles
-    uni.planet_bundle = &planet_bundle;
-    uni.resource_bundle = &resource_bundle;
-    uni.parts_bundle = &parts_bundle;
+    scene_pack_flight();
 
     //DEBUG SHIHH
     Vessel new_vess;
@@ -81,6 +81,8 @@ int scene_load_flight() {
     
     uni.planetarium.celestials[0].load_model(uni.planet_bundle);
     uni.planetarium.celestials[2].load_model(uni.planet_bundle);
+    //earth 1 is always loaded in FIRST. at title
+    //so is the moon too
 
     uni.planetarium.celestials[1].load_model(uni.planet_bundle);
 
@@ -94,7 +96,7 @@ int scene_load_flight() {
 }
 
 int scene_load_vab() {
-    
+    scene_pack_vab();
     loading = true;
     glColor3f(0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -108,14 +110,25 @@ int scene_load_vab() {
     return 0;
 }
 
-int scene_pack_flight() {
+
+int scene_load_menu() {
+    current_state = GameStates::MENU;
+    loading = true;
+
+    //Make this call earth and moon instead of index?
+    uni.planetarium.celestials[1].load_model(&planet_bundle);
+    uni.planetarium.celestials[2].load_model(&planet_bundle);
+    
+    
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    title.load_title(&resource_bundle,uni.planetarium.celestials[1].me,uni.planetarium.celestials[2].me);
+    loading = false;
     cursor.set_cursor_visibility(false);
-    uni.pack();
     return 0;
 }
-int scene_pack_vab() {
-    cursor.set_cursor_visibility(false);
-    vab.destroy_model();
+
+int scene_pack_menu() {
+    title.pack_title();
     return 0;
 }
 
@@ -131,12 +144,15 @@ int main()
     screen = newTexture(SCREEN_WIDTH, SCREEN_HEIGHT, 0, false);
     nglSetBuffer(screen->bitmap);
     vab.screen = screen;    
+    title.screen = screen;
 
     //Processed position for nGL
     processed = new ProcessedPosition[9999];
+    //Condense in a sec
     uni.processed = processed;
     uni.planetarium.processed = processed;
     vab.processed = processed;
+    title.processed = processed;
     vab.parts_master = &Parts;
 
     //Check for firebird dev env presense to affix absolute mouse mode, otherwise stay in relative mode
@@ -144,12 +160,9 @@ int main()
         kspire_pad.relative_mode = false;
     }
 
-
-
-    
     //Global bundle
     if (resource_bundle.load_asset_bundle("resources.tar.gz.tns")) {
-        printf("Asset load error!!");
+        printf("Asset load error!!\n");
         return 1;
     }
 
@@ -164,30 +177,48 @@ int main()
     
 
     if (parts_bundle.load_asset_bundle("parts.tar.gz.tns")) {
-        printf("Asset load error!!");
+        printf("Asset load error!!\n");
         return 1;
     }
 
     Parts.load_parts(&parts_bundle);
 
-    
-    
 
+    //LOAD PLANETS
+    glColor3f(0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    fonts.drawString("Loading planets...",0xFFFF,*screen,10,220);
+    nglDisplay();
+
+    if (planet_bundle.load_asset_bundle("body.tar.gz.tns")) {
+        printf("Asset load error!!");
+        return 1;
+    }
+    
+    if (uni.planetarium.load_celestial_bodies(&resource_bundle)) return 1;
+
+    //Set pointers to bundles
+    uni.planet_bundle = &planet_bundle;
+    uni.resource_bundle = &resource_bundle;
+    uni.parts_bundle = &parts_bundle;
 
     vab.hide_vab = true;
     //Debug init scene
-    //scene_load_flight();
-    scene_load_vab();
 
-    //parts_bundle.debug_list_assets();
-    
+    scene_load_menu();
+    scene_load_flight();
+    //scene_load_vab();
+    //scene_load_menu();
+
+    return 0;
+    //Move this please!!! u toopid
     GameTexture ui_altitude;
 
     ui_altitude.init(&resource_bundle,"resources/ui/altitude.png",screen);
     ui_altitude.tex.transparent_color = 0x00;
 
     #ifdef _TINSPIRE
-    while(!isKeyPressed(KEY_NSPIRE_ESC))
+    while(!isKeyPressed(KEY_NSPIRE_ESC) && break_game == 0)
     #else
     for(unsigned int i = 1300;--i;)
     #endif
@@ -257,6 +288,14 @@ int main()
             vab.Update();
     
         }
+        if (current_state == GameStates::MENU) {
+            auto res = title.Update(); 
+            if (res == -1) break_game = true;
+            if (res == 600) {
+                scene_pack_menu(); scene_load_flight();
+            }
+        }
+
         if (vab.show_pallete || current_state != GameStates::EDITOR) {
             fonts.drawString("DEMO BUILD",0xFFFF,*screen,10,220);
         }
@@ -264,12 +303,15 @@ int main()
         nglDisplay();
     }
 
+
+    scene_pack_flight();
+    scene_pack_vab();
+    scene_pack_menu();
+
     delete[] processed;
     // Deinitialize nGL
     nglUninit();
     deleteTexture(screen);
-
-
 
     resource_bundle.free();
     planet_bundle.free();

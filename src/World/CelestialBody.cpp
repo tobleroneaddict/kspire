@@ -1,6 +1,8 @@
 #include "CelestialBody.h"
 
 int CelestialBody::load_model(Bundle* assets) {
+    clear_model();
+    
     //Load mars.obj, and store a pointer to my asset bundle so i can use when switch_texture get called!
     my_assets = assets;
     if (group.load_group(assets,"body/body")) return 1;

@@ -115,7 +115,7 @@ namespace angel {
         }
 
         //Clear material/textures
-        for (anGL_MATERIAL t : group_materials) {
+        for (anGL_MATERIAL &t : group_materials) {
             t.diffuse_texture.data.clear();
             t.name.clear();
         }
@@ -125,7 +125,7 @@ namespace angel {
         u_list.clear();
         v_list.clear();
         positions.clear();
-
+        
         //Should textures be outside of model?
         //make a texture atlas module
     }
@@ -540,7 +540,7 @@ namespace angel {
                     //Combine path obtained in the first steps of load_group, to allow for semi relative pathing in mats.
                     std::string full_path = path + usemat_name;
                     int error = load_texture_into_material(asset_bundle,full_path,&group_materials.back(),true);
-
+                    printf("Size of mats is : %d\n",group_materials.size());
                     if (error) {printf("Error loading texture %s into material.\n",usemat_name.c_str());}
                     printf("Applied to %s\n",group_materials.back().name.c_str());
                 }
