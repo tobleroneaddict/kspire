@@ -10,12 +10,12 @@ EXE = kspire
 OBJS = $(patsubst %.c, %.o, $(shell find . -name \*.c))
 OBJS += $(patsubst %.cpp, %.o, $(shell find . -name \*.cpp))
 OBJS += $(patsubst %.S, %.o, $(shell find . -name \*.S))
-
+PLATFORM = -DKSPIRE_PLATFORM_NSPIRE=1
 all: $(EXE).tns
 
 %.o: %.cpp
-	@echo Comp`ling $<...
-	@$(GPP) -std=c++23 $(GCCFLAGS) -c $< -o $@
+	@echo Compiling $<...
+	@$(GPP) $(PLATFORM)  -std=c++23 $(GCCFLAGS) -c $< -o $@
 
 $(EXE).elf: $(OBJS)
 	+$(LD) $^ -o $@ $(GCCFLAGS) $(LDFLAGS)

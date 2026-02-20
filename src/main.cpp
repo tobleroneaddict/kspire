@@ -145,8 +145,6 @@ int scene_pack_menu() {
 
 int main()
 {
-
-    printf("BEGIN\n");
     //Set pointers to bundles
     uni.planet_bundle = &planet_bundle;
     uni.resource_bundle = &resource_bundle;
@@ -236,9 +234,10 @@ int main()
     {
 
         //Tell kde were healthy
+        #ifndef _TINSPIRE
         SDL_Event event;
         SDL_PollEvent(&event);
-
+        #endif
 
         kspire_pad.Update();
         

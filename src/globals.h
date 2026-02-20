@@ -2,7 +2,9 @@
 #include "../include/angel/angel.h"
 #include <SDL/SDL_config.h>
 #include <SDL/SDL.h>
-//#include <os.h>
+#ifdef KSPIRE_PLATFORM_NSPIRE
+#include <os.h>
+#endif
 #include "../include/linalg.h"
 #include <memory>
 

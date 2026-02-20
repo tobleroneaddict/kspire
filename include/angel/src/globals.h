@@ -2,7 +2,9 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-//#include <libndls.h>
+#ifdef KSPIRE_PLATFORM_NSPIRE //for kspire PC build, always on for demo makefile
+#include <libndls.h>
+#endif
 #include "zlib.h"
 #include "../inc/lodepng/lodepng.h"
 #include "../inc/nGL/gl.h"

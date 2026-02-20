@@ -34,7 +34,7 @@ all: $(EXE).tns
 
 %.o: %.cpp
 	@mkdir -p $(dir $@)
-	$(GXX) $(GCCFLAGS) -c $< -o $@
+	$(GXX) -DKSPIRE_PLATFORM_NSPIRE=1 $(GCCFLAGS) -c $< -o $@
 
 %.o: %.S
 	@mkdir -p $(dir $@)
