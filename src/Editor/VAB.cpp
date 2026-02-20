@@ -146,9 +146,9 @@ void VAB::onClick_oneshot() {
 
                 //Need to find the other node
                 int calculated_index =0;
-                Node detachee = part_tree[i].nodes[calculated_index];
+                Node* detachee = &part_tree[i].nodes[calculated_index];
 
-                detachee.attached_node = NULL;
+                detachee->attached_node = -1;
 
                 //HOW TO FIND THE OTHER NODE??? becuase like:
                 //You can unlink both sides, that would work but sucks for the user if they
@@ -196,7 +196,7 @@ void VAB::onClick_oneshot() {
 
         has_grabbed_part = false;
         stopped_grabbing = true;
-        grabbed_part = NULL;
+        grabbed_part = -1;
     }
 
 

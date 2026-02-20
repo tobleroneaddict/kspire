@@ -43,12 +43,13 @@ void Planetarium::render_celestials() {
             printf("Mode 1 not implemented!\n");
             //Gonna have to gen PQS... UGHHHHHHHHHHHHHHHHHHHHHHHHHH
 
+            /*
             auto calc_sight = [](float altitude, float radius) {
                 float calc;
 
                 return calc;
             };
-
+*/
             
 
 
