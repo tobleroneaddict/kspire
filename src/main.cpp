@@ -170,7 +170,6 @@ int main()
     #if defined(KSPIRE_PLATFORM_LINUX) || defined(KSPIRE_PLATFORM_WINDOWS)
     // switch dir to exedir using argv
         char* directory = get_binary_directory(argv[0]);
-        printf("%s\n",directory);
         int dir_change_code;
         #ifdef KSPIRE_PLATFORM_LINUX
             dir_change_code = chdir(directory);
@@ -180,6 +179,8 @@ int main()
         if (dir_change_code!=0){
             std::string s = std::format("failed to change to executable directory: {}",directory); 
             perror("failed to change to executable directory");
+        } else{
+            printf("changed directory to executable directory %s",directory);
         }
     #endif
 
