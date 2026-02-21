@@ -14,23 +14,23 @@ void Title::load_title(Bundle* resources,ngl_object* _obj,ngl_object* _moon) {
 
 int Title::Update() {
     clock.tick();
-    if (isKeyPressed(KEY_NSPIRE_DOWN) && buttons_wiped)
+    if (isKeyPressed(K_PAD_S) && buttons_wiped)
         {select_index++; buttons_wiped = false;}
-    if (isKeyPressed(KEY_NSPIRE_UP) && buttons_wiped)
+    if (isKeyPressed(K_PAD_N) && buttons_wiped)
         {select_index--; buttons_wiped = false;}
-    if (!isKeyPressed(KEY_NSPIRE_UP) && !isKeyPressed(KEY_NSPIRE_DOWN)) buttons_wiped = true;
+    if (!isKeyPressed(K_PAD_N) && !isKeyPressed(K_PAD_S)) buttons_wiped = true;
 
     if (select_index < 0) select_index = 4 + select_index; //Loop
     else if (select_index > 3) select_index -= 4;
 
     //Click events
-    if (select_index == 3 && isKeyPressed(KEY_NSPIRE_ENTER)) {
+    if (select_index == 3 && isKeyPressed(K_ENTER)) {
         return -1;
     }
 
 
     //Start game. In the release, this will not return 600 just yet. There will be a save loading menu 
-    if (select_index == 0 && isKeyPressed(KEY_NSPIRE_ENTER)) {
+    if (select_index == 0 && isKeyPressed(K_ENTER)) {
         return 600;
     }
 

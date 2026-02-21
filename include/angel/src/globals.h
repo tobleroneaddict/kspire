@@ -11,11 +11,6 @@
 #include "../inc/nGL/texturetools.h"
 #include "../inc/nGL/gldrawarray.h"
 
-//MODIFICATIONS FROM MAIN BRANCH: THEY ARE FOR WINDOWS PORTING!!! 
-//DO NOT COMMIT THEM BLINDLY - PLEASE ADD PREPROCESSOR STUFF!!!!!
-
-
-
 namespace angel {
 
     //Texture data object for ngl.

@@ -1,5 +1,7 @@
+BUILD_DATE := $(shell date +%m%d%y)
+BUILD_TIME := $(shell date +%H)
 CXX = g++
-CXXFLAGS = -O2 -Wall
+CXXFLAGS = -O2 -Wall -DBUILD_DATE=\"$(BUILD_DATE)\" -DBUILD_TIME=\"$(BUILD_TIME)\"
 LIBS = -lz -lSDL
 HDRS = -I include
 EXE = kspire
@@ -9,7 +11,7 @@ OBJS += $(patsubst %.cpp, %.o, $(shell find . -name \*.cpp))
 OBJS += $(patsubst %.S, %.o, $(shell find . -name \*.S))
 #For windows MSVC, this is /D not -D
 PLATFORM = -DKSPIRE_PLATFORM_LINUX=1
-
+CXXFLAGS += $(PLATFORM)
 
 OUT = build
 all: build

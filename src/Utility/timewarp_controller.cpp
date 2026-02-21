@@ -12,14 +12,14 @@ void Timewarp_Controller::tick(int cannot_enter_timewarp) {
     exited_rails = false;
 
     //Tw UP
-    if (isKeyPressed(KEY_NSPIRE_Z) && !up_pressed) {
+    if (isKeyPressed(K_WARP_UP) && !up_pressed) {
         up_pressed = true; up_oneshot = true;}
-    if (!isKeyPressed(KEY_NSPIRE_Z)) {
+    if (!isKeyPressed(K_WARP_UP)) {
         up_pressed = false; }
     //Tw DOWN
-    if (isKeyPressed(KEY_NSPIRE_X) && !down_pressed) {
+    if (isKeyPressed(K_WARP_DOWN) && !down_pressed) {
         down_pressed = true; down_oneshot = true;}
-    if (!isKeyPressed(KEY_NSPIRE_X)) {
+    if (!isKeyPressed(K_WARP_DOWN)) {
         down_pressed = false; }
 
 

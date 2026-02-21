@@ -1,4 +1,43 @@
 #include "globals.h"
+
+#ifndef _TINSPIRE
+SDL_Event sdl_event;
+
+
+bool isKeyPressed(unsigned int key) {
+    Uint8 *state = SDL_GetKeyState(NULL);
+    return state[key];
+    return false;
+}
+
+touchpad_report_t touchpad_scan(touchpad_report_t *tp) {
+    
+    int mx,my;
+    Uint8 press = SDL_GetMouseState(&mx,&my);
+
+    tp->pressed = false;
+    tp->proximity = 0;
+    tp->contact = false;
+    if (press != 0) {
+    tp->pressed = true; 
+    tp->contact = true;
+    tp->proximity = 70;
+    }
+    tp->x = mx; tp->y = 240-my;
+    tp->arrow = 0;
+    
+    tp->dummy = 0;
+    
+    tp->x_velocity = 0;
+    tp->y_velocity = 0;
+    
+    return *tp;
+}
+
+
+
+#endif
+
 KSPIRE_Touchpad::KSPIRE_Touchpad() {
     auto tp_i = touchpad_getinfo();
     h = (float)tp_i->height;
@@ -18,7 +57,6 @@ void KSPIRE_Touchpad::Update() {
     y_velocity = touchpad.y_velocity;
     true_contact = (touchpad.proximity >= CONTACT_THRESHOLD) ? true : false;
     
-
     if (!relative_mode) {
         x_screen_normalized = ((float)x / (float)w);
         y_screen_normalized = ((float)y / (float)h);
@@ -48,6 +86,18 @@ void KSPIRE_Touchpad::Update() {
         x_screen_normalized = ((float)x_screen / SCREEN_WIDTH);
         y_screen_normalized = ((float)y_screen / SCREEN_HEIGHT);
 
+
+        #if defined(KSPIRE_PLATFORM_LINUX)
+        //Hacky fix
+        x_screen = x;
+        y_screen = y;
+        x_screen_normalized = (float)x / 320.0f;
+        y_screen_normalized = (float)y / 320.0f;
+        
+
+        printf("YS:%d\n",y_screen);
+
+        #endif
     }
 
     

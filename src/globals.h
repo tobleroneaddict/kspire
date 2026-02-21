@@ -7,50 +7,35 @@
 #endif
 #include "../include/linalg.h"
 #include <memory>
+#include "Utility/xplatkeybinds.h"
 
+
+//Configuration
 #define CONTACT_THRESHOLD  47
 #define MOUSE_ACCELERATION 1.23f
+//Firebird uses certain key redefs
+#ifdef KSPIRE_PLATFORM_NSPIRE
+#define _FIREBIRD
+#endif
+//Version
+#ifndef BUILD_DATE
+#define BUILD_DATE "0"
+#endif
+
+#ifndef BUILD_TIME
+#define BUILD_TIME "0"
+#endif
+
 
 using namespace::angel;
 
 
-
+//PC Substitutions for TI things
 #ifndef _TINSPIRE
-#define is_touchpad true
+#define is_touchpad 1
+extern SDL_Event sdl_event;
 
-#define KEY_NSPIRE_ESC 0
-#define KEY_NSPIRE_W 1
-#define KEY_NSPIRE_A 2
-#define KEY_NSPIRE_S 3
-#define KEY_NSPIRE_D 4
-#define KEY_NSPIRE_1 5
-#define KEY_NSPIRE_2 6
-#define KEY_NSPIRE_ENTER 7
-#define KEY_NSPIRE_Q 2
-#define KEY_NSPIRE_E 3
-#define KEY_NSPIRE_CTRL 4
-#define KEY_NSPIRE_SHIFT 5
-#define KEY_NSPIRE_TAB 6
-#define KEY_NSPIRE_Z 2
-#define KEY_NSPIRE_X 3
-#define KEY_NSPIRE_F 4
-#define KEY_NSPIRE_R 5
-#define KEY_NSPIRE_SCRATCHPAD 6
-#define KEY_NSPIRE_LEFT 4
-#define KEY_NSPIRE_DOWN 5
-#define KEY_NSPIRE_UP 4
-#define KEY_NSPIRE_RIGHT 5
-
-#define KEY_NSPIRE_DOWNLEFT 4
-#define KEY_NSPIRE_RIGHTDOWN 5
-#define KEY_NSPIRE_LEFTUP 4
-#define KEY_NSPIRE_UPRIGHT 5
-
-
-//Testing
-inline bool isKeyPressed(unsigned int key) {
-    return false;
-}
+extern bool isKeyPressed(unsigned int key);
 
 
 struct touchpad_info {
@@ -81,19 +66,7 @@ struct touchpad_report_t {
 
 
 
-inline touchpad_report_t touchpad_scan(touchpad_report_t *tp) {
-    tp->pressed = false;
-    tp->arrow = 0;
-    tp->contact = false;
-    tp->dummy = 0;
-    tp->proximity = 0;
-    tp->x = 4;
-    tp->x_velocity = 4;
-    tp->y = 4;
-    tp->y_velocity = 4;
-    return *tp;
-}
-
+extern touchpad_report_t touchpad_scan(touchpad_report_t *tp);
 
 #endif
 

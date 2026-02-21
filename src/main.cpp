@@ -172,10 +172,14 @@ int main()
     vab.parts_master = &Parts;
     uni.parts_master = &Parts;
 
+    
     //Check for firebird dev env presense to affix absolute mouse mode, otherwise stay in relative mode
     if (fopen("firebird.tns","r") != nullptr) {
         kspire_pad.relative_mode = false;
     }
+    #if defined(KSPIRE_PLATFORM_LINUX)
+    kspire_pad.relative_mode = false;
+    #endif
 
     //Global bundle
     if (resource_bundle.load_asset_bundle("resources.tar.gz.tns")) {
@@ -229,27 +233,34 @@ int main()
     ui_altitude.init(&resource_bundle,"resources/ui/altitude.png",screen);
     ui_altitude.tex.transparent_color = 0x00;
 
-
-    while(!isKeyPressed(KEY_NSPIRE_ESC) && break_game == 0)
+    #ifdef KSPIRE_PLATFORM_NSPIRE
+    while(!isKeyPressed(K_ESC) && break_game == 0)
+    #else
+    while (break_game == 0 && sdl_event.type != SDL_QUIT)
+    #endif
     {
 
-        //Tell kde were healthy
+        //Tell wayland were healthy and happy
         #ifndef _TINSPIRE
-        SDL_Event event;
-        SDL_PollEvent(&event);
+
+        SDL_PollEvent(&sdl_event);
+        if (sdl_event.type == SDL_KEYDOWN) {
+            if (sdl_event.key.keysym.sym == SDLK_ESCAPE) // ESC key
+                        break_game = true;
+        }
         #endif
 
         kspire_pad.Update();
-        
-        
+
         if (kspire_pad.true_contact) cursor.set_cursor_position(kspire_pad.x_screen,kspire_pad.y_screen);
-        
+
+
 
         //Contains physics and render code for the flight scene
         //Uni contains the main code of handling the flight scene. this is probably
         //Shitty but ill figure out how to do VAB stuff later. okay!
 
-        if (isKeyPressed(KEY_NSPIRE_1) && !loading) {
+        if (isKeyPressed(K_DEBUG_SCENE_1) && !loading) {
             switch (current_state) {
                 case GameStates::EDITOR:
                 scene_pack_vab();break;
@@ -262,7 +273,7 @@ int main()
         }
 
         
-        if (isKeyPressed(KEY_NSPIRE_2)  && !loading) {
+        if (isKeyPressed(K_DEBUG_SCENE_2)  && !loading) {
             switch (current_state) {
                 case GameStates::EDITOR:
                 scene_pack_vab();break;
@@ -313,7 +324,18 @@ int main()
         }
 
         if (vab.show_pallete || current_state != GameStates::EDITOR) {
-            fonts.drawString("DEMO BUILD",0xFFFF,*screen,10,220);
+            
+            #if defined(KSPIRE_PLATFORM_LINUX)
+            const char* VERSION = "PC_" BUILD_DATE "_" BUILD_TIME;
+            #else
+            #if  defined(_FIREBIRD) && defined(_TINSPIRE)
+            const char* VERSION = "FB_" BUILD_DATE "_" BUILD_TIME;
+            #else
+            const char* VERSION = "TI_" BUILD_DATE "_" BUILD_TIME;
+            #endif
+            #endif
+            fonts.drawString(VERSION,0xFFFF,*screen,10,220);
+
         }
 
         nglDisplay();

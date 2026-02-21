@@ -32,9 +32,9 @@ void Planetarium::render_celestials() {
         int mode = 0;
 
         //Check if vessel is low enough to render in nearby mode
-        if (altitude < 700000) {
-            mode = 1;
-        }
+        //if (altitude < 700000) {
+        //    mode = 1;
+        //}
 
 
 

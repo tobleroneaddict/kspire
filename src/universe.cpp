@@ -93,7 +93,7 @@ void Universe::Update() {
     planetarium.focused_vessel = focused_vessel;
 
     //Debug to swap texture of planet
-    if(isKeyPressed(KEY_NSPIRE_ENTER)) {
+    if(isKeyPressed(K_ENTER)) {
         if (planetarium.celestials[2].switch_texture("body/luna.png") != 0) {
             printf("ERROR\n");
         }

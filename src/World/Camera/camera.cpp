@@ -28,28 +28,43 @@ void Camera::camera_controller(Camera::Mode set_mode) {
     
 
     //Diagonal
-    if (isKeyPressed(KEY_NSPIRE_UPRIGHT)) {
+        if (isKeyPressed(K_PAD_NE)) {
         dpad_vector = { rot_speed, -rot_speed };
-    } else if (isKeyPressed(KEY_NSPIRE_DOWNLEFT)) {
+    } else if (isKeyPressed(K_PAD_SW)) {
         dpad_vector = { -rot_speed, rot_speed };
-    } else if (isKeyPressed(KEY_NSPIRE_RIGHTDOWN)) {
+    } else if (isKeyPressed(K_PAD_SE)) {
         dpad_vector = { rot_speed, rot_speed };
-    } else if (isKeyPressed(KEY_NSPIRE_LEFTUP)) {
+    } else if (isKeyPressed(K_PAD_NW)) {
         dpad_vector = { -rot_speed, -rot_speed };
         
     }   else { //Cardinal
-        if (isKeyPressed(KEY_NSPIRE_W) || isKeyPressed(KEY_NSPIRE_UP)) {
+        #if  defined(_FIREBIRD) && defined(_TINSPIRE)
+        if (isKeyPressed(KEY_NSPIRE_W) || isKeyPressed(K_PAD_N)) {
             dpad_vector.y -= rot_speed;
         }
-        if (isKeyPressed(KEY_NSPIRE_S) || isKeyPressed(KEY_NSPIRE_DOWN)) {
+        if (isKeyPressed(KEY_NSPIRE_S) || isKeyPressed(K_PAD_S)) {
             dpad_vector.y += rot_speed;
         }
-        if (isKeyPressed(KEY_NSPIRE_A) || isKeyPressed(KEY_NSPIRE_LEFT)) {
+        if (isKeyPressed(KEY_NSPIRE_A) || isKeyPressed(K_PAD_W)) {
             dpad_vector.x -= rot_speed;
         }
-        if (isKeyPressed(KEY_NSPIRE_D) || isKeyPressed(KEY_NSPIRE_RIGHT)) {
+        if (isKeyPressed(KEY_NSPIRE_D) || isKeyPressed(K_PAD_E)) {
             dpad_vector.x += rot_speed;
         }
+        #else
+        if (isKeyPressed(K_PAD_N)) {
+            dpad_vector.y -= rot_speed;
+        }
+        if (isKeyPressed(K_PAD_S)) {
+            dpad_vector.y += rot_speed;
+        }
+        if (isKeyPressed(K_PAD_W)) {
+            dpad_vector.x -= rot_speed;
+        }
+        if (isKeyPressed(K_PAD_E)) {
+            dpad_vector.x += rot_speed;
+        }
+        #endif
     }
     //Make it move at a consistent speed
     float dpad_norm = sqrt((dpad_vector.x * dpad_vector.x) + (dpad_vector.y * dpad_vector.y));

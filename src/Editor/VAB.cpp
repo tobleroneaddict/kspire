@@ -23,6 +23,7 @@ int VAB::Start(Bundle* assets) {
     }
 
     part_tree.push_back(std::move(part));
+    /*
     Part part2;
     part2 = parts_master->get_part_by_id(5817571)->default_data;
     part2.unique_id = (unsigned int)part2.unique_id % 10000000;
@@ -32,6 +33,7 @@ int VAB::Start(Bundle* assets) {
     }
     part2.pos.x += 5;
     part_tree.push_back(std::move(part2));
+    */
     //END DEBUG STUFF
 
 
@@ -66,17 +68,18 @@ void VAB::editor_controls() {
     float rot_speed = 160.0f * clock.dt;
 
     //Editor specific camera controls
-    if (isKeyPressed(KEY_NSPIRE_CTRL)) camera_zoom -= rot_speed;
-    if (isKeyPressed(KEY_NSPIRE_SHIFT)) camera_zoom += rot_speed;
+    if (isKeyPressed(K_EDITOR_OUT)) camera_zoom -= rot_speed;
+    if (isKeyPressed(K_EDITOR_IN)) camera_zoom += rot_speed;
 
-    if (isKeyPressed(KEY_NSPIRE_Q) || isKeyPressed(KEY_NSPIRE_TAB)) camera_height -= rot_speed;
-    if (isKeyPressed(KEY_NSPIRE_E) || isKeyPressed(KEY_NSPIRE_SCRATCHPAD)) camera_height += rot_speed;
+#if  defined(_FIREBIRD) && defined(_TINSPIRE)
+    if (isKeyPressed(KEY_NSPIRE_Q)) camera_height -= rot_speed;
+    if (isKeyPressed(KEY_NSPIRE_E)) camera_height += rot_speed;
 
-    //Keyboard pallete show hide
-    // if (isKeyPressed(KEY_NSPIRE_G)) show_pallete = false;
-    // if (isKeyPressed(KEY_NSPIRE_H)) show_pallete = true;
-
-
+#else
+    if (isKeyPressed(K_EDITOR_DOWN)) camera_height -= rot_speed;
+    if (isKeyPressed(K_EDITOR_UP)) camera_height += rot_speed;
+#endif
+    /*
     //Keyboard Paging (PC)
     if (isKeyPressed(KEY_NSPIRE_F) && page_index < 11 && !page_key_held) {
         page_index++;
@@ -87,7 +90,7 @@ void VAB::editor_controls() {
         page_key_held = true;
     }
     if (!isKeyPressed(KEY_NSPIRE_F) && !isKeyPressed(KEY_NSPIRE_R)) page_key_held = false;
-
+    
     //Keyboard Part selector
     if (isKeyPressed(KEY_NSPIRE_X) && part_sel_index < 17 && !part_sel_key_held) {
         part_sel_index++;
@@ -98,6 +101,7 @@ void VAB::editor_controls() {
         part_sel_key_held = true;
     }
     if (!isKeyPressed(KEY_NSPIRE_Z) && !isKeyPressed(KEY_NSPIRE_X)) part_sel_key_held = false;
+    */
 }
 
 
