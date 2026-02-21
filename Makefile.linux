@@ -1,7 +1,7 @@
 BUILD_DATE := $(shell date +%m%d%y)
 BUILD_TIME := $(shell date +%H)
 CXX = g++
-CXXFLAGS = -O2 -Wall -DBUILD_DATE=\"$(BUILD_DATE)\" -DBUILD_TIME=\"$(BUILD_TIME)\"
+CXXFLAGS = -O2 -Wall -std=c++23 -DBUILD_DATE=\"$(BUILD_DATE)\" -DBUILD_TIME=\"$(BUILD_TIME)\"
 LIBS = -lz -lSDL
 HDRS = -I include
 EXE = kspire

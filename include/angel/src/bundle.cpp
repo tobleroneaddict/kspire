@@ -95,7 +95,6 @@ namespace angel {
         return full_list;
     }
 
-
     int Bundle::load_asset_bundle(const char* name) {
         free();
         gzFile file;

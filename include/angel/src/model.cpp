@@ -28,7 +28,8 @@ namespace angel {
 
     void ModelGroup::debug_list_objects() {
         for (ngl_object& n : objects) {
-            printf("%s",n.name.c_str()); printf("\n");
+            printf("%s",n.name.c_str());
+            printf("\n");
         }
     }
 

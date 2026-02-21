@@ -8,7 +8,13 @@
 #include "Utility/cursor.h"
 #include "Title/title.h"
 #include "Vessel/Part.h"
-
+#if defined(KSPIRE_PLATFORM_WINDOWS) || defined(KSPIRE_PLATFORM_LINUX)
+#include <filesystem>
+#include <format>
+#endif
+#ifdef KSPIRE_PLATFORM_WINDOWS
+#include <direct.h>
+#endif
 enum GameStates {
     MENU,
     EDITOR,
@@ -143,12 +149,41 @@ int scene_pack_menu() {
     return 0;
 }
 
-#ifdef KSPIRE_PLATFORM_WINDOWS
+// get_binary_directory () -> load_asset_bundle ( path ) -> bundle
+// get_binary_directory() -> std::string
+
+char* get_binary_directory(const char* exe_path){
+    std::string directory;
+    // ./kspire -> prune filename -> ./
+    // ../../kspire -> prune -> ../../
+    std::filesystem::path p(exe_path);
+    std::string parent = p.parent_path().string();
+    return strdup(parent.c_str());
+}
+
+#if defined(KSPIRE_PLATFORM_WINDOWS) || defined(KSPIRE_PLATFORM_LINUX)
 int main(int argc, char* argv[])
 #else
 int main()
 #endif
 {
+    #if defined(KSPIRE_PLATFORM_LINUX) || defined(KSPIRE_PLATFORM_WINDOWS)
+    // switch dir to exedir using argv
+        char* directory = get_binary_directory(argv[0]);
+        int dir_change_code;
+        #ifdef KSPIRE_PLATFORM_LINUX
+            dir_change_code = chdir(directory);
+        #elifdef KSPIRE_PLATFORM_WINDOWS
+            dir_change_code = _chdir(directory);
+        #endif
+        if (dir_change_code!=0){
+            std::string s = std::format("failed to change to executable directory: {}",directory); 
+            perror(s);
+        } else{
+            printf("changed directory to executable directory %s",directory);
+        }
+    #endif
+
     //Set pointers to bundles
     uni.planet_bundle = &planet_bundle;
     uni.resource_bundle = &resource_bundle;
