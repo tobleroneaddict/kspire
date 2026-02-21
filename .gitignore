@@ -1,6 +1,5 @@
 ASSETS/
 ASSETS/make-bundles.sh
-build/
 *.cfg
 *.zehn
 *.blend
@@ -317,3 +316,8 @@ Testing/
 *.dae
 *.smd
 include/nGL
+
+#Assets
+build/*
+!build/
+!build/*.tar.gz.tns
