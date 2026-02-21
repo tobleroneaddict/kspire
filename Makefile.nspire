@@ -12,6 +12,7 @@ OBJS += $(patsubst %.cpp, %.on, $(shell find . -name \*.cpp))
 OBJS += $(patsubst %.S, %.on, $(shell find . -name \*.S))
 PLATFORM = -DKSPIRE_PLATFORM_NSPIRE=1
 all: $(EXE).tns
+OUT = build
 
 %.on: %.cpp
 	@echo Compiling $<...
@@ -22,10 +23,10 @@ $(EXE).elf: $(OBJS)
 
 $(EXE).tns: $(EXE).elf
 	+$(GENZEHN) --input $^ --output $@.zehn $(ZEHNFLAGS)
-	+make-prg $@.zehn $@
+	+make-prg $@.zehn $(OUT)/$@
 	+rm $@.zehn
 
 .PHONY: clean
 clean:
 	rm -f `find . -name \*.on`
-	rm -f $(EXE).tns $(EXE).elf
+	rm -f $(OUT)/$(EXE).tns $(EXE).elf
