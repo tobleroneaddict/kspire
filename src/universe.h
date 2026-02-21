@@ -25,10 +25,6 @@ class Universe {
     
     Vessel* focused_vessel;
 
-
-    
-    
-
     ProcessedPosition *processed;
     PartLoader* parts_master;
 

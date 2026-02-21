@@ -176,10 +176,11 @@ int main()
     vab.parts_master = &Parts;
     uni.parts_master = &Parts;
 
-    
+    //TODO: Stop using the firebird preprocessor and just do this check
     //Check for firebird dev env presense to affix absolute mouse mode, otherwise stay in relative mode
     if (fopen("firebird.tns","r") != nullptr) {
         kspire_pad.relative_mode = false;
+        is_firebird = true;
     }
     #if defined(KSPIRE_PLATFORM_LINUX)
     kspire_pad.relative_mode = false;
@@ -226,9 +227,9 @@ int main()
 
     //vab.hide_vab = true;
     //Debug init scene
-    scene_load_menu();
+    //scene_load_menu();
     //scene_load_flight();
-    //scene_load_vab();
+    scene_load_vab();
 
 
     //Move this please!!! u toopid
@@ -331,14 +332,18 @@ int main()
             
             #if defined(KSPIRE_PLATFORM_LINUX)
             const char* VERSION = "PC_" BUILD_DATE "_" BUILD_TIME;
-            #else
-            #if  defined(_FIREBIRD) && defined(_TINSPIRE)
-            const char* VERSION = "FB_" BUILD_DATE "_" BUILD_TIME;
-            #else
-            const char* VERSION = "TI_" BUILD_DATE "_" BUILD_TIME;
-            #endif
-            #endif
             fonts.drawString(VERSION,0xFFFF,*screen,10,220);
+            #endif
+
+            if (is_firebird) {
+                const char* VERSION = "FB_" BUILD_DATE "_" BUILD_TIME;
+                fonts.drawString(VERSION,0xFFFF,*screen,10,220);
+            }else {
+                const char* VERSION = "TI_" BUILD_DATE "_" BUILD_TIME;
+                fonts.drawString(VERSION,0xFFFF,*screen,10,220);
+            }
+            
+            
 
         }
 

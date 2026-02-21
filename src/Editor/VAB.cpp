@@ -71,37 +71,19 @@ void VAB::editor_controls() {
     if (isKeyPressed(K_EDITOR_OUT)) camera_zoom -= rot_speed;
     if (isKeyPressed(K_EDITOR_IN)) camera_zoom += rot_speed;
 
-#if  defined(_FIREBIRD) && defined(_TINSPIRE)
-    if (isKeyPressed(KEY_NSPIRE_Q)) camera_height -= rot_speed;
-    if (isKeyPressed(KEY_NSPIRE_E)) camera_height += rot_speed;
-
-#else
-    if (isKeyPressed(K_EDITOR_DOWN)) camera_height -= rot_speed;
-    if (isKeyPressed(K_EDITOR_UP)) camera_height += rot_speed;
-#endif
-    /*
-    //Keyboard Paging (PC)
-    if (isKeyPressed(KEY_NSPIRE_F) && page_index < 11 && !page_key_held) {
-        page_index++;
-        page_key_held = true;
-    }
-    if (isKeyPressed(KEY_NSPIRE_R) && page_index > 0 && !page_key_held) {
-        page_index--;
-        page_key_held = true;
-    }
-    if (!isKeyPressed(KEY_NSPIRE_F) && !isKeyPressed(KEY_NSPIRE_R)) page_key_held = false;
     
-    //Keyboard Part selector
-    if (isKeyPressed(KEY_NSPIRE_X) && part_sel_index < 17 && !part_sel_key_held) {
-        part_sel_index++;
-        part_sel_key_held = true;
+    #if defined(_TINSPIRE)
+    if (is_firebird) {
+        if (isKeyPressed(KEY_NSPIRE_Q)) camera_height -= rot_speed;
+        if (isKeyPressed(KEY_NSPIRE_E)) camera_height += rot_speed;
+    } else {
+        if (isKeyPressed(K_EDITOR_DOWN)) camera_height -= rot_speed;
+        if (isKeyPressed(K_EDITOR_UP)) camera_height += rot_speed;
     }
-    if (isKeyPressed(KEY_NSPIRE_Z) && part_sel_index > 0 && !part_sel_key_held) {
-        part_sel_index--;
-        part_sel_key_held = true;
-    }
-    if (!isKeyPressed(KEY_NSPIRE_Z) && !isKeyPressed(KEY_NSPIRE_X)) part_sel_key_held = false;
-    */
+    #else
+        if (isKeyPressed(K_EDITOR_DOWN)) camera_height -= rot_speed;
+        if (isKeyPressed(K_EDITOR_UP)) camera_height += rot_speed;
+    #endif
 }
 
 
@@ -208,10 +190,14 @@ void VAB::onClick_oneshot() {
 
 //VAB
 void VAB::Update() {
+    printf("t1\n");
     clock.tick();
+    printf("t2\n");
 
     editor_controls();
     
+    printf("t3\n");
+
     //VAB main code
     tsx_o = tsx; tsy_o = tsy;
 
@@ -248,6 +234,7 @@ void VAB::Update() {
                 p.pos = raycast_camera(current_cam_rotation);
         }
     }
+    printf("t4\n");
 
 
     //TODO: make this node::size dependent
@@ -378,8 +365,6 @@ void VAB::render() {
     //Part tree also contains detached parts. ( No parent )if there are any theyre nuked.
     for(Part &p : part_tree) //Loop through AnGL scene
     {
-
-
         if (parts_master->get_part_by_id(p.shared_id) == nullptr) continue;
         if (parts_master->get_part_by_id(p.shared_id)->models.size() == 0) continue;
 

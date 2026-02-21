@@ -1,7 +1,12 @@
 #include "globals.h"
 
+bool is_firebird = false;
+
+//PC DEFINITIONS
+//************************************************* */
 #ifndef _TINSPIRE
 SDL_Event sdl_event;
+
 
 
 bool isKeyPressed(unsigned int key) {
@@ -38,6 +43,8 @@ touchpad_report_t touchpad_scan(touchpad_report_t *tp) {
 
 #endif
 
+//CROSS PLATFORM
+//************************************************* */
 KSPIRE_Touchpad::KSPIRE_Touchpad() {
     auto tp_i = touchpad_getinfo();
     h = (float)tp_i->height;

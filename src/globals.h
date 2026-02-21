@@ -19,10 +19,7 @@
 //Configuration
 #define CONTACT_THRESHOLD  47
 #define MOUSE_ACCELERATION 1.23f
-//Firebird uses certain key redefs
-#ifdef KSPIRE_PLATFORM_NSPIRE
-#define _FIREBIRD
-#endif
+
 //Version
 #ifndef BUILD_DATE
 #define BUILD_DATE "0"
@@ -35,11 +32,12 @@
 
 using namespace::angel;
 
-
+extern bool is_firebird;
 //PC Substitutions for TI things
 #ifndef _TINSPIRE
 #define is_touchpad 1
 extern SDL_Event sdl_event;
+
 
 extern bool isKeyPressed(unsigned int key);
 
