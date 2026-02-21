@@ -94,15 +94,7 @@ namespace angel {
 
         return full_list;
     }
-    // get_binary_directory () -> load_asset_bundle ( path ) -> bundle
-    // get_binary_directory() -> std::string
 
-    std::string get_binary_directory(const char* arg0){
-        std::string directory;
-        // ./kspire -> prune filename -> ./
-        // ../../kspire -> prune -> ../../
-        
-    }
     int Bundle::load_asset_bundle(const char* name) {
         free();
         gzFile file;
