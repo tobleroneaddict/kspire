@@ -25,7 +25,7 @@ namespace angel {
         anGL_TEXTURE diffuse_texture;
     };
 
-    
+
 
 
     //Updated ngl_object. Reused from nGL converter script with some tweaks
