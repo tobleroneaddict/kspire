@@ -1,0 +1,30 @@
+BUILD_DATE := $(shell date +%m%d%y)
+BUILD_TIME := $(shell date +%H)
+CXX = x86_64-w64-mingw32-g++
+CXXFLAGS = -O2 -Wall -DBUILD_DATE=\"$(BUILD_DATE)\" -DBUILD_TIME=\"$(BUILD_TIME)\"
+LIBS = -lmingw32 -lSDLmain -lSDL -lz
+HDRS = -I include -I/usr/x86_64-w64-mingw32/include/SDL
+
+EXE = kspire.exe
+SRCS = $(wildcard $(SRC)/*.cpp)
+OBJS = $(patsubst %.c, %.o, $(shell find . -name \*.c))
+OBJS += $(patsubst %.cpp, %.o, $(shell find . -name \*.cpp))
+OBJS += $(patsubst %.S, %.o, $(shell find . -name \*.S))
+#For windows MSVC, this is /D not -D
+PLATFORM = -DKSPIRE_PLATFORM_WINDOWS=1
+CXXFLAGS += $(PLATFORM)
+
+OUT = build
+all: build
+
+build: $(OBJS)
+	@mkdir -p $(OUT)
+	$(CXX) $(OBJS) $(LIBS) -o $(OUT)/$(EXE)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(HDRS) -c $< -o $@
+run: build
+	$(OUT)/$(EXE)
+clean:
+	@rm -rf $(OUT)/$(EXE)
+	@rm -rf $(OBJS)

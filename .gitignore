@@ -18,6 +18,7 @@ TestWorld
 *.elf
 *.o
 *.on
+*.ow
 *.zip
 *.mtl
 *.obj

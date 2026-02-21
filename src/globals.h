@@ -1,4 +1,10 @@
 #pragma once
+
+#ifdef KSPIRE_PLATFORM_WINDOWS
+#define KSPIRE_PLATFORM_LINUX
+#include <SDL_main.h>
+#endif
+
 #include "../include/angel/angel.h"
 #include <SDL/SDL_config.h>
 #include <SDL/SDL.h>

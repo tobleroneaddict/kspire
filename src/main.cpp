@@ -143,7 +143,11 @@ int scene_pack_menu() {
     return 0;
 }
 
+#ifdef KSPIRE_PLATFORM_WINDOWS
+int main(int argc, char* argv[])
+#else
 int main()
+#endif
 {
     //Set pointers to bundles
     uni.planet_bundle = &planet_bundle;
@@ -220,7 +224,7 @@ int main()
 
     
 
-    vab.hide_vab = true;
+    //vab.hide_vab = true;
     //Debug init scene
     scene_load_menu();
     //scene_load_flight();

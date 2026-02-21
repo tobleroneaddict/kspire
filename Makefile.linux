@@ -6,10 +6,9 @@ LIBS = -lz -lSDL
 HDRS = -I include
 EXE = kspire
 SRCS = $(wildcard $(SRC)/*.cpp)
-OBJS = $(patsubst %.c, %.o, $(shell find . -name \*.c))
-OBJS += $(patsubst %.cpp, %.o, $(shell find . -name \*.cpp))
-OBJS += $(patsubst %.S, %.o, $(shell find . -name \*.S))
-#For windows MSVC, this is /D not -D
+OBJS = $(patsubst %.c, %.ow, $(shell find . -name \*.c))
+OBJS += $(patsubst %.cpp, %.ow, $(shell find . -name \*.cpp))
+OBJS += $(patsubst %.S, %.ow, $(shell find . -name \*.S))
 PLATFORM = -DKSPIRE_PLATFORM_LINUX=1
 CXXFLAGS += $(PLATFORM)
 
@@ -20,7 +19,7 @@ build: $(OBJS)
 	@mkdir -p $(OUT)
 	$(CXX) $(PLATFORM) -std=c++23 $(HDRS) $(LIBS) $(OBJS) -o $(OUT)/$(EXE)
 
-%.o: %.cpp
+%.ow: %.cpp
 	$(CXX) $(CXXFLAGS) $(HDRS) -c $< -o $@
 run: build
 	$(OUT)/$(EXE)
