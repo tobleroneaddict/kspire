@@ -323,6 +323,7 @@ Testing/
 *.smd
 include/nGL
 <<<<<<< HEAD
+<<<<<<< HEAD
 build/*
 !build/
 !build/*.tar.gz.tns
@@ -331,3 +332,8 @@ build/*
 #nix build result
 result
 >>>>>>> 90f1e37 (added flake.nix and fixed printf string literal error)
+=======
+
+#nix build result
+result
+>>>>>>> refs/remotes/origin/main
