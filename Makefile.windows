@@ -2,7 +2,7 @@ BUILD_DATE := $(shell date +%m%d%y)
 BUILD_TIME := $(shell date +%H)
 CXX = x86_64-w64-mingw32-g++
 CXXFLAGS = -O2 -Wall -DBUILD_DATE=\"$(BUILD_DATE)\" -DBUILD_TIME=\"$(BUILD_TIME)\"
-LIBS = -lmingw32 -lSDLmain -lSDL -lz
+LIBS = -lmingw32 -lSDLmain -lSDL -lz -static-libgcc -static-libstdc++
 HDRS = -I include -I/usr/x86_64-w64-mingw32/include/SDL
 
 EXE = kspire.exe
