@@ -335,6 +335,7 @@ int main()
             fonts.drawString(VERSION,0xFFFF,*screen,10,220);
             #endif
 
+            #ifdef _TINSPIRE
             if (is_firebird) {
                 const char* VERSION = "FB_" BUILD_DATE "_" BUILD_TIME;
                 fonts.drawString(VERSION,0xFFFF,*screen,10,220);
@@ -342,7 +343,7 @@ int main()
                 const char* VERSION = "TI_" BUILD_DATE "_" BUILD_TIME;
                 fonts.drawString(VERSION,0xFFFF,*screen,10,220);
             }
-            
+            #endif
             
 
         }
