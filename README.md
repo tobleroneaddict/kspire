@@ -2,7 +2,7 @@
 
 ## Space physics sandbox for TI-Nspire calculators
 
-WIP only code available
+# WIP only code available
 
 # Releases
 Upon release the game will be available in "Releases"
