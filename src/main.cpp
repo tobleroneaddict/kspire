@@ -178,7 +178,7 @@ int main()
         #endif
         if (dir_change_code!=0){
             std::string s = std::format("failed to change to executable directory: {}",directory); 
-            perror("failed to change to executable directory");
+            perror(s);
         } else{
             printf("changed directory to executable directory %s",directory);
         }
