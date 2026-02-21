@@ -16,6 +16,7 @@ TestWorld
 *.tns
 *.elf
 *.o
+*.on
 *.zip
 *.mtl
 *.obj

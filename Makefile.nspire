@@ -7,13 +7,13 @@ GCCFLAGS = -O$(OPTIMIZE) -I nGL -I . -Wall -W -marm -ffast-math -mcpu=arm926ej-s
 LDFLAGS = -lm -lz -Wl,--gc-sections
 ZEHNFLAGS = --name "kspire" --version 0 --author "nul" --notice "KSP on Nspire!" --compress
 EXE = kspire
-OBJS = $(patsubst %.c, %.o, $(shell find . -name \*.c))
-OBJS += $(patsubst %.cpp, %.o, $(shell find . -name \*.cpp))
-OBJS += $(patsubst %.S, %.o, $(shell find . -name \*.S))
+OBJS = $(patsubst %.c, %.on, $(shell find . -name \*.c))
+OBJS += $(patsubst %.cpp, %.on, $(shell find . -name \*.cpp))
+OBJS += $(patsubst %.S, %.on, $(shell find . -name \*.S))
 PLATFORM = -DKSPIRE_PLATFORM_NSPIRE=1
 all: $(EXE).tns
 
-%.o: %.cpp
+%.on: %.cpp
 	@echo Compiling $<...
 	@$(GPP) $(PLATFORM)  -std=c++23 $(GCCFLAGS) -c $< -o $@
 
@@ -27,5 +27,5 @@ $(EXE).tns: $(EXE).elf
 
 .PHONY: clean
 clean:
-	rm -f `find . -name \*.o`
+	rm -f `find . -name \*.on`
 	rm -f $(EXE).tns $(EXE).elf

@@ -11,7 +11,7 @@ OBJS += $(patsubst %.S, %.o, $(shell find . -name \*.S))
 PLATFORM = -DKSPIRE_PLATFORM_LINUX=1
 
 
-OUT = bin/
+OUT = kspire-build/
 all: build
 
 build: $(OBJS)
