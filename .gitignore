@@ -26,8 +26,6 @@ models
 *.bmp
 *.jpg
 .vscode
-<<<<<<< HEAD
-=======
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -264,14 +262,10 @@ __marimo__/
 *.pdb
 
 # Compiled Dynamic libraries
->>>>>>> 90f1e37 (added flake.nix and fixed printf string literal error)
 *.so
 *.dylib
 *.dll
 *.so.*
-<<<<<<< HEAD
-a.out
-=======
 
 
 # Fortran module files
@@ -315,25 +309,15 @@ vcpkg_installed/
 *.dwo
 
 # test output & cache
->>>>>>> 90f1e37 (added flake.nix and fixed printf string literal error)
 Testing/
 .cache/
 *.png~
 *.dae
 *.smd
 include/nGL
-<<<<<<< HEAD
-<<<<<<< HEAD
 build/*
 !build/
 !build/*.tar.gz.tns
-=======
 
 #nix build result
 result
->>>>>>> 90f1e37 (added flake.nix and fixed printf string literal error)
-=======
-
-#nix build result
-result
->>>>>>> refs/remotes/origin/main
