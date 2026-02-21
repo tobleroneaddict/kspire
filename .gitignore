@@ -1,3 +1,4 @@
+build/
 *.cfg
 *.zehn
 *.blend
