@@ -103,7 +103,7 @@ void Universe::Update() {
 
     //Debug to swap texture of planet
     if(isKeyPressed(K_ENTER)) {
-        focused_vessel->orbit.POS.y += 10000;
+        focused_vessel->orbit.POS.z += 500000;
     }
 
 

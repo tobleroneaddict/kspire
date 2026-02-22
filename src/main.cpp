@@ -75,7 +75,7 @@ int scene_pack_vab() {
 
 int scene_load_flight() {
     loading = true;
-
+    uni.timewarp.exit_now();
     glColor3f(0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     current_state = GameStates::FLIGHT;

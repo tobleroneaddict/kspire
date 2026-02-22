@@ -13,6 +13,7 @@ public:
     //Tick the timewarp controller.
     void tick(int cannot_enter_timewarp);
     void lerp_rate(float dt);
+    void exit_now();
 
 private:
     bool up_pressed = false;
