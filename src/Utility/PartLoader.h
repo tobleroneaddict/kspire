@@ -28,10 +28,24 @@ struct ProtoPart {
     //Doesnt use parent, children, etc.
     //Only hold data from the cfg into here
     Part default_data;
+
 };
 
 class PartLoader {
 public:
+
+    //Default categories, expandable.
+    std::vector<std::string> list_categories = {
+        "Command",
+        "Control",
+        "Storage",
+        "Engine",
+        "Coupling",
+        "Aerodynamics",
+        "Power",
+        "Utility"
+    };
+
     int load_parts(Bundle* _parts);
 
     ProtoPart* get_part_by_id(unsigned int id);

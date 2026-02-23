@@ -24,6 +24,13 @@ public:
     void destroy_model();
     
     void Update();
+
+    //Stuff for the pallete menus
+    int page_index = 0;
+    bool page_key_held = false;
+    int part_sel_index = 0;
+    bool part_sel_key_held = false;
+
 private:
     std::vector<ngl_object*> full_scene;
     Camera cam;
@@ -43,11 +50,9 @@ private:
     GameTexture side_panel;
     GameTexture page_selector;
     
-    //Stuff for the pallete menus
-    int page_index = 0;
-    bool page_key_held = false;
-    int part_sel_index = 0;
-    bool part_sel_key_held = false;
+
+    //Magic value to denote a detached node
+    const unsigned int DETACHED_NODE = 429493081;
 
     //Holding part?
     bool  has_grabbed_part = false;

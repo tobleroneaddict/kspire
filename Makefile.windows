@@ -7,9 +7,9 @@ HDRS = -I include -I/usr/x86_64-w64-mingw32/include/SDL
 
 EXE = kspire.exe
 SRCS = $(wildcard $(SRC)/*.cpp)
-OBJS = $(patsubst %.c, %.o, $(shell find . -name \*.c))
-OBJS += $(patsubst %.cpp, %.o, $(shell find . -name \*.cpp))
-OBJS += $(patsubst %.S, %.o, $(shell find . -name \*.S))
+OBJS = $(patsubst %.c, %.ow, $(shell find . -name \*.c))
+OBJS += $(patsubst %.cpp, %.ow, $(shell find . -name \*.cpp))
+OBJS += $(patsubst %.S, %.ow, $(shell find . -name \*.S))
 #For windows MSVC, this is /D not -D
 PLATFORM = -DKSPIRE_PLATFORM_WINDOWS=1
 CXXFLAGS += $(PLATFORM)
@@ -21,7 +21,7 @@ build: $(OBJS)
 	@mkdir -p $(OUT)
 	$(CXX) $(OBJS) $(LIBS) -o $(OUT)/$(EXE)
 
-%.o: %.cpp
+%.ow: %.cpp
 	$(CXX) $(CXXFLAGS) $(HDRS) -c $< -o $@
 run: build
 	$(OUT)/$(EXE)

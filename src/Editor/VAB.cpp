@@ -21,7 +21,10 @@ int VAB::Start(Bundle* assets) {
     //DEBUG STUFF
     Part part;
     part = parts_master->get_part_by_id(5817571)->default_data;
-    part.unique_id = (unsigned int)part.unique_id % 10000000;
+    int randInt = std::rand();
+
+                                                            //429493081 Max
+    part.unique_id = (unsigned int)(part.shared_id + randInt) % 1000000;
     //This is how nodes ID's are assigned. do this on instantiation
     for (unsigned int i = 0; i < part.nodes.size(); i++) {
         part.nodes[i].unique_id = i + (part.unique_id * 10);
@@ -89,24 +92,44 @@ void VAB::onClick_oneshot() {
 
     //Palette action
     if (show_pallete && kspire_pad.x_screen > 20) {
-        printf("Spawned new part.\n");
+        
         if (has_grabbed_part) { //Holding part?
             has_grabbed_part = false;
             part_tree.erase(part_tree.begin()+grabbed_part); //Need to make this work with a whole subtree
         } else { //Create new part
-            Part part;
-            part = parts_master->get_part_by_id(5817571)->default_data;
-            part.unique_id = (unsigned int)part.unique_id % 10000000;
-            for (unsigned int i = 0; i < part.nodes.size(); i++) {
-                part.nodes[i].unique_id = i + (part.unique_id * 10);
+            //Get the Part ID
+
+            if ((unsigned int)page_index < parts_master->list_categories.size() && page_index >= 0) {
+                std::string this_category = parts_master->list_categories[page_index];
+                auto cat_self_list = parts_master->get_parts_of_category(this_category);
+
+                if ((unsigned int)part_sel_index < cat_self_list.size()) {
+                    Part part;
+                    part = parts_master->get_part_by_id(cat_self_list[part_sel_index])->default_data;
+
+                    //Do i have to calc this on calc diff...
+                    int randInt = std::rand();
+
+                                                                                
+                    part.unique_id = (unsigned int)(part.shared_id + randInt) % 1000000;
+
+                    for (unsigned int i = 0; i < part.nodes.size(); i++) {
+                        part.nodes[i].unique_id = i + (part.unique_id * 10);   
+                    }
+                    part.pos = {0,-500,0 };
+                    //Shove it in tree
+                    part_tree.push_back(std::move(part));
+                    //Put it in the hand
+                    has_grabbed_part = true;
+                    grabbed_part = part_tree.size()-1;
+                    show_pallete = false;
+                printf("Spawned new part of ID:%d\n",part.unique_id);
+                }
             }
-            part.pos = {0,-500,0 };
-            //Shove it in tree
-            part_tree.push_back(std::move(part));
-            //Put it in the hand
-            has_grabbed_part = true;
-            grabbed_part = part_tree.size()-1;
-            show_pallete = false;
+
+
+
+            
         }
     }
 
@@ -125,17 +148,24 @@ void VAB::onClick_oneshot() {
                 printf("Unlinked nodes.\n");
 
 
-                //Need to find the other node
+                //Super cool algorithm that finds the other node, and takes this node, and sets it to DETACHED magic val
                 int calculated_index =0;
                 Node* detachee = &part_tree[i].nodes[calculated_index];
+                //Other part
+                //find node with id
+                int ex = 0; //cus like two depth
+                for (Part &t_p : part_tree) {
+                    for (Node &t_n : t_p.nodes) {
+                        if (t_n.unique_id == detachee->attached_node) {
+                            t_n.attached_node = DETACHED_NODE;
+                            ex = 1; break;
+                        }
+                    }
+                    if (ex) break;
+                }
 
-                detachee->attached_node = -1;
-
-                //HOW TO FIND THE OTHER NODE??? becuase like:
-                //You can unlink both sides, that would work but sucks for the user if they
-                //want to move an entire stack / part tree. kinda sucks.
-                //So make a function that finds the root, and get the opposite node? that could work i guess
-                //i need another dev fr
+                //Grabbed part
+                detachee->attached_node = DETACHED_NODE;
 
                 break;
             }
@@ -149,8 +179,8 @@ void VAB::onClick_oneshot() {
         //TODO: make this node::size dependent
         float snap_thresh = 6.0f;
         float mult = 22.0f;
-        //Snapping
-        if (has_grabbed_part) {
+        //NOT SNAPPING, CHECK pdate
+        if (has_grabbed_part) { 
             for(Part &p : part_tree)
             {
                 if (&p == &part_tree[grabbed_part]) continue; //Skip self
@@ -160,7 +190,7 @@ void VAB::onClick_oneshot() {
                     for (Node &n_2 : part_tree[grabbed_part].nodes) { //Host node
                         auto host_pos = (mult*n_2.position) + part_tree[grabbed_part].pos;
                         float len = linalg::length(host_pos - client_pos);
-                        if (len < snap_thresh) {
+                        if (len < snap_thresh && n.attached_node == DETACHED_NODE) {
                             part_tree[grabbed_part].pos = client_pos - (mult*n_2.position);
                             n.attached_node = n_2.unique_id;    //Link
                             n_2.attached_node = n.unique_id;    //Link
@@ -242,7 +272,7 @@ void VAB::Update() {
                 for (Node &n_2 : part_tree[grabbed_part].nodes) { //Host node
                     auto host_pos = (mult*n_2.position) + part_tree[grabbed_part].pos;
                     float len = linalg::length(host_pos - client_pos);
-                    if (len < snap_thresh) {
+                    if (len < snap_thresh && n.attached_node == DETACHED_NODE) {
                         part_tree[grabbed_part].pos = client_pos - (mult*n_2.position);
                         // n.attached_node = n_2.unique_id;    //Link
                         // n_2.attached_node = n.unique_id;    //Link
@@ -430,31 +460,43 @@ void VAB::render() {
 
     //Display pallete parts
     if (show_pallete) {
-        for (int psi = 0; psi <= 17; psi++) {
-            int calc_col = psi % 3;
-            int calc_row = psi / 3;
-            calc_col = 20+(37*calc_col); calc_row = 12+(calc_row*37);
-            calc_row = 20 - calc_row;
 
+        //Calculate the category
 
-            glPushMatrix();
+        if ((unsigned int)page_index < parts_master->list_categories.size() && page_index >= 0) {
 
-            obj = parts_master->get_part_by_id(test_pids[0])->models[0]; //Only first object for now
+            std::string this_category = parts_master->list_categories[page_index];
+            auto cat_self_list = parts_master->get_parts_of_category(this_category);
+            
+            for (unsigned int psi = 0; psi < cat_self_list.size();psi++) {
 
-            glTranslatef(
-                 calc_col - 163
-                ,calc_row + 98
-                ,300
-            );
-            nglRotateY((float)fmod(pallete_r,360.0f));
+                
+                int calc_col = psi % 3;
+                int calc_row = psi / 3;
+                calc_col = 20+(37*calc_col); calc_row = 12+(calc_row*37);
+                calc_row = 20 - calc_row;
 
-            glScale3f(10,10,10);
-            glBindTexture(obj->texture);
-            nglDrawArray(obj->vertices, obj->count_vertices, obj->positions, obj->count_positions, processed, obj->draw_mode, true);
+                
+                obj = parts_master->get_part_by_id(cat_self_list[psi])->models[0]; //Only first object for now
+                glPushMatrix();
 
-            glPopMatrix();
+                glTranslatef(
+                    calc_col - 163
+                    ,calc_row + 98
+                    ,300
+                );
+                nglRotateY((float)fmod(pallete_r,360.0f));
 
+                glScale3f(10,10,10);
+                glBindTexture(obj->texture);
+                nglDrawArray(obj->vertices, obj->count_vertices, obj->positions, obj->count_positions, processed, obj->draw_mode, true);
+
+                glPopMatrix();
+            }
         }
+
+
+
     }
 
     //Draw selector for parts

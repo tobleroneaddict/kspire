@@ -18,6 +18,7 @@ enum Attach_Mode {
 };
 
 struct Node {
+    
     linalg::vec<float,3> position;
     linalg::vec<float,3> up;
     int size;
@@ -34,7 +35,7 @@ struct Node {
 
     unsigned int unique_id;
     //Same, but for the node it's attached to.
-    unsigned int attached_node;
+    unsigned int attached_node = 429493081; //detached node val
 };
 
 

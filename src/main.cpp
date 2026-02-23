@@ -44,13 +44,13 @@ TEXTURE *screen;
 ProcessedPosition *processed;
 Vessel loading_vessel_buffer;
 
-template <typename T> void debug_print(std::string preamble, T value, int x, int y, TEXTURE *screen, std::string unit = "") {
+template <typename T> void screen_print(std::string preamble, T value, int x, int y, TEXTURE *screen, std::string unit = "") {
     preamble.append(std::to_string(value));
     preamble.append(unit);
     fonts.drawString(preamble.c_str(), 0xFFFF, *screen, x, y);
 }
 
-template <typename T> void debug_print(T value, int x, int y, TEXTURE *screen) {
+template <typename T> void screen_print(T value, int x, int y, TEXTURE *screen) {
     std::string preamble = std::to_string(value);
     fonts.drawString(preamble.c_str(), 0xFFFF, *screen, x, y);
 }
@@ -264,8 +264,8 @@ int main()
     //vab.hide_vab = true;
     //Debug init scene
     //scene_load_menu();
-    scene_load_flight();
-    //scene_load_vab();
+    //scene_load_flight();
+    scene_load_vab();
 
 
     //Move this please!!! u toopid
@@ -335,10 +335,10 @@ int main()
 
                 //Altitude
                 ui_altitude.draw(0,0);
-                debug_print("",(int)(uni.universal_time),2,3,screen,"s");
-                debug_print("",(int)(uni.focused_vessel->protoVessel.altitude/1000),85,3,screen,"km");
+                screen_print("",(int)(uni.universal_time),2,3,screen,"s");
+                screen_print("",(int)(uni.focused_vessel->protoVessel.altitude/1000),85,3,screen,"km");
             
-                debug_print("Warp: x ",(int)(uni.timewarp.warp_rate + 0.5f),200,220,screen);
+                screen_print("Warp: x ",(int)(uni.timewarp.warp_rate + 0.5f),200,220,screen);
 
 
             }
@@ -384,6 +384,16 @@ int main()
                 fonts.drawString(VERSION,0xFFFF,*screen,10,220);
             }
             #endif
+    
+            //Show CATEGORY
+            auto cat_list = Parts.list_categories;
+            if ((unsigned int)vab.page_index < Parts.list_categories.size() && vab.page_index >= 0) {
+                //printf("%s\n",cat_list[vab.page_index].c_str());
+                fonts.drawStringCenter(cat_list[vab.page_index].c_str(),
+            0xFFFF, *screen,
+            70,-1);
+
+            }
             
 
         }
