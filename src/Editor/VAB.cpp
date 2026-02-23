@@ -253,7 +253,6 @@ void VAB::Update() {
             max_part_index = (int)parts_master->get_parts_of_category(parts_master->list_categories[page_index]).size()-1;
         if (max_part_index < 0) max_part_index = 0;
         part_sel_index = linalg::min((int)part_sel_index,max_part_index);
-        printf("MAX %d\n",max_part_index);
     }
 
 
