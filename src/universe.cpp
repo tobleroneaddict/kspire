@@ -74,7 +74,7 @@ void Universe::Update() {
 */
 
     //Rails enter/exit handling
-
+    //Oneshot
     if (timewarp.entered_rails) {
         for (Vessel &v : vessels) {
             if (v.loaded) {
@@ -86,7 +86,7 @@ void Universe::Update() {
     if (timewarp.exited_rails) {
         for (Vessel &v : vessels) {
             if (v.loaded) {
-                //Need to do rails to physics
+                //Need to do rails to physics (no)
             }
         }
 
@@ -104,11 +104,30 @@ void Universe::Update() {
 
     //Debug to swap texture of planet
     if(isKeyPressed(K_ENTER)) {
-        focused_vessel->orbit.POS.z += 500000;
+        Orbit* o = &focused_vessel->orbit;
+        o->physics_to_rails(universal_time);
+        //o->epoch = 0;
+        //o->eccentricity = 0.001;
+        //o->inclination = 0.01f;
+        //o->long_ascending_node = 20;
+        //o->mean_anomaly = 15;
+        //o->mean_anomaly_at_epoch = 1;
+        //o->semi_major_axis = 4250.0f * 1000.0f;
+        //o->calculate_state_from_keplers(0);
+    }
+    if (isKeyPressed(K_CTRL)) {
+        focused_vessel->orbit.VEL.x += 10;
     }
 
-
-
+//
+//    printf("eph: %f\n",focused_vessel->orbit.epoch);
+//    printf("ecc: %f\n",focused_vessel->orbit.eccentricity);
+//    printf("inc: %f\n",focused_vessel->orbit.inclination);
+//    printf("lan: %f\n",focused_vessel->orbit.long_ascending_node);
+//    printf("ma : %f\n",focused_vessel->orbit.mean_anomaly);
+//    printf("mae : %f\n",focused_vessel->orbit.mean_anomaly_at_epoch);
+//    printf("aop : %f\n",focused_vessel->orbit.argument_of_periapsis);
+//    
     //Step vessel orbits
     for (Vessel& v : vessels) {
         //Step vessel orbit after checking if its on rails or simulated AND LOADED
@@ -133,7 +152,7 @@ void Universe::Update() {
 
     //Tesitng
     //auto im = linalg::normalize(focused_vessel->orbit.POS);
-    //cam.yaw = linalg::atan2(im.x, im.z) * RAD_TO_DEG ;
+    //cam.yaw = linalg::atan2(im.x, im.y) * RAD_TO_DEG ;
  
     //Deltatime stuff
     cam.dt = clock.dt;
@@ -153,21 +172,33 @@ void Universe::render() {
     glColor3f(0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
+    
     //IN SKYBOx
     glPushMatrix();
+    
     glTranslatef(0,0,0);
+    linalg::vec<float,3> out = cam.wrapper();
     if (cam.mode == Camera::ORBIT) {
-        linalg::vec<float,3> out = cam.wrapper();   //Outputs rpy as actual clamped values good for ngl
-        nglRotateX(out.x);
-        nglRotateZ(out.z);
-        nglRotateY(out.y);
+        //linalg::vec<float,3> out = cam.wrapper();   //Outputs rpy as actual clamped values good for ngl
+        //if (out.x != NAN && out.y != NAN && out.z != NAN) {
+            nglRotateX(out.x);
+            nglRotateZ(out.z);
+            nglRotateY(out.y);
+        //}
     }
     if (cam.mode == Camera::FREE) {
-        linalg::vec<float,3> out = cam.wrapper();   //Outputs rpy as actual clamped values good for ngl
-        nglRotateX(out.x);
-        nglRotateY(out.y);
-        nglRotateZ(out.z);
+        //linalg::vec<float,3> out = cam.wrapper();   //Outputs rpy as actual clamped values good for ngl
+        //if (out.x != NAN && out.y != NAN && out.z != NAN) {
+            nglRotateX(out.x);
+            nglRotateY(out.y);
+            nglRotateZ(out.z);
+        //}
     }
+    
+    //Horrific camera error
+    //if (out.x == NAN && out.y == NAN && out.z == NAN) return;
+
+
     glScale3f(500,500,500);
     auto obj = &skybox.objects[0];
     glBindTexture(obj->texture);
@@ -176,8 +207,9 @@ void Universe::render() {
 
     glPopMatrix();
 
+   
     glClear(GL_DEPTH_BUFFER_BIT);
-
+    
     //IN CAM
     glPushMatrix();
     //Move back

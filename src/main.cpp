@@ -101,9 +101,11 @@ int scene_load_flight() {
     uni.vessels.emplace_back(std::move(new_vess));
     uni.focused_vessel = &uni.vessels.back();
     uni.focused_vessel->home_body = uni.planetarium.find_body_by_name("Earth");
+
+    
+
     //Push buffer
     uni.focused_vessel->part_tree = loading_vessel_buffer.part_tree;
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     fonts.drawString("Loading complete!",0xFFFF,*screen,10,220);

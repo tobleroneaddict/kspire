@@ -234,6 +234,8 @@ void Orbit::physics_to_rails(double epoch) {
         return;
     }
 
+
+    //MIGHT BE AT FAULT
     //Argument of periapsis (Lowercase omega)
     double omega = -1;
 
@@ -282,10 +284,6 @@ void Orbit::physics_to_rails(double epoch) {
     }
     
 
-    printf("A  %fkm\n",a/1000);
-    printf("Em %f\n",e_mag);
-
-
     double p = (h_mag * h_mag) / mu;
     eccentricity = e_mag;
     semi_major_axis = a;
@@ -306,6 +304,9 @@ void Orbit::physics_to_rails(double epoch) {
     long_ascending_node = Omega;
     argument_of_periapsis = omega;
 
+    //printf("O %f\n",Omega);
+    //printf("o %f\n",omega);
+    
 }
 
 

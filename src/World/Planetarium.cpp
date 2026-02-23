@@ -28,7 +28,9 @@ void Planetarium::render_celestials() {
         float altitude = len - c.radius;
 
         
-        glPushMatrix();
+        //printf("LEN %f\n",len);
+        
+        
         int mode = 0;
 
         //Check if vessel is low enough to render in nearby mode
@@ -36,8 +38,14 @@ void Planetarium::render_celestials() {
         //    mode = 1;
         //}
 
+        //Horrific altitudes
+        if ((int)abs(altitude) > 104780001000) {
+            if (focused_vessel != nullptr)
+                focused_vessel->protoVessel.altitude = 9999999; //Fucked
+            return;
+        }
 
-
+        glPushMatrix();
         if (mode) {
             //Mode 1 PQS
             printf("Mode 1 not implemented!\n");
