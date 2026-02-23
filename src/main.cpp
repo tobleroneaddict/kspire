@@ -266,8 +266,8 @@ int main()
     //vab.hide_vab = true;
     //Debug init scene
     //scene_load_menu();
-    //scene_load_flight();
-    scene_load_vab();
+    scene_load_flight();
+    //scene_load_vab();
 
 
     //Test navball
@@ -417,6 +417,14 @@ int main()
         if (current_state == GameStates::EDITOR) {
 
             vab.Update();
+
+            //Show CATEGORY
+            auto cat_list = Parts.list_categories;
+            if ((unsigned int)vab.page_index < Parts.list_categories.size() && vab.page_index >= 0) {
+                //printf("%s\n",cat_list[vab.page_index].c_str());
+                fonts.drawStringCenter(cat_list[vab.page_index].c_str(),
+            0xFFFF, *screen,
+            67,-1);
     
         }
         if (current_state == GameStates::MENU) {
@@ -443,14 +451,6 @@ int main()
                 fonts.drawString(VERSION,0xFFFF,*screen,10,220);
             }
             #endif
-    
-            //Show CATEGORY
-            auto cat_list = Parts.list_categories;
-            if ((unsigned int)vab.page_index < Parts.list_categories.size() && vab.page_index >= 0) {
-                //printf("%s\n",cat_list[vab.page_index].c_str());
-                fonts.drawStringCenter(cat_list[vab.page_index].c_str(),
-            0xFFFF, *screen,
-            67,-1);
 
             }
             
