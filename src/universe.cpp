@@ -184,10 +184,18 @@ if(isKeyPressed(K_EDITOR_UP)) {
     }
 
     //Render
-    render();
+    
+    //if (in_map_view) {render_map();}
+    //else {render_flight();}
+    render_flight();
+    
 }
 
-void Universe::render() {
+void Universe::render_map() {
+    render_flight();
+}
+
+void Universe::render_flight() {
     glColor3f(0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -205,6 +213,7 @@ void Universe::render() {
             nglRotateY(out.y);
         //}
     }
+    
     if (cam.mode == Camera::FREE) {
         //linalg::vec<float,3> out = cam.wrapper();   //Outputs rpy as actual clamped values good for ngl
         //if (out.x != NAN && out.y != NAN && out.z != NAN) {
@@ -220,13 +229,14 @@ void Universe::render() {
 
     glScale3f(500,500,500);
     auto obj = &skybox.objects[0];
-    glBindTexture(obj->texture);
-    nglDrawArray(obj->vertices, obj->count_vertices, obj->positions, obj->count_positions, processed, obj->draw_mode);
     
+    if (obj != nullptr) {
+        glBindTexture(obj->texture);
+        nglDrawArray(obj->vertices, obj->count_vertices, obj->positions, obj->count_positions, processed, obj->draw_mode);
+    }
 
     glPopMatrix();
-
-   
+    
     glClear(GL_DEPTH_BUFFER_BIT);
     
     //IN CAM

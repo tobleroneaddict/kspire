@@ -47,10 +47,10 @@ private:
     double universal_time;
 
 
-    double Ecc_A(double M, double ecc, double maxError);
+    double Ecc_A(double M, double ecc, double max_error);
     //double solveEccentricAnomalyExtremeEcc(double M, double ecc, int iterations = 8);
-    double Ecc_A_Hyp(double M, double ecc, double maxError);
-
+    double Ecc_A_Hyp(double M, double ecc, double max_error);
+    double Ecc_A_Extreme(double M, double ecc, double max_error, int max_it);
     void leap_frog(float sdl_dt, float phys_warp_rate);
     linalg::vec<double,3> grav_f();
 

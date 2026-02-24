@@ -1,14 +1,14 @@
 #include "orbit.h"
 
 
-//Newton-Rhapson equation solver
-double Orbit::Ecc_A(double M, double ecc, double maxError = 1E-07)
+//Eccentric anomaly calculations
+double Orbit::Ecc_A(double M, double ecc, double max_error = 1E-07)
 {
     double adjust = 1.0;
     double guess = M + ecc * linalg::sin(M) + 0.5 * ecc * ecc * linalg::sin(2.0 * M);
     int max_iterations = 100;
     int iterations = 0;
-    while (linalg::abs(adjust) > maxError && iterations < max_iterations)
+    while (linalg::abs(adjust) > max_error && iterations < max_iterations)
     {
         double ans = guess - ecc * linalg::sin(guess);
         adjust = (M - ans) / (1.0 - ecc * linalg::cos(guess));
@@ -23,7 +23,8 @@ double Orbit::Ecc_A(double M, double ecc, double maxError = 1E-07)
     return guess;
 }
 
-double Orbit::Ecc_A_Hyp(double M, double ecc, double maxError = 1E-07)
+//Rewrite later to follow max_it standard!
+double Orbit::Ecc_A_Hyp(double M, double ecc, double max_error = 1E-07)
 {
     
 	double adjust = 1.0;
@@ -32,7 +33,7 @@ double Orbit::Ecc_A_Hyp(double M, double ecc, double maxError = 1E-07)
     int i_max = 100;
     int i = 0;
     
-    while (linalg::abs(adjust) > maxError && i < i_max)
+    while (linalg::abs(adjust) > max_error && i < i_max)
     {
         double sinh_guess = linalg::sinh(guess);
         double cosh_guess = linalg::cosh(guess);
@@ -40,17 +41,47 @@ double Orbit::Ecc_A_Hyp(double M, double ecc, double maxError = 1E-07)
         adjust = (ecc * sinh_guess - guess - M) / (ecc * cosh_guess - 1.0);
         guess -= adjust;
         i++;
-
-        if (linalg::abs(guess) > 100.0) {
-            printf("Ecc_A_Hyp Diverge!!!!!\n");
-            break;
-        }
     }
-    
     return guess;
 }
 
+double Orbit::Ecc_A_Extreme(double M, double ecc,double max_error = 1E-07,int max_it = 100)
+{
+    double signSinM = (linalg::sin(M) >= 0.0) ? 1.0 : -1.0;
+    double guess     = M + 0.85 * ecc * signSinM;
 
+    for (int i = 0; i < max_it; ++i)
+    {
+        // Residual:   f(E) = E − e sinE – M
+        double sinG = linalg::sin(guess);
+        double cosG = linalg::cos(guess);
+
+        double f     = guess - ecc * sinG - M;
+        double df    = 1.0 - ecc * cosG;
+
+        if (linalg::abs(df) < 1e-12)
+        {
+            printf("Ecc_A_Extreme: derivative too small, diverging\n");
+            break;
+        }
+
+        double adjust = f / df;
+
+        guess -= adjust;
+
+        //Divergence (Test)
+        if (linalg::abs(guess) > 1e3)
+        {
+            printf("Ecc_A_Extreme: diverged after %d iterations\n", i + 1);
+            break;
+        }
+
+        // Check convergence
+        if (linalg::abs(adjust) < max_error)
+            break;
+    }
+    return guess;
+}
 
 void Orbit::calculate_state_from_keplers(double _UNIVERSAL_TIME) {
     universal_time = _UNIVERSAL_TIME;
@@ -81,14 +112,14 @@ void Orbit::calculate_state_from_keplers(double _UNIVERSAL_TIME) {
             if (eccentricity < 0.9) {
                 eccentric_anomaly = Ecc_A(mean_anomaly,eccentricity);
             } else {
-                
+                eccentric_anomaly = Ecc_A_Extreme(mean_anomaly,eccentricity);
                 //printf("ECC TOO HIGHH!!! SOLVE EXTREME CASE WITH OTHER FUNC\n");
             }
-                //Calc TA
-                true_anomaly = linalg::atan2(
-                    linalg::sqrt(1 - eccentricity*eccentricity) * linalg::sin(eccentric_anomaly),
-                    linalg::cos(eccentric_anomaly) - eccentricity
-                );
+            //Calc TA
+            true_anomaly = linalg::atan2(
+                linalg::sqrt(1 - eccentricity*eccentricity) * linalg::sin(eccentric_anomaly),
+                linalg::cos(eccentric_anomaly) - eccentricity
+            );
         }
 
         radius = semi_major_axis * (1.0 - eccentricity * eccentricity)

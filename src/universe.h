@@ -12,6 +12,7 @@
 class Universe {
     public:
 
+    bool in_map_view = false;
     
     DT clock;
     double universal_time = 0;
@@ -47,7 +48,8 @@ class Universe {
     //Step physics orbits
     void step_physics_orbit_for_v(Vessel* v);
 
-    void render();
+    void render_flight();
+    void render_map();
 
     //Unload flight scene
     void pack();
