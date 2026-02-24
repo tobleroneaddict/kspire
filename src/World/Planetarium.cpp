@@ -25,7 +25,7 @@ void Planetarium::render_celestials() {
         //Get draw length of body
         auto delta = pp - vp;
         float len = linalg::length(delta);
-        float altitude = len - c.radius;
+        float altitude = len - (c.radius);
 
         
         //printf("LEN %f\n",len);
@@ -34,9 +34,9 @@ void Planetarium::render_celestials() {
         int mode = 0;
 
         //Check if vessel is low enough to render in nearby mode
-        //if (altitude < 700000) {
-        //    mode = 1;
-        //}
+        if (altitude < c.radius*1.1f) {
+            mode = 1;
+        }
 
         //Horrific altitudes
         if ((int)abs(altitude) > 104780001000) {
@@ -56,7 +56,7 @@ void Planetarium::render_celestials() {
             {
                 //Mode 0 Distant
                 //Planet renderer works by scaling the glscale3f, and keeping the planet at a fixed distance
-                float fixed_bubble = 3000;
+                float fixed_bubble = 20000.0;
 
                 glTranslatef(
                     -(v_x  / len)* fixed_bubble        * 1,

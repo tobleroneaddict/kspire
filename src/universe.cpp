@@ -143,7 +143,7 @@ void Universe::Update() {
 if(isKeyPressed(K_EDITOR_UP)) {
     for (Vessel& v : vessels) {
         //step_physics_orbit_for_v(&v);
-        v.orbit.VEL.z += 10;
+        v.orbit.VEL.y -= 1;
     }
 }
 
