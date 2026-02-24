@@ -14,6 +14,7 @@ class Universe {
 
     bool in_map_view = false;
     
+
     DT clock;
     double universal_time = 0;
 
@@ -59,4 +60,9 @@ class Universe {
     Bundle *parts_bundle;
     
     private:
+
+    void render_skybox();
+    bool map_button_held = false;
+
+    float map_zoom = -200;
 };

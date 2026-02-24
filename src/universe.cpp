@@ -126,10 +126,19 @@ void Universe::Update() {
         //o->semi_major_axis = 4250.0f * 1000.0f;
         //o->calculate_state_from_keplers(0);
     }
-    if (isKeyPressed(K_CTRL)) {
-        focused_vessel->orbit.inclination = 45;
+    //Map view zoom
+    if (isKeyPressed(K_EDITOR_DOWN)) {
+        map_zoom--;
+    }
+    if (isKeyPressed(K_EDITOR_UP)) {
+        map_zoom++;
     }
 
+    if (isKeyPressed(K_MAP) && map_button_held == false) {
+        map_button_held = true;
+        in_map_view = !in_map_view;
+    }
+    if (!isKeyPressed(K_MAP)) map_button_held = false;
 
     //printf("eph: %f\n",focused_vessel->orbit.epoch);
     //printf("ecc: %f\n",focused_vessel->orbit.eccentricity);
@@ -140,12 +149,6 @@ void Universe::Update() {
     //printf("aop : %f\n",focused_vessel->orbit.argument_of_periapsis);
     
 
-if(isKeyPressed(K_EDITOR_UP)) {
-    for (Vessel& v : vessels) {
-        //step_physics_orbit_for_v(&v);
-        v.orbit.VEL.y -= 1;
-    }
-}
 
 
 
@@ -185,17 +188,96 @@ if(isKeyPressed(K_EDITOR_UP)) {
 
     //Render
     
-    //if (in_map_view) {render_map();}
-    //else {render_flight();}
-    render_flight();
+    if (in_map_view) {render_map();}
+    else {render_flight();}
+
     
 }
 
+//Render Map view
 void Universe::render_map() {
-    render_flight();
+    render_skybox();
+
+    glPushMatrix();
+    //Move back
+    cam.pos.x = 0;
+    cam.pos.y = 0;
+    cam.pos.z = map_zoom;
+    glTranslatef(-cam.pos.x, -cam.pos.y, -cam.pos.z);
+    //Camera rotation
+    
+    //Gonna have to configulate this for orbit mode
+    //camera.cpp has kinda a way to do the auto mode using sub modes.
+    if (cam.mode == Camera::ORBIT) {
+        linalg::vec<float,3> out = cam.wrapper();   //Outputs rpy as actual clamped values good for ngl
+        nglRotateX(out.x);
+        nglRotateZ(out.z);
+        nglRotateY(out.y);
+    }
+    if (cam.mode == Camera::FREE) {
+        linalg::vec<float,3> out = cam.wrapper();   //Outputs rpy as actual clamped values good for ngl
+        nglRotateX(out.x);
+        nglRotateY(out.y);
+        nglRotateZ(out.z);
+    }
+
+    //Modify the POS stuff to work in map view
+    planetarium.render_celestials(100);
+
+
+    glPopMatrix();
 }
 
+
+//Render flight view
 void Universe::render_flight() {
+    render_skybox();
+    
+    //IN CAM
+    glPushMatrix();
+    //Move back
+    cam.pos.x = 0;
+    cam.pos.y = 0;
+    cam.pos.z = -200;
+    glTranslatef(-cam.pos.x, -cam.pos.y, -cam.pos.z);
+    //Camera rotation
+    
+    //Gonna have to configulate this for orbit mode
+    //camera.cpp has kinda a way to do the auto mode using sub modes.
+    if (cam.mode == Camera::ORBIT) {
+        linalg::vec<float,3> out = cam.wrapper();   //Outputs rpy as actual clamped values good for ngl
+        nglRotateX(out.x);
+        nglRotateZ(out.z);
+        nglRotateY(out.y);
+    }
+    if (cam.mode == Camera::FREE) {
+        linalg::vec<float,3> out = cam.wrapper();   //Outputs rpy as actual clamped values good for ngl
+        nglRotateX(out.x);
+        nglRotateY(out.y);
+        nglRotateZ(out.z);
+    }
+
+
+    planetarium.render_celestials(20000);
+
+    render_nearby_vessels();
+
+    //OUT CAM
+    glPopMatrix();
+    
+}
+
+//Pack away the flight scene
+void Universe::pack() {
+    planetarium.clear_celestial_models();
+    skybox.free_group();
+
+    vessels.clear();
+
+}
+
+
+void Universe::render_skybox() {
     glColor3f(0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -238,47 +320,4 @@ void Universe::render_flight() {
     glPopMatrix();
     
     glClear(GL_DEPTH_BUFFER_BIT);
-    
-    //IN CAM
-    glPushMatrix();
-    //Move back
-    cam.pos.x = 0;
-    cam.pos.y = 0;
-    cam.pos.z = -200;
-    glTranslatef(-cam.pos.x, -cam.pos.y, -cam.pos.z);
-    //Camera rotation
-    
-    //Gonna have to configulate this for orbit mode
-    //camera.cpp has kinda a way to do the auto mode using sub modes.
-    if (cam.mode == Camera::ORBIT) {
-        linalg::vec<float,3> out = cam.wrapper();   //Outputs rpy as actual clamped values good for ngl
-        nglRotateX(out.x);
-        nglRotateZ(out.z);
-        nglRotateY(out.y);
-    }
-    if (cam.mode == Camera::FREE) {
-        linalg::vec<float,3> out = cam.wrapper();   //Outputs rpy as actual clamped values good for ngl
-        nglRotateX(out.x);
-        nglRotateY(out.y);
-        nglRotateZ(out.z);
-    }
-
-
-    planetarium.render_celestials();
-
-    render_nearby_vessels();
-
-    //OUT CAM
-    glPopMatrix();
-    
 }
-
-//Pack away the flight scene
-void Universe::pack() {
-    planetarium.clear_celestial_models();
-    skybox.free_group();
-
-    vessels.clear();
-
-}
-

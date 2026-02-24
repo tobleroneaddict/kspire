@@ -27,6 +27,7 @@
 #define K_EDITOR_OUT        K_CTRL
 #define K_DEBUG_SCENE_1     KEY_NSPIRE_1
 #define K_DEBUG_SCENE_2     KEY_NSPIRE_2
+#define K_MAP               KEY_NSPIRE_M
 
 #endif
 
@@ -53,6 +54,6 @@
 #define K_SHIFT             SDLK_LSHIFT
 #define K_DEBUG_SCENE_1     SDLK_1
 #define K_DEBUG_SCENE_2     SDLK_2
-
+#define K_MAP               SDLK_RMETA
 
 #endif

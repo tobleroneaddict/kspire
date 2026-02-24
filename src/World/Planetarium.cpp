@@ -5,7 +5,7 @@
 
 using namespace rapidjson;
 
-void Planetarium::render_celestials() {
+void Planetarium::render_celestials(float fixed_bubble = 20000) {
 
     if (focused_vessel == nullptr) { printf("E 218754: No Focused Vessel!\n");return;}
     if (celestials.size() == 0) { printf("E 128585: Cannot render planets!\n");return;}
@@ -56,7 +56,7 @@ void Planetarium::render_celestials() {
             {
                 //Mode 0 Distant
                 //Planet renderer works by scaling the glscale3f, and keeping the planet at a fixed distance
-                float fixed_bubble = 20000.0;
+                
 
                 glTranslatef(
                     -(v_x  / len)* fixed_bubble        * 1,

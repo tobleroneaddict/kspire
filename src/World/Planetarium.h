@@ -22,7 +22,7 @@ public:
 
     //Mode 0 : Distant, up to LO. Mode 1: PQS
     //Calculated inside.
-    void render_celestials();
+    void render_celestials(float fixed_bubble);
 
     int find_body_by_name(std::string name);
     
