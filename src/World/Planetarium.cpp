@@ -4,8 +4,8 @@
 #include "../../include/rapidjson/stringbuffer.h"
 
 using namespace rapidjson;
-
-void Planetarium::render_celestials(float fixed_bubble = 20000) {
+                                                                                    //Cam pos used in map mode
+void Planetarium::render_celestials(float fixed_bubble,bool map_mode, linalg::vec<double,3> cam_pos) {
 
     if (focused_vessel == nullptr) { printf("E 218754: No Focused Vessel!\n");return;}
     if (celestials.size() == 0) { printf("E 128585: Cannot render planets!\n");return;}
@@ -13,8 +13,13 @@ void Planetarium::render_celestials(float fixed_bubble = 20000) {
     //Should i do distance from CAMERA instead??????
 
     for (CelestialBody& c : celestials) {
-        auto vp = planet_to_universe(focused_vessel->orbit.POS,focused_vessel->home_body);
-
+        linalg::vec<double,3> vp;
+        if  (!map_mode) {
+            vp = planet_to_universe(focused_vessel->orbit.POS,focused_vessel->home_body);
+        } else {
+            vp = planet_to_universe(focused_vessel->orbit.POS+cam_pos,focused_vessel->home_body); //Make map view not inside sun
+        }
+        //printf("VP:{%f,%f,%f}\n",vp.x,vp.y,vp.z);
         auto pp = planet_to_universe({0,0,0},find_body_by_name(c.name));
 
         //Vessel coordinate in planet space, per planet
@@ -34,16 +39,16 @@ void Planetarium::render_celestials(float fixed_bubble = 20000) {
         int mode = 0;
 
         //Check if vessel is low enough to render in nearby mode
-        if (altitude < c.radius*1.1f) {
-            mode = 1;
-        }
+        //if (altitude < c.radius*1.1f) {
+        //    mode = 1;
+        //}
 
         //Horrific altitudes
-        if ((int)abs(altitude) > 104780001000) {
-            if (focused_vessel != nullptr)
-                focused_vessel->protoVessel.altitude = 9999999; //Fucked
-            return;
-        }
+        // if ((int)abs(altitude) > 104780001000) {
+        //     if (focused_vessel != nullptr)
+        //         focused_vessel->protoVessel.altitude = 9999999; //Fucked
+        //     return;
+        // }
 
         glPushMatrix();
         if (mode) {

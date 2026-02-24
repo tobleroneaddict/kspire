@@ -54,6 +54,6 @@
 #define K_SHIFT             SDLK_LSHIFT
 #define K_DEBUG_SCENE_1     SDLK_1
 #define K_DEBUG_SCENE_2     SDLK_2
-#define K_MAP               SDLK_RMETA
+#define K_MAP               SDLK_m
 
 #endif

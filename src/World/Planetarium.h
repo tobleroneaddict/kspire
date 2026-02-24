@@ -22,7 +22,7 @@ public:
 
     //Mode 0 : Distant, up to LO. Mode 1: PQS
     //Calculated inside.
-    void render_celestials(float fixed_bubble);
+    void render_celestials(float fixed_bubble,bool map_mode, linalg::vec<double,3> cam_pos);
 
     int find_body_by_name(std::string name);
     

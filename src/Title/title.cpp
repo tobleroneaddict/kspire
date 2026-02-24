@@ -57,6 +57,40 @@ int Title::Update() {
         
         
     }
+    if (moon != nullptr) {
+        //Hacky title screen animation
+        float off = fmod(fmod((-angle)/2, 360.0f) + 360.0f, 360.0f);
+        
+        glPushMatrix();
+        nglRotateZ(10);
+    
+        //Fix texture explosion from overrotation
+
+        //why the fuck is this necessary
+        #ifdef _TINSPIRE
+        nglRotateY(
+            fmod(fmod((off+100)/1, 360.0f) + 360.0f, 360.0f)
+        ); //Orbit
+        #else
+        nglRotateY(off); //Orbit
+        #endif
+        glTranslatef(0,-23,500);
+
+        glScale3f(30,30,30);
+
+        nglRotateZ(20);
+        nglRotateY(360.0f - 30);
+        nglRotateY(110);
+
+        glBindTexture(moon->texture);
+        nglDrawArray(moon->vertices, moon->count_vertices, moon->positions, moon->count_positions, processed, moon->draw_mode);
+        
+        glPopMatrix();
+
+        
+        
+    }
+
     //Title screen
     texture_set.draw(0,0,229,81,229,81);
     //Orbit line

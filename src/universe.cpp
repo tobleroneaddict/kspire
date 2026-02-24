@@ -101,15 +101,16 @@ void Universe::Update() {
 
     //Map view zoom
     if (isKeyPressed(K_EDITOR_DOWN)) {
-        map_zoom--;
+        map_zoom-=1;
     }
     if (isKeyPressed(K_EDITOR_UP)) {
-        map_zoom++;
+        map_zoom+=1;
     }
 
     if (isKeyPressed(K_MAP) && map_button_held == false) {
         map_button_held = true;
         in_map_view = !in_map_view;
+        printf("K\n");
     }
     if (!isKeyPressed(K_MAP)) map_button_held = false;
 
@@ -176,8 +177,14 @@ void Universe::render_map() {
         nglRotateZ(out.z);
     }
 
+    linalg::vec<double,3> pos_d(
+        cam.pos.x,
+        cam.pos.y,
+        cam.pos.z
+    );
+
     //Modify the POS stuff to work in map view
-    planetarium.render_celestials(100);
+    planetarium.render_celestials(100,true,pos_d);
 
 
     glPopMatrix();
@@ -213,7 +220,7 @@ void Universe::render_flight() {
     }
 
 
-    planetarium.render_celestials(20000);
+    planetarium.render_celestials(20000,false,{0,0,0});
 
     render_nearby_vessels();
 

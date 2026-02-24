@@ -197,7 +197,7 @@ int main()
 	if (!is_touchpad) { return 0;} //Only CX/CXII supported
     cursor.set_cursor_visibility(false);
 	SDL_Init(SDL_INIT_VIDEO); //Using SDL for timing
-
+    
     // Initialize nGL
     nglInit();
     // Allocate the framebuffer
@@ -267,16 +267,14 @@ int main()
 
     //vab.hide_vab = true;
     //Debug init scene
-    //scene_load_menu();
+    scene_load_menu();
     //scene_load_flight();
-    scene_load_vab();
+    //scene_load_vab();
 
 
     //Test navball
     ModelGroup nav;
     nav.load_group(&resource_bundle,"resources/ui/navball");
-
-    printf("LNAV\n");
 
 
     //Move this please!!! u toopid
@@ -284,8 +282,6 @@ int main()
 
     ui_altitude.init(&resource_bundle,"resources/ui/altitude.png",screen);
     ui_altitude.tex.transparent_color = 0x00;
-
-    printf("LALT\n");
 
 
     #ifdef KSPIRE_PLATFORM_NSPIRE
@@ -419,6 +415,7 @@ int main()
             debug_print("EPC ",uni.focused_vessel->orbit.epoch,10,150,screen);
             */
         }
+
         if (current_state == GameStates::EDITOR) {
 
             vab.Update();
@@ -431,13 +428,6 @@ int main()
             0xFFFF, *screen,
             67,-1);
     
-        }
-        if (current_state == GameStates::MENU) {
-            auto res = title.Update(); 
-            if (res == -1) break_game = true;
-            if (res == 600) {
-                scene_pack_menu(); scene_load_vab();
-            }
         }
 
         if (vab.show_pallete || current_state != GameStates::EDITOR) {
@@ -462,6 +452,14 @@ int main()
 
         }
 
+        if (current_state == GameStates::MENU) {
+            auto res = title.Update(); 
+            if (res == -1) break_game = true;
+            if (res == 600) {
+                scene_pack_menu(); scene_load_vab();
+            }
+        }
+        
         nglDisplay();
     }
 

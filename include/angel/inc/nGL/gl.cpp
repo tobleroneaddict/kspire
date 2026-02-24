@@ -9,6 +9,7 @@
 #include <assert.h>
 #include <signal.h>
 static SDL_Surface *scr;
+static SDL_Surface *scaled_screen;
 #endif
 
 #include "gl.h"
@@ -64,7 +65,17 @@ void nglInit()
             lcd_init(SCR_320x240_565);
     #else
         SDL_Init(SDL_INIT_VIDEO);
+        #ifdef _TINSPIRE
         scr = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 16, SDL_SWSURFACE);
+        #else                               //For some reason this area cant read a bigscreenscaler from globals
+        scr = SDL_SetVideoMode(SCREEN_WIDTH*2, SCREEN_HEIGHT*2, 16, SDL_SWSURFACE);
+
+        scaled_screen = SDL_SetVideoMode(
+            640, 480, 16,
+            SDL_SWSURFACE
+        );
+
+        #endif
         signal(SIGINT, SIG_DFL);
         assert(scr);
     #endif
@@ -245,10 +256,34 @@ void nglDisplay()
         else
             lcd_blit(screen, SCR_320x240_565);
     #else
-        SDL_LockSurface(scr);
-        std::copy(screen, screen + SCREEN_HEIGHT*SCREEN_WIDTH, reinterpret_cast<COLOR*>(scr->pixels));
-        SDL_UnlockSurface(scr);
-        SDL_UpdateRect(scr, 0, 0, 0, 0);
+
+        auto scale_to_PC = [](const COLOR* src, SDL_Surface* dst, int src_w, int src_h) {
+            Uint8* dst_base = (Uint8*)dst->pixels;
+        
+            for (int y = 0; y < src_h; y++) {
+                for (int x = 0; x < src_w; x++) {
+                    COLOR p = src[y * src_w + x];
+        
+                    int dx = x * 2;
+                    int dy = y * 2;
+        
+                    COLOR* row0 = reinterpret_cast<COLOR*>(dst_base + dy * dst->pitch);
+                    COLOR* row1 = reinterpret_cast<COLOR*>(dst_base + (dy + 1) * dst->pitch);
+        
+                    row0[dx]     = p;
+                    row0[dx + 1] = p;
+                    row1[dx]     = p;
+                    row1[dx + 1] = p;
+                }
+            }
+        };
+
+
+        //Desktop
+        SDL_LockSurface(scaled_screen);
+        scale_to_PC(screen, scaled_screen, SCREEN_WIDTH, SCREEN_HEIGHT);
+        SDL_UnlockSurface(scaled_screen);
+        SDL_UpdateRect(scaled_screen, 0, 0, 0, 0);
     #endif
 
     #ifdef FPS_COUNTER

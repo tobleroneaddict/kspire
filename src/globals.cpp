@@ -14,11 +14,14 @@ bool isKeyPressed(unsigned int key) {
     return state[key];
 }
 
+//Desktop version
 touchpad_report_t touchpad_scan(touchpad_report_t *tp) {
     
     int mx,my;
     Uint8 press = SDL_GetMouseState(&mx,&my);
-
+    mx /= 2;
+    my /= 2;
+    my += 20;
     tp->pressed = false;
     tp->proximity = 0;
     tp->contact = false;
@@ -34,7 +37,6 @@ touchpad_report_t touchpad_scan(touchpad_report_t *tp) {
     
     tp->x_velocity = 0;
     tp->y_velocity = 0;
-    
     return *tp;
 }
 
