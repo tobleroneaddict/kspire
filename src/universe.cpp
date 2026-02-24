@@ -131,25 +131,22 @@ void Universe::Update() {
     }
 
 
-    printf("eph: %f\n",focused_vessel->orbit.epoch);
-    printf("ecc: %f\n",focused_vessel->orbit.eccentricity);
-    printf("incD: %f\n",focused_vessel->orbit.inclination * 57.29);
-    printf("lan: %f\n",focused_vessel->orbit.long_ascending_node);
-    printf("ma : %f\n",focused_vessel->orbit.mean_anomaly);
-    printf("mae : %f\n",focused_vessel->orbit.mean_anomaly_at_epoch);
-    printf("aop : %f\n",focused_vessel->orbit.argument_of_periapsis);
+    //printf("eph: %f\n",focused_vessel->orbit.epoch);
+    //printf("ecc: %f\n",focused_vessel->orbit.eccentricity);
+    //printf("incD: %f\n",focused_vessel->orbit.inclination * 57.29);
+    //printf("lan: %f\n",focused_vessel->orbit.long_ascending_node);
+    //printf("ma : %f\n",focused_vessel->orbit.mean_anomaly);
+    //printf("mae : %f\n",focused_vessel->orbit.mean_anomaly_at_epoch);
+    //printf("aop : %f\n",focused_vessel->orbit.argument_of_periapsis);
     
 
 if(isKeyPressed(K_EDITOR_UP)) {
     for (Vessel& v : vessels) {
-        step_physics_orbit_for_v(&v);
+        //step_physics_orbit_for_v(&v);
+        v.orbit.VEL.z += 10;
     }
 }
-if(isKeyPressed(K_EDITOR_DOWN)) {
-    for (Vessel& v : vessels) {
-        step_rails_orbit_for_v(&v);
-    }
-}
+
 
 
     //Step vessel orbits
