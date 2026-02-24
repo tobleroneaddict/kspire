@@ -17,7 +17,8 @@ void Planetarium::render_celestials(float fixed_bubble,bool map_mode, linalg::ve
         if  (!map_mode) {
             vp = planet_to_universe(focused_vessel->orbit.POS,focused_vessel->home_body);
         } else {
-            vp = planet_to_universe(focused_vessel->orbit.POS+cam_pos,focused_vessel->home_body); //Make map view not inside sun
+            //printf("cam%f\n",linalg::length(cam_pos));
+            vp = planet_to_universe(focused_vessel->orbit.POS+(cam_pos),focused_vessel->home_body); //Make map view not inside sun
         }
         //printf("VP:{%f,%f,%f}\n",vp.x,vp.y,vp.z);
         auto pp = planet_to_universe({0,0,0},find_body_by_name(c.name));

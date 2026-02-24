@@ -25,9 +25,10 @@ void Universe::render_nearby_vessels() {
             glTranslatef(0,0,0);
 
             //Offset by part pos
-            glTranslatef(p.pos.x,
-                p.pos.y,
-                p.pos.z);
+            glTranslatef(
+                p.pos.x+p.attPos.x,
+                p.pos.y+p.attPos.y,
+                p.pos.z+p.attPos.z);
                 //will need to do attPos too and in VAB
 
             glScale3f(10,10,10);
@@ -37,6 +38,7 @@ void Universe::render_nearby_vessels() {
             glPopMatrix();
             
         }
+
 
     }
 }
@@ -81,12 +83,7 @@ void Universe::Update() {
         timewarp.entered_rails = false;
     }
     if (timewarp.exited_rails) {
-        for (Vessel &v : vessels) {
-            if (v.loaded) {
-                //Need to do rails to physics (no)
-            }
-        }
-        timewarp.exited_rails = true;
+        timewarp.exited_rails = false; //Good? ig
     }
 
     //Update focused vessel, in case # of vessels changes. Avoids std::vector fuckery messing with the pointer i think?
@@ -99,13 +96,17 @@ void Universe::Update() {
     }
     planetarium.focused_vessel = focused_vessel;
 
-    //Map view zoom
+    //Map view zoom and also flight ig
     if (isKeyPressed(K_EDITOR_DOWN)) {
-        map_zoom-=10;
+        map_zoom-=1000 * clock.dt;
     }
     if (isKeyPressed(K_EDITOR_UP)) {
-        map_zoom+=10;
+        map_zoom+=1000 * clock.dt;
     }
+
+    map_zoom = linalg::clamp(map_zoom,-20000,150);
+    //printf("z:%f\n",map_zoom);
+
 
     if (isKeyPressed(K_MAP) && map_button_held == false) {
         map_button_held = true;
@@ -142,6 +143,15 @@ void Universe::Update() {
         c.angle = ang * RAD_TO_DEG;
     }
 
+    //Update vessel states
+    for (Vessel &v : vessels) {
+        //All vessels
+        v.Update();
+    }
+
+
+
+    
     //Render
     
     if (in_map_view) {render_map();}
@@ -206,7 +216,19 @@ void Universe::render_flight() {
     rotate_camera();
 
     //You should make this operate from vessel pos + camera
-    planetarium.render_celestials(20000,false,{0,0,0});
+    //planetarium.render_celestials(20000,false,{0,0,0});
+
+
+    //zero btw
+    linalg::vec<double,3> pos_d(
+        cam.pos.x,
+        cam.pos.y,
+        cam.pos.z
+    );
+    planetarium.render_celestials(20000,false,pos_d);
+
+
+
     //OUT CAM : PLANET
     glPopMatrix();
     //IN CAM: VESSEL
@@ -215,9 +237,19 @@ void Universe::render_flight() {
     cam.pos.x = 0;
     cam.pos.y = 0;
     cam.pos.z = -200+map_zoom;
+    
+    
     glTranslatef(-cam.pos.x, -cam.pos.y, -cam.pos.z);
     rotate_camera();
+    
+    glTranslatef(focused_vessel->protoVessel.CoM.x,
+    focused_vessel->protoVessel.CoM.y,
+    focused_vessel->protoVessel.CoM.z);
+
+    printf("COM %f %f %f\n",focused_vessel->protoVessel.CoM.x,focused_vessel->protoVessel.CoM.y,focused_vessel->protoVessel.CoM.z);
+
     render_nearby_vessels();
+    
 
     //OUT CAM : VESSEL
     glPopMatrix();

@@ -24,6 +24,8 @@ class ProtoVessel {
     float latitude = 0;
     float longitude = 0;
 
+    float mass = 0;
+
     linalg::vec<float,3> CoM = {0,0,0};
 
     float gForce = 0;
@@ -33,6 +35,7 @@ class ProtoVessel {
     float height_from_surface = 0;
     
     float obt_speed = 0;
+
 
     //Position and Velocity relative to home body
     linalg::vec<float,3> position = {0,0,0};

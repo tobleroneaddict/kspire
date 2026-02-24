@@ -59,6 +59,12 @@ class Universe {
     Bundle *resource_bundle;
     Bundle *parts_bundle;
     
+
+    //COM Debug node or jus other stuff yk
+    ModelGroup node_g;
+    ngl_object* node;
+
+    
     private:
 
     void rotate_camera();
@@ -66,4 +72,9 @@ class Universe {
     bool map_button_held = false;
 
     float map_zoom = -200;
+
+
+    
+
+
 };

@@ -94,6 +94,8 @@ int scene_load_flight() {
     uni.planetarium.celestials[1].load_model(&planet_bundle);
     uni.planetarium.celestials[2].load_model(&planet_bundle);
 
+    if (uni.node_g.load_group(&resource_bundle,"resources/vab/node")) return 1;
+    uni.node = uni.node_g.get_object("Sphere");
 
     //DEBUG SHIHH
     Vessel new_vess;

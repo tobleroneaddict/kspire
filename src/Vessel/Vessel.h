@@ -42,5 +42,11 @@ class Vessel {
     //WARNINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
     std::vector<Part> part_tree;
 
+
+    void Update();
+    
     private:
+
+    void Update_Physics();
+    void Update_Static();
 };

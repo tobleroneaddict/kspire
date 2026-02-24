@@ -113,9 +113,9 @@ class Part {
     Staging_Icons icon = Staging_Icons::NONE;
 
     //Physical Properties
-    float mass;
-    float aerodynamicArea;
-    float buoyancy;
+    float mass = 0;
+    float aerodynamicArea = 0;
+    float buoyancy = 0;
     
     enum DragModel
 	{
