@@ -1,4 +1,5 @@
 #include "globals.h"
+#include "World/LOD/planet-lod.h"
 #include "universe.h"
 #include "Utility/font.h"
 #include "Editor/VAB.h"
@@ -286,6 +287,27 @@ int main()
     ui_altitude.tex.transparent_color = 0x00;
 
 
+
+
+    //TESTING TERRAIN
+    Terrain terrain;
+    
+    
+    #ifdef KSPIRE_PLATFORM_NSPIRE
+    while(!isKeyPressed(K_ESC) && break_game == 0)
+    #else
+    while (break_game == 0 && sdl_event.type != SDL_QUIT)
+    #endif
+    {
+        glColor3f(0.0f, 0.0f, 0.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        
+
+        nglDisplay();
+    }
+
+    /*
     #ifdef KSPIRE_PLATFORM_NSPIRE
     while(!isKeyPressed(K_ESC) && break_game == 0)
     #else
@@ -352,7 +374,7 @@ int main()
             
                 screen_print("Warp: x ",(int)(uni.timewarp.warp_rate + 0.5f),100,220,screen);
 
-                /*
+                
                 //Navball
                 {
                     nglSetProjectionMode(GLProjectionMode::GL_PROJECTION_ORTHOGRAPHIC);
@@ -400,22 +422,13 @@ int main()
                     //projection_mode = GLProjectionMode::GL_PROJECTION_PERSPECTIVE;
                     nglSetProjectionMode(GLProjectionMode::GL_PROJECTION_PERSPECTIVE);
 
-                }*/
+                }
 
 
             }
 
             
-            /*
-            debug_print("SMA ",uni.focused_vessel->orbit.semi_major_axis,10,10,screen);
-            debug_print("ECC ",uni.focused_vessel->orbit.eccentricity,10,30,screen);
-            debug_print("PRD ",uni.focused_vessel->orbit.period,10,50,screen);
-            debug_print("SPD ",uni.focused_vessel->orbit.orbital_speed,10,70,screen);
-            debug_print("INC ",uni.focused_vessel->orbit.inclination,10,90,screen);
-            debug_print("M-A ",uni.focused_vessel->orbit.mean_anomaly,10,110,screen);
-            debug_print("LAN ",uni.focused_vessel->orbit.long_ascending_node,10,130,screen);
-            debug_print("EPC ",uni.focused_vessel->orbit.epoch,10,150,screen);
-            */
+            
         }
 
         if (current_state == GameStates::EDITOR) {
@@ -465,6 +478,7 @@ int main()
         nglDisplay();
     }
 
+    */
 
     scene_pack_flight();
     scene_pack_vab();

@@ -74,7 +74,7 @@
 	vec2d uv1, vec2d uv2, vec2d uv3,
 	vec3d center,double size)
 {
-	vec3d d2 = p2 - p1, d3 = p3 - p1;	
+	//vec3d d2 = p2 - p1, d3 = p3 - p1;	
 
 
 	bool normalize_enabled = size > 0.0001 ? 1 : 0;
@@ -91,12 +91,12 @@
 		n1x = n1x - p1x;
 		n2x = n2x - p2x;
 		n3x = n3x - p3x;
-
-		vec4d d2x = p2x - p1x;
-		vec4d d3x = p3x - p1x;
-
-		vec4d nd2x = n2x - n1x;
-		vec4d nd3x = n3x - n1x;
+//
+		//vec4d d2x = p2x - p1x;
+		//vec4d d3x = p3x - p1x;
+//
+		//vec4d nd2x = n2x - n1x;
+		//vec4d nd3x = n3x - n1x;
 
 
 	}

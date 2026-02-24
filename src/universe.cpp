@@ -246,8 +246,6 @@ void Universe::render_flight() {
     focused_vessel->protoVessel.CoM.y,
     focused_vessel->protoVessel.CoM.z);
 
-    printf("COM %f %f %f\n",focused_vessel->protoVessel.CoM.x,focused_vessel->protoVessel.CoM.y,focused_vessel->protoVessel.CoM.z);
-
     render_nearby_vessels();
     
 
