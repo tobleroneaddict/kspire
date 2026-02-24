@@ -268,8 +268,8 @@ int main()
     //vab.hide_vab = true;
     //Debug init scene
     //scene_load_menu();
-    scene_load_flight();
-    //scene_load_vab();
+    //scene_load_flight();
+    scene_load_vab();
 
 
     //Test navball
@@ -425,7 +425,7 @@ int main()
 
             //Show CATEGORY
             auto cat_list = Parts.list_categories;
-            if ((unsigned int)vab.page_index < Parts.list_categories.size() && vab.page_index >= 0) {
+            if ((unsigned int)vab.page_index < Parts.list_categories.size() && vab.page_index >= 0 && vab.show_pallete) {
                 //printf("%s\n",cat_list[vab.page_index].c_str());
                 fonts.drawStringCenter(cat_list[vab.page_index].c_str(),
             0xFFFF, *screen,

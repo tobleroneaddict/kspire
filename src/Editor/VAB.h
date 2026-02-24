@@ -52,7 +52,7 @@ private:
     
 
     //Magic value to denote a detached node
-    const unsigned int DETACHED_NODE = 429493081;
+    const int DETACHED_NODE = -1;
 
     //Holding part?
     bool  has_grabbed_part = false;

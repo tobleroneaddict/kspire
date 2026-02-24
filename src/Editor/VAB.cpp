@@ -145,18 +145,28 @@ void VAB::onClick_oneshot() {
                 has_grabbed_part = true;
                 grabbed_part = i;
                 //Unlink part
-                printf("Unlinked nodes.\n");
+                //printf("Unlinked nodes.\n");
 
 
                 //Super cool algorithm that finds the other node, and takes this node, and sets it to DETACHED magic val
-                int calculated_index =0;
-                Node* detachee = &part_tree[i].nodes[calculated_index];
+                Node* detachee = nullptr;
+
+                for (Node &n : part_tree[i].nodes) {
+                    if (n.attached_node != DETACHED_NODE) {
+                        detachee = &n;
+                        break;
+                    }
+                }
+                if (detachee == nullptr) {
+                    break;
+                }
                 //Other part
                 //find node with id
                 int ex = 0; //cus like two depth
                 for (Part &t_p : part_tree) {
                     for (Node &t_n : t_p.nodes) {
-                        if (t_n.unique_id == detachee->attached_node) {
+                        if ((int)t_n.unique_id == detachee->attached_node) {
+                            //printf("Detaching: %d\n",t_n.attached_node);
                             t_n.attached_node = DETACHED_NODE;
                             ex = 1; break;
                         }
@@ -194,7 +204,8 @@ void VAB::onClick_oneshot() {
                             part_tree[grabbed_part].pos = client_pos - (mult*n_2.position);
                             n.attached_node = n_2.unique_id;    //Link
                             n_2.attached_node = n.unique_id;    //Link
-                            printf("Linked nodes.\n");
+                            //printf("Linked N%d <-> N%d.",n_2.unique_id,n.unique_id);
+                            //printf("Linked nodes.\n");
                             break;
                         }
                     }

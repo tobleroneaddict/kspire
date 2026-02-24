@@ -69,15 +69,6 @@ void Universe::Update() {
 
     planetarium.update_planet_positions(universal_time);
 
-/*    printf("2POS: (%f,%f,%f)\n", focused_vessel->orbit.POS.x/1000.0f, 
-                                 focused_vessel->orbit.POS.y/1000.0f, 
-                                 focused_vessel->orbit.POS.z/1000.0f);
-    printf("2VEL: (%f,%f,%f)\n", focused_vessel->orbit.VEL.x/1000.0f, 
-                                 focused_vessel->orbit.VEL.y/1000.0f, 
-                                 focused_vessel->orbit.VEL.z/1000.0f);
-    printf("2ECC: %f\n",         focused_vessel->orbit.eccentricity);
-*/
-
     //Rails enter/exit handling
     //Oneshot
     if (timewarp.entered_rails) {
@@ -108,24 +99,6 @@ void Universe::Update() {
     }
     planetarium.focused_vessel = focused_vessel;
 
-    //Debug to swap texture of planet
-    if(isKeyPressed(K_ENTER)) {
-        for (Vessel &v : vessels) {
-            if (v.loaded) {
-                v.orbit.physics_to_rails(universal_time);
-                //v.orbit.calculate_state_from_keplers(universal_time);
-            }
-        }
-        //o->calculate_state_from_keplers(universal_time);
-        //o->epoch = 0;
-        //o->eccentricity = 0.001;
-        //o->inclination = 0.01f;
-        //o->long_ascending_node = 20;
-        //o->mean_anomaly = 15;
-        //o->mean_anomaly_at_epoch = 1;
-        //o->semi_major_axis = 4250.0f * 1000.0f;
-        //o->calculate_state_from_keplers(0);
-    }
     //Map view zoom
     if (isKeyPressed(K_EDITOR_DOWN)) {
         map_zoom--;
@@ -139,18 +112,6 @@ void Universe::Update() {
         in_map_view = !in_map_view;
     }
     if (!isKeyPressed(K_MAP)) map_button_held = false;
-
-    //printf("eph: %f\n",focused_vessel->orbit.epoch);
-    //printf("ecc: %f\n",focused_vessel->orbit.eccentricity);
-    //printf("incD: %f\n",focused_vessel->orbit.inclination * 57.29);
-    //printf("lan: %f\n",focused_vessel->orbit.long_ascending_node);
-    //printf("ma : %f\n",focused_vessel->orbit.mean_anomaly);
-    //printf("mae : %f\n",focused_vessel->orbit.mean_anomaly_at_epoch);
-    //printf("aop : %f\n",focused_vessel->orbit.argument_of_periapsis);
-    
-
-
-
 
     //Step vessel orbits
     for (Vessel& v : vessels) {
@@ -174,12 +135,6 @@ void Universe::Update() {
     const double TWO_PI = 2.0 * M_PI;
     const double RAD_TO_DEG = 57.29578;
 
-    //Tesitng
-    //auto im = linalg::normalize(focused_vessel->orbit.POS);
-    //cam.yaw = linalg::atan2(im.x, im.y) * RAD_TO_DEG ;
- 
-    
-    
     for (CelestialBody& c : planetarium.celestials) { 
 
         double ang = fmod(universal_time / 21549.425 * TWO_PI, TWO_PI);

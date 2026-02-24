@@ -35,7 +35,7 @@ struct Node {
 
     unsigned int unique_id;
     //Same, but for the node it's attached to.
-    unsigned int attached_node = 429493081; //detached node val
+    int attached_node = -1; //detached node val
 };
 
 
