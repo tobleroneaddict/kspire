@@ -289,8 +289,8 @@ int Planetarium::load_celestial_bodies(Bundle* resources) {
             cb.rotation_rate = std::stof(s_rr);
         if (std::strlen(s_ha) < 64)
             cb.atmosphere = std::stoi(s_ha);
-        if (std::strlen(s_atmh) < 64)
-            cb.atmosphere_height = std::stoi(s_atmh);
+        //if (std::strlen(s_atmh) < 64)
+        //    cb.atmosphere_height = std::stoi(s_atmh);
         if (std::strlen(s_slp) < 64)
             cb.sea_level_pressure = std::stof(s_slp);
         if (std::strlen(s_mu) < 64)

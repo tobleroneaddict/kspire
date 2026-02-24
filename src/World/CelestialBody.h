@@ -18,7 +18,7 @@ class CelestialBody {
     float angle;
 
     int atmosphere = -1;
-    int atmosphere_height = -1;
+    int atmosphere_height = 70000;
     float sea_level_pressure = -1;
 
     bool is_home_body = false;
@@ -34,6 +34,10 @@ class CelestialBody {
     void clear_model();
     ~CelestialBody();
     ngl_object* me;
+
+
+    //Altitude color intensity from altitude above sea lvl (0-1)
+    float get_atm_intensity(float altitude);
 
     private:
     ModelGroup group; //INDIVDUAL group. stores texture data (!)

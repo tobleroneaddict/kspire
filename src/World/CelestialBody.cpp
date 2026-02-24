@@ -20,6 +20,20 @@ int CelestialBody::load_model(Bundle* assets) {
     return 0;
 }
 
+float CelestialBody::get_atm_intensity(float altitude) {
+    float power = 0;
+    if (altitude > (float)atmosphere_height)
+        return 0;
+    if (altitude < 0) 
+        return 1;
+
+    //Have a more complex function here for the real deal
+    power = altitude / (float)atmosphere_height;
+    power = 1.0f - power; //inverse
+    return power;
+}
+
+
 int CelestialBody::switch_texture(std::string name) {
     return group.swap_texture(my_assets,"Sphere",name);
 }

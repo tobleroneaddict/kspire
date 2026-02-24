@@ -105,6 +105,7 @@ void Universe::Update() {
     }
     if (isKeyPressed(K_EDITOR_UP)) {
         map_zoom+=1;
+        focused_vessel->orbit.VEL.y -= 10;
     }
 
     if (isKeyPressed(K_MAP) && map_button_held == false) {
@@ -193,8 +194,27 @@ void Universe::render_map() {
 
 //Render flight view
 void Universe::render_flight() {
-    render_skybox();
     
+    CelestialBody* e = &planetarium.celestials[planetarium.find_body_by_name("Earth")];
+    float alt = linalg::length(focused_vessel->orbit.POS);
+    alt -= e->radius*2.0f;
+    float intensity = e->get_atm_intensity(alt);
+    //printf("Alt: %f\n",alt);
+    printf("Int: %f\n",intensity);
+
+
+
+    glColor3f(intensity*((float)0x87/(float)0xFF)
+             ,intensity*((float)0xCE/(float)0xFF)
+             ,intensity*((float)0xEB/(float)0xFF)
+    );
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    
+    
+    //render_skybox();
+    
+
     //IN CAM
     glPushMatrix();
     //Move back
@@ -240,9 +260,6 @@ void Universe::pack() {
 
 
 void Universe::render_skybox() {
-    glColor3f(0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
     
     //IN SKYBOx
     glPushMatrix();

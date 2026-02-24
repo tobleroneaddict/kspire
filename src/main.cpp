@@ -267,8 +267,8 @@ int main()
 
     //vab.hide_vab = true;
     //Debug init scene
-    scene_load_menu();
-    //scene_load_flight();
+    //scene_load_menu();
+    scene_load_flight();
     //scene_load_vab();
 
 
