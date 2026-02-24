@@ -1,7 +1,6 @@
 #include "globals.h"
 #include "universe.h"
 #include "Utility/font.h"
-
 #include "Editor/VAB.h"
 #include "Utility/GameTexture.h"
 #include "Utility/PartLoader.h"
@@ -21,6 +20,7 @@ enum GameStates {
     FLIGHT,
     PRELOAD,
 };
+//If it crashes for some reason try rebuilding objects...
 
 
 GameStates current_state = GameStates::PRELOAD;
