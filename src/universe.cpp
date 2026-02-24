@@ -101,17 +101,16 @@ void Universe::Update() {
 
     //Map view zoom
     if (isKeyPressed(K_EDITOR_DOWN)) {
-        map_zoom-=1;
+        map_zoom-=10;
     }
     if (isKeyPressed(K_EDITOR_UP)) {
-        map_zoom+=1;
-        focused_vessel->orbit.VEL.y -= 10;
+        map_zoom+=10;
     }
 
     if (isKeyPressed(K_MAP) && map_button_held == false) {
         map_button_held = true;
         in_map_view = !in_map_view;
-        printf("K\n");
+        printf("Map view key\n");
     }
     if (!isKeyPressed(K_MAP)) map_button_held = false;
 
@@ -151,6 +150,7 @@ void Universe::Update() {
     
 }
 
+
 //Render Map view
 void Universe::render_map() {
     render_skybox();
@@ -161,22 +161,7 @@ void Universe::render_map() {
     cam.pos.y = 0;
     cam.pos.z = map_zoom;
     glTranslatef(-cam.pos.x, -cam.pos.y, -cam.pos.z);
-    //Camera rotation
-    
-    //Gonna have to configulate this for orbit mode
-    //camera.cpp has kinda a way to do the auto mode using sub modes.
-    if (cam.mode == Camera::ORBIT) {
-        linalg::vec<float,3> out = cam.wrapper();   //Outputs rpy as actual clamped values good for ngl
-        nglRotateX(out.x);
-        nglRotateZ(out.z);
-        nglRotateY(out.y);
-    }
-    if (cam.mode == Camera::FREE) {
-        linalg::vec<float,3> out = cam.wrapper();   //Outputs rpy as actual clamped values good for ngl
-        nglRotateX(out.x);
-        nglRotateY(out.y);
-        nglRotateZ(out.z);
-    }
+    rotate_camera();
 
     linalg::vec<double,3> pos_d(
         cam.pos.x,
@@ -199,29 +184,48 @@ void Universe::render_flight() {
     float alt = linalg::length(focused_vessel->orbit.POS);
     alt -= e->radius*2.0f;
     float intensity = e->get_atm_intensity(alt);
-    //printf("Alt: %f\n",alt);
-    printf("Int: %f\n",intensity);
-
-
 
     glColor3f(intensity*((float)0x87/(float)0xFF)
              ,intensity*((float)0xCE/(float)0xFF)
              ,intensity*((float)0xEB/(float)0xFF)
     );
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    
-    
-    //render_skybox();
+
+    //Render skybox if in space
+    if (intensity < 1E-8)
+        render_skybox();
     
 
-    //IN CAM
+    //IN CAM: PLANET
     glPushMatrix();
     //Move back
     cam.pos.x = 0;
     cam.pos.y = 0;
-    cam.pos.z = -200;
+    cam.pos.z = 0;
     glTranslatef(-cam.pos.x, -cam.pos.y, -cam.pos.z);
+    rotate_camera();
+
+    //You should make this operate from vessel pos + camera
+    planetarium.render_celestials(20000,false,{0,0,0});
+    //OUT CAM : PLANET
+    glPopMatrix();
+    //IN CAM: VESSEL
+    glPushMatrix();
+    //Move back
+    cam.pos.x = 0;
+    cam.pos.y = 0;
+    cam.pos.z = -200+map_zoom;
+    glTranslatef(-cam.pos.x, -cam.pos.y, -cam.pos.z);
+    rotate_camera();
+    render_nearby_vessels();
+
+    //OUT CAM : VESSEL
+    glPopMatrix();
+
+    
+}
+
+void Universe::rotate_camera() {
     //Camera rotation
     
     //Gonna have to configulate this for orbit mode
@@ -238,25 +242,8 @@ void Universe::render_flight() {
         nglRotateY(out.y);
         nglRotateZ(out.z);
     }
-
-
-    planetarium.render_celestials(20000,false,{0,0,0});
-
-    render_nearby_vessels();
-
-    //OUT CAM
-    glPopMatrix();
-    
 }
 
-//Pack away the flight scene
-void Universe::pack() {
-    planetarium.clear_celestial_models();
-    skybox.free_group();
-
-    vessels.clear();
-
-}
 
 
 void Universe::render_skybox() {
@@ -299,4 +286,14 @@ void Universe::render_skybox() {
     glPopMatrix();
     
     glClear(GL_DEPTH_BUFFER_BIT);
+}
+
+
+//Pack away the flight scene
+void Universe::pack() {
+    planetarium.clear_celestial_models();
+    skybox.free_group();
+
+    vessels.clear();
+
 }

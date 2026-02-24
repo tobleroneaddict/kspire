@@ -61,6 +61,7 @@ class Universe {
     
     private:
 
+    void rotate_camera();
     void render_skybox();
     bool map_button_held = false;
 
