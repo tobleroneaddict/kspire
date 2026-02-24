@@ -291,8 +291,13 @@ int main()
 
     //TESTING TERRAIN
     Terrain terrain;
-    
-    
+
+    terrain.draw({0,0,0});
+
+    printf("T: %d\n",terrain.tris_rendered);
+    printf("T: %d\n",terrain.indices);
+    printf("T: %d\n",terrain.patches);
+
     #ifdef KSPIRE_PLATFORM_NSPIRE
     while(!isKeyPressed(K_ESC) && break_game == 0)
     #else

@@ -33,16 +33,14 @@
 /*------------------------------------------------------*/
 #define foreach(var, container) for( auto var = (container).begin(); var != (container).end(); ++var)
 /*------------------------------------------------------*/
-#define f_min min
-#define f_max max
+
 #define vswap(a,b) { auto c=a;a=b;b=c; }
-#define min(a,b) (((a)<(b))?(a):(b))
-#define max(a,b) (((a)>(b))?(a):(b))
-#define clamp(a_,b_,c_) (min(max((a_),(b_)),(c_)))
+//#define min(a,b) (((a)<(b))?(a):(b))
+//#define max(a,b) (((a)>(b))?(a):(b))
 #define frac(a) (a-floor(a))
 #define dot3(a,b) (a.x*b.x+a.y*b.y+a.z*b.z)
 #define cross3(a,b) vec3f( a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z , a.x * b.y - a.y * b.x )
-#define min3f(a,b) vec3f(min(a.x,b.x),min(a.y,b.y),min(a.z,b.z))
+//#define min3f(a,b) vec3f(min(a.x,b.x),min(a.y,b.y),min(a.z,b.z))
 #define max3f(a,b) vec3f(max(a.x,b.x),max(a.y,b.y),max(a.z,b.z))
 #define lerp(a_,b_,t_) ( a_*(1-t_) + b_*t_ )
 #define normalize3(a) (a*(1.0/sqrt(a.x*a.x+a.y*a.y+a.z*a.z)))
@@ -91,7 +89,7 @@ class uchar4
 		
 
 class Terrain {
-
+    public:
     matrix44d modelviewprojection;
     
     int tris_rendered;
