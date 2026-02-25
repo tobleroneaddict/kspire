@@ -590,8 +590,9 @@ namespace angel {
                     //Map normalized UVs to texture plane (this is super cool)
                     float t_h = get_material_by_name(n.material)->diffuse_texture.texture.height;
                     float t_w = get_material_by_name(n.material)->diffuse_texture.texture.width;
-                    iv.u = _u*t_h;
-                    iv.v = _v*t_w;
+
+                    iv.u = _u*t_w;
+                    iv.v = _v*t_h;
                     
                     iv.c = temporary_color;
                 } else {

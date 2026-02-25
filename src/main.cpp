@@ -269,10 +269,11 @@ int main()
 
     //vab.hide_vab = true;
     //Debug init scene
-    //scene_load_menu();
-    scene_load_flight();
+    scene_load_menu();
+    //scene_load_flight();
     //scene_load_vab();
 
+    //return 1;
 
     //Test navball
     ModelGroup nav;
@@ -285,6 +286,8 @@ int main()
     ui_altitude.init(&resource_bundle,"resources/ui/altitude.png",screen);
     ui_altitude.tex.transparent_color = 0x00;
 
+
+    
 
     #ifdef KSPIRE_PLATFORM_NSPIRE
     while(!isKeyPressed(K_ESC) && break_game == 0)
@@ -352,7 +355,7 @@ int main()
             
                 screen_print("Warp: x ",(int)(uni.timewarp.warp_rate + 0.5f),100,220,screen);
 
-                /*
+                
                 //Navball
                 {
                     nglSetProjectionMode(GLProjectionMode::GL_PROJECTION_ORTHOGRAPHIC);
@@ -386,10 +389,10 @@ int main()
                     );
 
                     auto stuff = uni.cam.wrapper();
-                    auto ang = linalg::atan2(uni.focused_vessel->orbit.POS.y,uni.focused_vessel->orbit.POS.x) * 57.29f;
+                    auto ang = linalg::atan2(uni.focused_vessel->orbit.POS.y,uni.focused_vessel->orbit.POS.z) * 57.29f * 1;
                     if (ang < 0) ang = 360.0f - ang;
-                    nglRotateX((float)fmod(ang,360.0f));
-                    nglRotateZ((float)fmod(ang,360.0f));
+                    nglRotateX((float)fmod(stuff.x+90+ang+270,360.0f));
+                    nglRotateZ((float)fmod(stuff.y,360.0f));
                     nglRotateY(270);
 
                     glScale3f(37,37,37);
@@ -400,7 +403,7 @@ int main()
                     //projection_mode = GLProjectionMode::GL_PROJECTION_PERSPECTIVE;
                     nglSetProjectionMode(GLProjectionMode::GL_PROJECTION_PERSPECTIVE);
 
-                }*/
+                }
 
 
             }
