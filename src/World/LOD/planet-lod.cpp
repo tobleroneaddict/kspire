@@ -74,7 +74,7 @@
 	vec2d uv1, vec2d uv2, vec2d uv3,
 	vec3d center,double size)
 {
-	vec3d d2 = p2 - p1, d3 = p3 - p1;	
+	//vec3d d2 = p2 - p1, d3 = p3 - p1;	
 
 
 	bool normalize_enabled = size > 0.0001 ? 1 : 0;
@@ -91,12 +91,12 @@
 		n1x = n1x - p1x;
 		n2x = n2x - p2x;
 		n3x = n3x - p3x;
-
-		vec4d d2x = p2x - p1x;
-		vec4d d3x = p3x - p1x;
-
-		vec4d nd2x = n2x - n1x;
-		vec4d nd3x = n3x - n1x;
+//
+		//vec4d d2x = p2x - p1x;
+		//vec4d d3x = p3x - p1x;
+//
+		//vec4d nd2x = n2x - n1x;
+		//vec4d nd3x = n3x - n1x;
 
 
 	}
@@ -124,6 +124,13 @@
 	vec2d uv1, vec2d uv2, vec2d uv3,
 	vec3d center)
 {
+	glBegin(GL_TRIANGLES);
+
+	glVertex3f((int)p1.x, (int)p1.y, (int)p1.z);
+	glVertex3f((int)p2.x, (int)p2.y, (int)p2.z);
+	glVertex3f((int)p3.x, (int)p3.y, (int)p3.z);
+	glEnd();
+	printf("DRAW\n");
 	// glBegin(GL_TRIANGLES);
 	// glVertex3f(p1.x, p1.y, p1.z);
 	// glVertex3f(p2.x, p2.y, p2.z);
@@ -151,13 +158,13 @@
 
 		
 		double dot = linalg::dot(edge_center[i],linalg::normalize(d));
-		angle[i] = acos(clamp(dot, -1, 1));
+		angle[i] = linalg::acos(linalg::clamp(dot, -1, 1));
 	}
 
 	// culling
 	{
 		// angle based
-		if (max(angle[0], max(angle[1], angle[2])) < M_PI / 2 - 0.2) return;//culling
+		if (linalg::max(angle[0], linalg::max(angle[1], angle[2])) < M_PI / 2 - 0.2) return;//culling
 
 		// frustum based
 		if (size<0.25)//if (0)
@@ -246,8 +253,3 @@
 
 //	gui.screen[0].label["stats"].text = Gui::String("Triangles: ") + tris_rendered;
 }
-
-
-
-
-
