@@ -149,8 +149,25 @@ void Universe::Update() {
         v.Update();
     }
 
+    //Camera rotation
+    // linalg::vec<double,3> forward = linalg::normalize(focused_vessel->orbit.VEL);
+    // if (linalg::length(focused_vessel->orbit.VEL) < 1E-8) forward = {0,1,0};
+
+    // linalg::vec<double,3> world_up = linalg::normalize(focused_vessel->orbit.POS);
+
+    // linalg::vec<double,3> right = linalg::cross(world_up,forward);
+
+    // linalg::vec<double,3> up = linalg::cross(forward,right);
 
 
+    // //printf("UP: {%f %f %f}\n",up.x,up.y,up.z);
+
+    // double pitch = linalg::atan2(up.y,up.z) *57.27;
+    // double yaw = 1;
+
+
+    //cam.yaw = yaw;
+    //cam.pitch = pitch;
     
     //Render
     
@@ -258,12 +275,14 @@ void Universe::render_flight() {
 }
 
 void Universe::rotate_camera() {
-    //Camera rotation
     
     //Gonna have to configulate this for orbit mode
     //camera.cpp has kinda a way to do the auto mode using sub modes.
     if (cam.mode == Camera::ORBIT) {
         linalg::vec<float,3> out = cam.wrapper();   //Outputs rpy as actual clamped values good for ngl
+
+        
+
         nglRotateX(out.x);
         nglRotateZ(out.z);
         nglRotateY(out.y);
