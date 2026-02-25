@@ -1,6 +1,7 @@
 #include "globals.h"
 #include "universe.h"
 #include "Utility/font.h"
+#include "World/LOD/planet-lod.h"
 #include "Editor/VAB.h"
 #include "Utility/GameTexture.h"
 #include "Utility/PartLoader.h"
@@ -270,7 +271,7 @@ int main()
     //vab.hide_vab = true;
     //Debug init scene
     //scene_load_menu();
-    scene_load_flight();
+    //scene_load_flight();
     //scene_load_vab();
 
     //return 1;
@@ -287,7 +288,55 @@ int main()
     ui_altitude.tex.transparent_color = 0x00;
 
 
+
+    //Testing
+
+    Terrain terrain;
     
+    float angle = 0;
+    #ifdef KSPIRE_PLATFORM_NSPIRE
+    while(!isKeyPressed(K_ESC) && break_game == 0)
+    #else
+    while (break_game == 0 && sdl_event.type != SDL_QUIT)
+    #endif
+    {
+
+        glColor3f(0.5f, 0.0f, 0.3f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        //Tell wayland were healthy and happy
+        #ifndef _TINSPIRE
+
+        SDL_PollEvent(&sdl_event);
+        if (sdl_event.type == SDL_KEYDOWN) {
+            if (sdl_event.key.keysym.sym == SDLK_ESCAPE) // ESC key
+                        break_game = true;
+        }
+        #endif
+
+        
+    
+        double radius = 40.0f;
+        linalg::vec<double,3> center = {0,-4,100};
+        glPushMatrix();
+        terrain.chunks.clear();
+        terrain.recalculate_chunks({0,0},0 + angle);
+        
+        glTranslatef(float(center.x), float(center.y), float(center.z));
+        glScale3f(float(radius), float(radius), float(radius));
+
+        nglRotateY((float)fmod(angle,360.0f));
+        
+
+
+        glPopMatrix();
+
+        angle += 10.0f;
+        nglDisplay();
+    }
+
+
+    return 1;
 
     #ifdef KSPIRE_PLATFORM_NSPIRE
     while(!isKeyPressed(K_ESC) && break_game == 0)

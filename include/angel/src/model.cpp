@@ -517,7 +517,7 @@ namespace angel {
                 new_mat.name = usemat_name;
                 new_mat.diffuse_texture = new_tex;
                 group_materials.push_back(new_mat);
-                printf("Made new mat %s\n",usemat_name.c_str());
+                //printf("Made new mat %s\n",usemat_name.c_str());
 
                 //Go to NL
                 while (lineidx < mat.size() && mat[lineidx] != '\n') lineidx++;

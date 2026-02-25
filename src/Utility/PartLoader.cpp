@@ -82,7 +82,7 @@ void PartLoader::config_part(Part* part, const rapidjson::Value& d) {
             if (mod_one.HasMember("type") && mod_one["type"].IsString()) {
                 new_mod.type = mod_one["type"].GetString();
                 new_mod.module_type = string_to_mod(new_mod.type);
-                printf("Found module of type: %s\n",new_mod.type.c_str());
+                //printf("Found module of type: %s\n",new_mod.type.c_str());
             }
 
             if (mod_one.HasMember("thrust") && mod_one["thrust"].IsNumber()) new_mod.thrust = mod_one["thrust"].GetFloat();
