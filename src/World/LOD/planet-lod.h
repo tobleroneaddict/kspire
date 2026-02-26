@@ -1,6 +1,10 @@
 #pragma once
 #include "../../globals.h"
 
+#ifndef M_PI
+#define M_PI 3.14159265
+#endif
+
 struct ChunkModel 
 {
     unsigned int count_positions = 0;

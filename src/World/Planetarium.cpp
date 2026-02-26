@@ -4,8 +4,49 @@
 #include "../../include/rapidjson/stringbuffer.h"
 
 using namespace rapidjson;
+
+void Planetarium::update_planet_lighting()
+{
+    
+    for (CelestialBody &c : celestials) {
+        //Get sun direction
+        auto planet_pos = planet_to_universe(c.orbit.POS,find_body_by_name(c.parent));
+        auto sun_dir = linalg::normalize(planet_pos);
+        
+        
+        //Then apply to all vertices of model
+        auto ref = c.me;
+
+        for (unsigned int i = 0; i < ref->count_vertices; i++) {
+            
+            auto v = &ref->vertices[i];
+            auto p = &ref->positions[v->index];
+            
+            linalg::vec<double,3> vertex_model = {
+                (double)p->x,
+                (double)p->z,
+                (double)p->y
+            };
+
+            auto normal = linalg::normalize(vertex_model);
+
+            auto dot = linalg::dot(normal,sun_dir);
+
+
+            float intensity = dot += 0.4f;
+            intensity = linalg::clamp(intensity,0.0f,0.9f);
+
+            ref->vertices[i].c = colorRGB(intensity,intensity,intensity);
+            
+        }
+        
+    }
+}
                                                                                     //Cam pos used in map mode
-void Planetarium::render_celestials(float fixed_bubble,bool map_mode, linalg::vec<double,3> cam_pos) {
+void Planetarium::render_celestials(
+    float fixed_bubble,bool map_mode, 
+    linalg::vec<double,3> cam_pos) 
+{
 
     if (focused_vessel == nullptr) { printf("E 218754: No Focused Vessel!\n");return;}
     if (celestials.size() == 0) { printf("E 128585: Cannot render planets!\n");return;}
@@ -18,7 +59,8 @@ void Planetarium::render_celestials(float fixed_bubble,bool map_mode, linalg::ve
             vp = planet_to_universe(focused_vessel->orbit.POS,focused_vessel->home_body);
         } else {
             //printf("cam%f\n",linalg::length(cam_pos));
-            vp = planet_to_universe(focused_vessel->orbit.POS+(cam_pos),focused_vessel->home_body); //Make map view not inside sun
+            vp = planet_to_universe(focused_vessel->orbit.POS+(cam_pos),
+            focused_vessel->home_body); //Make map view not inside sun
         }
         //printf("VP:{%f,%f,%f}\n",vp.x,vp.y,vp.z);
         auto pp = planet_to_universe({0,0,0},find_body_by_name(c.name));
@@ -77,10 +119,7 @@ void Planetarium::render_celestials(float fixed_bubble,bool map_mode, linalg::ve
                 float angular_diameter = 2.0f * (c.radius / len);
                 float render_radius = angular_diameter * fixed_bubble;
 
-
-
                 glScale3f(render_radius, render_radius, render_radius);
-
 
                 if (obj->texture != nullptr && obj->positions != nullptr) {
                     glBindTexture(obj->texture);
@@ -94,21 +133,12 @@ void Planetarium::render_celestials(float fixed_bubble,bool map_mode, linalg::ve
                         focused_vessel->protoVessel.altitude = altitude; //SL alt
 
                     }
-
                 }
-
-
-
             }
         }
         glPopMatrix();
     }
-
-
 }
-
-
-
 
 //Get index of celestial by name
 int Planetarium::find_body_by_name(std::string name) {
@@ -119,7 +149,7 @@ int Planetarium::find_body_by_name(std::string name) {
         }
         i++;
     }
-    return -1;
+    return 0;
 }
 
 //get the SOI of a celestial

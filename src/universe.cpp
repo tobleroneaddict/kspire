@@ -70,6 +70,7 @@ void Universe::Update() {
     universal_time += (clock.dt * timewarp.warp_rate);
 
     planetarium.update_planet_positions(universal_time);
+    planetarium.update_planet_lighting();
 
     //Rails enter/exit handling
     //Oneshot
@@ -137,6 +138,7 @@ void Universe::Update() {
     const double TWO_PI = 2.0 * M_PI;
     const double RAD_TO_DEG = 57.29578;
 
+    //Angle setting for bodies
     for (CelestialBody& c : planetarium.celestials) { 
 
         double ang = fmod(universal_time / 21549.425 * TWO_PI, TWO_PI);
