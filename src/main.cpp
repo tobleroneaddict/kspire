@@ -142,6 +142,7 @@ int scene_load_menu() {
     //Only using earth and moon
     uni.planetarium.celestials[1].load_model(&planet_bundle);
     uni.planetarium.celestials[2].load_model(&planet_bundle);
+    uni.planetarium.update_planet_lighting(true,0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     title.load_title(&resource_bundle,uni.planetarium.celestials[1].me,uni.planetarium.celestials[2].me);
@@ -270,8 +271,8 @@ int main()
 
     //vab.hide_vab = true;
     //Debug init scene
-    //scene_load_menu();
-    scene_load_flight();
+    scene_load_menu();
+    //scene_load_flight();
     //scene_load_vab();
 
     //return 1;
@@ -475,6 +476,7 @@ int main()
 
         if (current_state == GameStates::MENU) {
             auto res = title.Update(); 
+            uni.planetarium.update_planet_lighting(true,title.angle);
             if (res == -1) break_game = true;
             if (res == 600) {
                 scene_pack_menu(); scene_load_vab();

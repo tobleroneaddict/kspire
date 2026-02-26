@@ -70,7 +70,7 @@ void Universe::Update() {
     universal_time += (clock.dt * timewarp.warp_rate);
 
     planetarium.update_planet_positions(universal_time);
-    planetarium.update_planet_lighting();
+    planetarium.update_planet_lighting(false,0);
 
     //Rails enter/exit handling
     //Oneshot

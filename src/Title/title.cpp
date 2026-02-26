@@ -114,7 +114,10 @@ int Title::Update() {
         break;
     }
         
-    angle += 20.0f * clock.dt;
+    angle += 10.0f * clock.dt;
+
+    
+
 
     return 0;
 }

@@ -35,7 +35,7 @@ public:
 
     //REAL TIME Lighting will not be possible.
     //Rather it is staggered!
-    void update_planet_lighting();
+    void update_planet_lighting(bool called_from_menu,float menu_angle);
     unsigned int working_body = 0;
 
     //Returns a position in the space of any nested body to universal space

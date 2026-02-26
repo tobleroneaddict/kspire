@@ -6,7 +6,7 @@
 using namespace rapidjson;
 
 //Only do one per call
-void Planetarium::update_planet_lighting()
+void Planetarium::update_planet_lighting(bool called_from_menu,float menu_angle)
 {
     //This algorithm conveniently skips body 0 (sun)
     working_body++;
@@ -15,18 +15,24 @@ void Planetarium::update_planet_lighting()
     if (c->me != nullptr) {
         //Get planet angle->RAD
         float radians = c->angle * M_PI / 180.0f;
-        float cosine = cosf(-radians);
-        float sine = sinf(-radians);
+        if (called_from_menu) radians += (menu_angle + 240.0) * M_PI / 180.0f;
+        if (called_from_menu && c->name == "Moon") radians += 4.14f;
+        float cosine = linalg::cos(radians);
+        float sine = linalg::sin(radians);
 
         //Get sun direction
         auto planet_pos = planet_to_universe(c->orbit.POS,find_body_by_name(c->parent));
         auto _sun_dir = linalg::normalize(linalg::vec<float,3>(planet_pos));
+
+        if (called_from_menu) {
+            _sun_dir = {0,0,-1};
+        }
         
         //Sun rotation
         linalg::vec<float,3> sun_dir = {
             _sun_dir.x * cosine + _sun_dir.z * sine,
-            _sun_dir.y,
-           -_sun_dir.x * sine + _sun_dir.z * cosine
+            -_sun_dir.x * sine + _sun_dir.z * cosine,
+            _sun_dir.y
         };
 
         
