@@ -171,7 +171,8 @@ namespace angel {
 
 
         //temproary color
-        COLOR temporary_color = 0x0;
+        //kspire shading
+        COLOR temporary_color = colorRGB(0.0f,0.0f,0.0f);
 
 
         printf("Parsing model...\n");

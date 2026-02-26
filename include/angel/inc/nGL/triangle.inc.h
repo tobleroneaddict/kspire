@@ -204,6 +204,21 @@
                 {
                     #ifdef TEXTURE_SUPPORT
                         COLOR c = loc_texture.bitmap[u.floor() + v.floor()*loc_texture.width];
+
+                        auto rgb = rgbColor(c);
+                        auto shade = rgbColor(low->c);
+                        
+                        rgb.r -= shade.r;
+                        rgb.g -= shade.g;
+                        rgb.b -= shade.b;
+
+                        if (rgb.r < (GLFix)(float)0.0f) rgb.r = 0;
+                        if (rgb.g < (GLFix)(float)0.0f) rgb.g = 0;
+                        if (rgb.b < (GLFix)(float)0.0f) rgb.b = 0;
+                        
+                        c = colorRGB(rgb.r,rgb.g,rgb.b);
+
+                        //                        c -= low->c; //TESTING FOR SHADING
                         #ifdef TRANSPARENCY
                             if(__builtin_expect(c != 0x0000, 1))
                             {
@@ -307,6 +322,21 @@
                 {
                     #ifdef TEXTURE_SUPPORT
                         COLOR c = loc_texture.bitmap[u.floor() + v.floor()*loc_texture.width];
+
+                        auto rgb = rgbColor(c);
+                        auto shade = rgbColor(low->c);
+                        
+                        rgb.r -= shade.r;
+                        rgb.g -= shade.g;
+                        rgb.b -= shade.b;
+
+                        if (rgb.r < (GLFix)(float)0.0f) rgb.r = 0;
+                        if (rgb.g < (GLFix)(float)0.0f) rgb.g = 0;
+                        if (rgb.b < (GLFix)(float)0.0f) rgb.b = 0;
+                        
+                        c = colorRGB(rgb.r,rgb.g,rgb.b);
+//                        c -= low->c; //TESTING FOR SHADING
+                        
                         #ifdef TRANSPARENCY
                             if(__builtin_expect(c != 0x0000, 1))
                             {

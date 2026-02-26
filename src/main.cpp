@@ -271,7 +271,7 @@ int main()
     //vab.hide_vab = true;
     //Debug init scene
     //scene_load_menu();
-    //scene_load_flight();
+    scene_load_flight();
     //scene_load_vab();
 
     //return 1;
@@ -290,7 +290,7 @@ int main()
 
 
     //Testing
-
+/*
     Terrain terrain;
     
     float angle = 0;
@@ -337,6 +337,33 @@ int main()
 
 
     return 1;
+    */
+
+
+
+
+
+
+
+
+    //Shading test
+
+
+    auto ref = uni.planetarium.celestials[1].me;
+
+    for (unsigned int i = 0; i < ref->count_vertices; i++) {
+        
+        auto v = &ref->vertices[i];
+        auto p = &ref->positions[v->index];
+        if (p->z > (GLFix)0) {
+            ref->vertices[i].c = colorRGB(0.9f,0.9f,0.9f);
+        } else {
+            ref->vertices[i].c = colorRGB(0.10f,0.05f,0.305f);
+        }
+    }
+
+
+
 
     #ifdef KSPIRE_PLATFORM_NSPIRE
     while(!isKeyPressed(K_ESC) && break_game == 0)

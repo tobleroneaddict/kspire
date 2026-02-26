@@ -35,7 +35,7 @@ namespace angel {
         const VECTOR3 *positions;   //For nGL
         GLDrawMode draw_mode;
         unsigned int count_vertices;
-        const IndexedVertex *vertices;  //For nGL
+        IndexedVertex *vertices;  //For nGL
         std::vector<IndexedVertex> vertices_list;    //Per-object vertex list
         std::vector<float> u_list;//:   U V
         std::vector<float> v_list;//:   MAP
