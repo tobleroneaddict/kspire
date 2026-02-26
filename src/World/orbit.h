@@ -24,6 +24,8 @@ struct Orbit {
     double long_ascending_node = 0;
     double argument_of_periapsis = 0;
     
+    double TRUE_ANOM_READ = 0; //for lighting calcs.
+    
     double period = 0;
     double orbital_speed = 0;
     double mu = 0;  //transfer mu from parent into here!!
@@ -31,7 +33,7 @@ struct Orbit {
     //TESTING: Set vessel starting point. 
 
     //EQUI REFERENCE FRAME TO PARENT BODY
-    linalg::vec<double,3> POS = {10 * 1000, 600+1500 * 1000, 0 * 1000};    //  m
+    linalg::vec<double,3> POS = {10 * 1000, 600+1500 * -1000, 0 * 1000};    //  m
     linalg::vec<double,3> VEL = {-0 * 1000, 0.01 * 1000, 1.51 * 1000};    //  m/s
 
     //Calculate keplarian elements based on input universal time

@@ -205,31 +205,32 @@
                     #ifdef TEXTURE_SUPPORT
                         COLOR c = loc_texture.bitmap[u.floor() + v.floor()*loc_texture.width];
                         COLOR shade = low->c;                      
-                        //If youre here wondering why the shading looks so bad at the poles,
-                        //heres your answer :P   it only samples the low vertex.
-                        
+                        if (shade != 0) {
+                            //If youre here wondering why the shading looks so bad at the poles,
+                            //heres your answer :P   it only samples the low vertex.
+                            
 
-                        //Integer values hurt alot less
-                        int tr = (c >> 11) & 0x1F;
-                        int tg = (c >> 5)  & 0x3F;
-                        int tb =  c        & 0x1F;
+                            //Integer values hurt alot less
+                            int tr = (c >> 11) & 0x1F;
+                            int tg = (c >> 5)  & 0x3F;
+                            int tb =  c        & 0x1F;
 
-                        int sr = (shade >> 11) & 0x1F;
-                        int sg = (shade >> 5)  & 0x3F;
-                        int sb =  shade        & 0x1F;
+                            int sr = (shade >> 11) & 0x1F;
+                            int sg = (shade >> 5)  & 0x3F;
+                            int sb =  shade        & 0x1F;
 
-                        //Shade
-                        tr -= sr;
-                        tg -= sg;
-                        tb -= sb;
+                            //Shade
+                            tr -= sr;
+                            tg -= sg;
+                            tb -= sb;
 
-                        //Clamping
-                        tr &= -(tr >= 0);
-                        tg &= -(tg >= 0);
-                        tb &= -(tb >= 0);
+                            //Clamping
+                            tr &= -(tr >= 0);
+                            tg &= -(tg >= 0);
+                            tb &= -(tb >= 0);
 
-                        c = (tr << 11) | (tg << 5) | tb;
-
+                            c = (tr << 11) | (tg << 5) | tb;
+                        }
                         #ifdef TRANSPARENCY
                             if(__builtin_expect(c != 0x0000, 1))
                             {
@@ -338,27 +339,29 @@
                         //heres your answer :P   it only samples the low vertex.
 
                         COLOR shade = low->c;
-                        //Integer values hurt alot less
-                        int tr = (c >> 11) & 0x1F;
-                        int tg = (c >> 5)  & 0x3F;
-                        int tb =  c        & 0x1F;
+                        if (shade != 0x00)
+                        {
+                            //Integer values hurt alot less
+                            int tr = (c >> 11) & 0x1F;
+                            int tg = (c >> 5)  & 0x3F;
+                            int tb =  c        & 0x1F;
 
-                        int sr = (shade >> 11) & 0x1F;
-                        int sg = (shade >> 5)  & 0x3F;
-                        int sb =  shade        & 0x1F;
+                            int sr = (shade >> 11) & 0x1F;
+                            int sg = (shade >> 5)  & 0x3F;
+                            int sb =  shade        & 0x1F;
 
-                        //Shade
-                        tr -= sr;
-                        tg -= sg;
-                        tb -= sb;
+                            //Shade
+                            tr -= sr;
+                            tg -= sg;
+                            tb -= sb;
 
-                        //Clamping
-                        tr &= -(tr >= 0);
-                        tg &= -(tg >= 0);
-                        tb &= -(tb >= 0);
+                            //Clamping
+                            tr &= -(tr >= 0);
+                            tg &= -(tg >= 0);
+                            tb &= -(tb >= 0);
 
-                        c = (tr << 11) | (tg << 5) | tb;
-                        
+                            c = (tr << 11) | (tg << 5) | tb;
+                        }
                         #ifdef TRANSPARENCY
                             if(__builtin_expect(c != 0x0000, 1))
                             {

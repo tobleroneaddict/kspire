@@ -72,7 +72,7 @@ void Universe::Update() {
     planetarium.update_planet_positions(universal_time);
     
     //Disable planet lighting updates for high warps to conserve performance
-    if ((int)timewarp.warp_rate <= 1001) 
+    //if ((int)timewarp.warp_rate <= 1001) 
         planetarium.update_planet_lighting(false,0);
 
     //Rails enter/exit handling

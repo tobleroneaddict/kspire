@@ -147,7 +147,8 @@ void Orbit::calculate_state_from_keplers(double _UNIVERSAL_TIME) {
     double v_r = mu / h * eccentricity * linalg::sin(true_anomaly);
     double v_theta = mu / h * (1 + eccentricity * linalg::cos(true_anomaly));
 
-    
+    this->TRUE_ANOM_READ = true_anomaly;
+
     //Now convert to perifocal plane
     //Describes a 2D plane along the plane of the orbit
     //POS

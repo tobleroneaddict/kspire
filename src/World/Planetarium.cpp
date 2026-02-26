@@ -8,13 +8,20 @@ using namespace rapidjson;
 //Only do one per call
 void Planetarium::update_planet_lighting(bool called_from_menu,float menu_angle)
 {
+    //Can also work for solar panel calculations!
     //This algorithm conveniently skips body 0 (sun)
     working_body++;
     if (working_body >= celestials.size()) working_body = 1; //Reset
     CelestialBody *c = &celestials[working_body];
     if (c->me != nullptr) {
         //Get planet angle->RAD
-        float radians = c->angle * M_PI / 180.0f;
+        //float radians = c->angle * M_PI / 180.0f;
+        float orbit_radians = c->orbit.TRUE_ANOM_READ * M_PI / 180.0f;
+        orbit_radians += M_PI; //rotate 180
+
+        float turn_radians = c->angle * M_PI / 180.0f;
+        float radians = turn_radians + orbit_radians;
+        //radians *= M_PI / 180.0f;
         if (called_from_menu) radians += (menu_angle + 240.0) * M_PI / 180.0f;
         if (called_from_menu && c->name == "Moon") {
         #ifdef _TINSPIRE
@@ -33,12 +40,12 @@ void Planetarium::update_planet_lighting(bool called_from_menu,float menu_angle)
         if (called_from_menu) {
             _sun_dir = {0,0,-1};
         }
-        
+        //printf("SD: {%f,%f,%f}\n",_sun_dir.x,_sun_dir.y,_sun_dir.z);
         //Sun rotation
         linalg::vec<float,3> sun_dir = {
-            _sun_dir.x * cosine + _sun_dir.z * sine,
-            -_sun_dir.x * sine + _sun_dir.z * cosine,
-            _sun_dir.y
+            _sun_dir.x * cosine + _sun_dir.y * sine,
+            -_sun_dir.x * sine + _sun_dir.y * cosine,
+            _sun_dir.z
         };
 
         
@@ -74,10 +81,11 @@ void Planetarium::update_planet_lighting(bool called_from_menu,float menu_angle)
                 v->normal.z
             );
 
+            //Calculate how strongly the sun is shining on one vertex
             auto dot = linalg::dot(normal,sun_dir);
 
 
-            float intensity = dot += 0.4f;
+            float intensity = dot += 0.5f;
             intensity = linalg::clamp(intensity,0.0f,0.9f);
 
             ref->vertices[i].c = colorRGB(intensity,intensity,intensity);
