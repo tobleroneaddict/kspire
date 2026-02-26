@@ -33,9 +33,11 @@ public:
 
     void update_planet_positions(double universal_time);
 
+    //REAL TIME Lighting will not be possible.
+    //Rather it is staggered!
     void update_planet_lighting();
+    unsigned int working_body = 0;
 
-    
     //Returns a position in the space of any nested body to universal space
     linalg::vec<double,3> planet_to_universe(linalg::vec<double,3> local, int home);
 };

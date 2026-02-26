@@ -8,7 +8,7 @@ int CelestialBody::load_model(Bundle* assets) {
     if (group.load_group(assets,"body/body")) return 1;
 
     //Store ngl pointer
-    me = group.get_object("Sphere");
+    me = group.get_object("LOD3");
 
     //Now swap to right texture
     std::string final = "body/";

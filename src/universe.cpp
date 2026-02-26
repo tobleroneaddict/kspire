@@ -112,6 +112,7 @@ void Universe::Update() {
     if (isKeyPressed(K_MAP) && map_button_held == false) {
         map_button_held = true;
         in_map_view = !in_map_view;
+        
         printf("Map view key\n");
     }
     if (!isKeyPressed(K_MAP)) map_button_held = false;

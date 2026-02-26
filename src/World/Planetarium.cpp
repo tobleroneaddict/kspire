@@ -5,30 +5,48 @@
 
 using namespace rapidjson;
 
+//Only do one per call
 void Planetarium::update_planet_lighting()
 {
-    
-    for (CelestialBody &c : celestials) {
+    //This algorithm conveniently skips body 0 (sun)
+    working_body++;
+    if (working_body >= celestials.size()) working_body = 1; //Reset
+    CelestialBody *c = &celestials[working_body];
+    if (c->me != nullptr) {
         //Get sun direction
-        auto planet_pos = planet_to_universe(c.orbit.POS,find_body_by_name(c.parent));
-        auto sun_dir = linalg::normalize(planet_pos);
+        auto planet_pos = planet_to_universe(c->orbit.POS,find_body_by_name(c->parent));
+        auto sun_dir = linalg::normalize(linalg::vec<float,3>(planet_pos));
         
         
         //Then apply to all vertices of model
-        auto ref = c.me;
+        auto ref = c->me;
 
+        //APPLY ROTATION AHHH
         for (unsigned int i = 0; i < ref->count_vertices; i++) {
             
             auto v = &ref->vertices[i];
             auto p = &ref->positions[v->index];
             
-            linalg::vec<double,3> vertex_model = {
-                (double)p->x,
-                (double)p->z,
-                (double)p->y
+            linalg::vec<float,3> vertex_model = {
+                (float)p->x,
+                (float)p->z,
+                (float)p->y
             };
 
-            auto normal = linalg::normalize(vertex_model);
+            //Normal Caching
+            if (v->normal.x == static_cast<GLFix>(-2)) {
+                auto normal = linalg::normalize(vertex_model);
+                v->normal.x = normal.x;
+                v->normal.y = normal.y;
+                v->normal.z = normal.z;
+            }
+            
+            //Otherwise read
+            auto normal = linalg::vec<float,3>(
+                v->normal.x,
+                v->normal.y,
+                v->normal.z
+            );
 
             auto dot = linalg::dot(normal,sun_dir);
 
@@ -42,6 +60,7 @@ void Planetarium::update_planet_lighting()
         
     }
 }
+
                                                                                     //Cam pos used in map mode
 void Planetarium::render_celestials(
     float fixed_bubble,bool map_mode, 
