@@ -70,7 +70,10 @@ void Universe::Update() {
     universal_time += (clock.dt * timewarp.warp_rate);
 
     planetarium.update_planet_positions(universal_time);
-    planetarium.update_planet_lighting(false,0);
+    
+    //Disable planet lighting updates for high warps to conserve performance
+    if ((int)timewarp.warp_rate <= 1001) 
+        planetarium.update_planet_lighting(false,0);
 
     //Rails enter/exit handling
     //Oneshot
@@ -200,7 +203,9 @@ void Universe::render_map() {
     );
 
     //Modify the POS stuff to work in map view
-    planetarium.render_celestials(100,true,pos_d);
+    //planetarium.render_celestials(100,true,pos_d);
+    pos_d = planetarium.planet_to_universe(focused_vessel->orbit.POS+ pos_d,focused_vessel->home_body);
+    planetarium.render_celestials(20000,true,pos_d);
 
 
     glPopMatrix();
@@ -245,6 +250,7 @@ void Universe::render_flight() {
         cam.pos.y,
         cam.pos.z
     );
+    pos_d = planetarium.planet_to_universe(focused_vessel->orbit.POS,focused_vessel->home_body) + pos_d;
     planetarium.render_celestials(20000,false,pos_d);
 
 

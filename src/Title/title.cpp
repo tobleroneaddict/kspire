@@ -116,9 +116,6 @@ int Title::Update() {
         
     angle += 10.0f * clock.dt;
 
-    
-
-
     return 0;
 }
 

@@ -63,4 +63,5 @@ void Timewarp_Controller::tick(int cannot_enter_timewarp) {
     if ((unsigned int)warp_index >= rates.size()) warp_index = rates.size() -1;
 
     target_warp_rate = rates[warp_index];
+    warp_rate = linalg::clamp(warp_rate,0,100000);
 }

@@ -16,7 +16,13 @@ void Planetarium::update_planet_lighting(bool called_from_menu,float menu_angle)
         //Get planet angle->RAD
         float radians = c->angle * M_PI / 180.0f;
         if (called_from_menu) radians += (menu_angle + 240.0) * M_PI / 180.0f;
-        if (called_from_menu && c->name == "Moon") radians += 4.14f;
+        if (called_from_menu && c->name == "Moon") {
+        #ifdef _TINSPIRE
+            radians += 1.0f;
+        #else
+            radians += 4.14f;
+        #endif //Hopefully this is the last of the platform-specific title screen shenanigans.
+        }
         float cosine = linalg::cos(radians);
         float sine = linalg::sin(radians);
 
@@ -80,8 +86,7 @@ void Planetarium::update_planet_lighting(bool called_from_menu,float menu_angle)
         
     }
 }
-
-                                                                                    //Cam pos used in map mode
+//Render celestials given a cam position
 void Planetarium::render_celestials(
     float fixed_bubble,bool map_mode, 
     linalg::vec<double,3> cam_pos) 
@@ -93,14 +98,14 @@ void Planetarium::render_celestials(
     //Should i do distance from CAMERA instead??????
 
     for (CelestialBody& c : celestials) {
-        linalg::vec<double,3> vp;
-        if  (!map_mode) {
-            vp = planet_to_universe(focused_vessel->orbit.POS,focused_vessel->home_body);
-        } else {
-            //printf("cam%f\n",linalg::length(cam_pos));
-            vp = planet_to_universe(focused_vessel->orbit.POS+(cam_pos),
-            focused_vessel->home_body); //Make map view not inside sun
-        }
+        linalg::vec<double,3> vp= cam_pos; //testing new concept
+        // if  (!map_mode) {
+        //     vp = planet_to_universe(focused_vessel->orbit.POS,focused_vessel->home_body);
+        // } else {
+        //     //printf("cam%f\n",linalg::length(cam_pos));
+        //     vp = planet_to_universe(focused_vessel->orbit.POS+(cam_pos),
+        //     focused_vessel->home_body); //Make map view not inside sun
+        // }
         //printf("VP:{%f,%f,%f}\n",vp.x,vp.y,vp.z);
         auto pp = planet_to_universe({0,0,0},find_body_by_name(c.name));
 
