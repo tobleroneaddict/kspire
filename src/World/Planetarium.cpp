@@ -13,11 +13,25 @@ void Planetarium::update_planet_lighting()
     if (working_body >= celestials.size()) working_body = 1; //Reset
     CelestialBody *c = &celestials[working_body];
     if (c->me != nullptr) {
+        //Get planet angle->RAD
+        float radians = c->angle * M_PI / 180.0f;
+        float cosine = cosf(-radians);
+        float sine = sinf(-radians);
+
         //Get sun direction
         auto planet_pos = planet_to_universe(c->orbit.POS,find_body_by_name(c->parent));
-        auto sun_dir = linalg::normalize(linalg::vec<float,3>(planet_pos));
+        auto _sun_dir = linalg::normalize(linalg::vec<float,3>(planet_pos));
         
+        //Sun rotation
+        linalg::vec<float,3> sun_dir = {
+            _sun_dir.x * cosine + _sun_dir.z * sine,
+            _sun_dir.y,
+           -_sun_dir.x * sine + _sun_dir.z * cosine
+        };
+
         
+
+
         //Then apply to all vertices of model
         auto ref = c->me;
 
@@ -94,7 +108,7 @@ void Planetarium::render_celestials(
         float len = linalg::length(delta);
         float altitude = len - (c.radius);
 
-        
+
         //printf("LEN %f\n",len);
         
         

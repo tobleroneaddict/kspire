@@ -35,7 +35,7 @@ float CelestialBody::get_atm_intensity(float altitude) {
 
 
 int CelestialBody::switch_texture(std::string name) {
-    return group.swap_texture(my_assets,"Sphere",name);
+    return group.swap_texture(my_assets,me->name,name);
 }
 
 void CelestialBody::clear_model() {

@@ -1,5 +1,10 @@
 #pragma once
 
+#ifndef M_PI
+#define M_PI 3.14159265
+#endif
+
+
 #ifdef KSPIRE_PLATFORM_WINDOWS
 #define KSPIRE_PLATFORM_LINUX
 #include <SDL_main.h>
