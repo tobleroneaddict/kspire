@@ -192,20 +192,19 @@ void Universe::render_map() {
     //Move back
     cam.pos.x = 0;
     cam.pos.y = 0;
-    cam.pos.z = map_zoom;
+    cam.pos.z = -(map_zoom * map_zoom);
     glTranslatef(-cam.pos.x, -cam.pos.y, -cam.pos.z);
     rotate_camera();
 
+    //Modify the POS stuff to work in map view
+    //planetarium.render_celestials(100,true,pos_d);
     linalg::vec<double,3> pos_d(
         cam.pos.x,
         cam.pos.y,
         cam.pos.z
     );
-
-    //Modify the POS stuff to work in map view
-    //planetarium.render_celestials(100,true,pos_d);
-    pos_d = planetarium.planet_to_universe(focused_vessel->orbit.POS+ pos_d,focused_vessel->home_body);
-    planetarium.render_celestials(20000,true,pos_d);
+    pos_d = planetarium.planet_to_universe({0,600000,600000},focused_vessel->home_body) + pos_d;
+    planetarium.render_celestials(2000,false,pos_d);
 
 
     glPopMatrix();
