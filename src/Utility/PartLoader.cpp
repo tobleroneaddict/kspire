@@ -170,14 +170,9 @@ int PartLoader::load_parts(Bundle* parts) {
         //printf("WARNING::::: LIST ALL OBJECTS IN THE SCENE USING ANGEL SHIT\n");
         //Or just do part for now ig
         //EXPAND THIS TO A SEARCH (later)!! but not for "highlight"
-        //Highlight should always be at the end
         p.models.emplace_back(p.group.get_object("part"));
         /*..............................................*/
-        p.models.emplace_back(p.group.get_object("highlight"));
-
-        if (p.group.get_object("highlight") == nullptr) {
-            printf("Model missing \"highlight\" object!\n");
-        }
+        //Highlight objects no longer used lol
     }
 
 
