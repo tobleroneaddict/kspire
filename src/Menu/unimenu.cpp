@@ -78,13 +78,27 @@ void Menu::Update()
     if (isKeyPressed(K_PAD_N) && buttons_wiped)
         {scroll--; buttons_wiped = false;}
     if (allow_scroll_jump) {
+        //Find, and jump to the next or last category '['
         if (isKeyPressed(K_PAD_E) && buttons_wiped)
-            {scroll+=5; buttons_wiped = false;}
+        {
+            for (int i = scroll; i < items.size(); i++) {
+                if (items[i].label.contains('[') && i != scroll) {
+                    scroll = i;break;                }
+            }
+            buttons_wiped = false;
+        }
         if (isKeyPressed(K_PAD_W) && buttons_wiped)
-            {scroll-=5; buttons_wiped = false;}
-    }
-    if (!isKeyPressed(K_PAD_N) && !isKeyPressed(K_PAD_S)) buttons_wiped = true;
+        {
+            for (int i = scroll; i >= 0; i--) {
+                if (items[i].label.contains('[') && i != scroll) {
+                    scroll = i;break;                }
+            }
+            buttons_wiped = false;
+        }
 
+    }
+    if (!isKeyPressed(K_PAD_N) && !isKeyPressed(K_PAD_S) && !isKeyPressed(K_PAD_W) && !isKeyPressed(K_PAD_E)) buttons_wiped = true;
+    
     if (scroll < -select_base) scroll = -select_base;
     if (scroll > ((int)items.size()-select_base-1)) scroll = ((int)items.size()-select_base-1);
 

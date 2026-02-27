@@ -10,19 +10,46 @@ void Title::setup_settings()
     submenu.centered_to_screen = true;
     submenu.titlebar = "Settings";
     submenu.titlebar_centered = true;
-    submenu.select_base = 1;
+    submenu.select_base = 0;
 
+    submenu.add_item("[Flight]:\n",nullptr,0); submenu.items.back().value = "";
     submenu.add_item("Flight Cam: Orbit Speed:",settings_action,0);
     submenu.add_item("Flight Cam: Zoom Speed:",settings_action,0);
+    submenu.add_item("Max Debris:",settings_action,0);
+    submenu.add_item("[Editor]:\n",nullptr,0); submenu.items.back().value = "";
     submenu.add_item("Editor Cam: Orbit Speed:",settings_action,0);
     submenu.add_item("Editor Cam: Zoom Speed:",settings_action,0);
-    submenu.add_item("Max Debris:",settings_action,0);
+    submenu.add_item("[Graphics]:\n",nullptr,0); submenu.items.back().value = "";
     submenu.add_item("Show Navball:",settings_action,0);
     submenu.add_item("Sun Shadows:",settings_action,0);
     submenu.add_item("Detailed Shadows:",settings_action,0);
     submenu.add_item("Terrain Quality:",settings_action,0);
     submenu.add_item("Show Skybox:",settings_action,0);
     submenu.add_item("Ambient Light:",settings_action,0);
+    //Controls
+   //std::to_string(global_settings.Controls.S_K_PAD_N)
+    submenu.add_item("[Controls]:\n",nullptr,0); submenu.items.back().value = "";
+    submenu.add_item("Pad N:\n",settings_action,0);
+    submenu.add_item("Pad S:\n",settings_action,0);
+    submenu.add_item("Pad E:\n",settings_action,0);
+    submenu.add_item("Pad W:\n",settings_action,0);
+    submenu.add_item("Pad NW:\n",settings_action,0);
+    submenu.add_item("Pad SW:\n",settings_action,0);
+    submenu.add_item("Pad NE:\n",settings_action,0);
+    submenu.add_item("Pad SE:\n",settings_action,0);
+    submenu.add_item("Warp Up:\n",settings_action,0);
+    submenu.add_item("Warp Down:\n",settings_action,0);
+    submenu.add_item("Editor Up:\n",settings_action,0);
+    submenu.add_item("Editor Down:\n",settings_action,0);
+    submenu.add_item("Editor In:\n",settings_action,0);
+    submenu.add_item("Editor Out:\n",settings_action,0);
+    submenu.add_item("Control:\n",settings_action,0);
+    submenu.add_item("Shift:\n",settings_action,0);
+    submenu.add_item("Map View:\n",settings_action,0);
+
+
+
+
 }
 void Title::setup_manage_saves() 
 {
@@ -30,7 +57,7 @@ void Title::setup_manage_saves()
     submenu.centered_to_screen = true;
     submenu.titlebar = "Manage Saves";
     submenu.titlebar_centered = true;
-    submenu.select_base = 1;
+    submenu.select_base = 0;
 
     submenu.add_item("Default ",settings_action,0);
     submenu.add_item("Default (0)",settings_action,0);

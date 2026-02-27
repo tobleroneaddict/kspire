@@ -33,10 +33,10 @@ public:
 
     void Update();
     
-    //Which one is green (selected)
-    int select_base = 4;
+    //Which one is green (selected) buggy rn
+    int select_base = 0;
 
-    //Allow 5pt jumping with L/R keys?
+    //Allow category jumping with L/R keys?
     bool allow_scroll_jump = true;
 
 private:

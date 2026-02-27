@@ -117,3 +117,56 @@ struct DT {
 
 
 extern KSPIRE_Touchpad kspire_pad;
+
+struct GameplaySettings {
+    float FLIGHT_CAM_ORB_SPEED = 1.0f;
+    float FLIGHT_CAM_ZOOM_SPEED = 1.0f;
+    float VAB_CAM_ORB_SPEED = 1.0f;
+    float VAB_CAM_ZOOM_SPEED = 1.0f;
+    int MAX_DEBRIS = 32;
+    bool NAVBALL = true;
+};
+
+struct GraphicsSettings {
+    bool SHADOWS = true;
+    bool SHADOWS_HIRES = false;
+    int TERRAIN_QUAL = 0;
+    bool SKYBOX = true;
+    bool AMBIENT_LIGHT = false;
+};
+
+struct ControlSettings {
+    int S_K_ESC = 0;
+    int S_K_PAD_N = 0;
+    int S_K_PAD_S = 0;
+    int S_K_PAD_E = 0;
+    int S_K_PAD_W = 0;
+    int S_K_PAD_NW = 0;
+    int S_K_PAD_SW = 0;
+    int S_K_PAD_NE = 0;
+    int S_K_PAD_SE = 0;
+    int S_K_WARP_UP = 0;
+    int S_K_WARP_DOWN = 0;
+    int S_K_ENTER = 0;
+    int S_K_EDITOR_DOWN = 0;
+    int S_K_EDITOR_UP = 0;
+    int S_K_CTRL = 0;
+    int S_K_SHIFT = 0;
+    int S_K_EDITOR_IN = 0;
+    int S_K_EDITOR_OUT = 0;
+    int S_K_MAP = 0;
+};
+
+struct ModSettings {
+    bool MODS_ENABLED = true;
+    std::vector<std::string> BUNDLES;
+};
+
+struct GameSettings {
+    GameplaySettings Gameplay;
+    GraphicsSettings Graphics;
+    ControlSettings Controls;
+    ModSettings Mods;
+};
+
+extern GameSettings global_settings;
