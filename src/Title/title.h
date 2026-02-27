@@ -32,7 +32,10 @@ private:
     bool submenu_open = false;
     bool submenu_settings = true; //FALSE manage saves, TRUE manage settings
 
-    static void settings_action();
+    //callback
+    void settings_onclick_action(Menu_Item* item);
+    void saves_onclick_action(Menu_Item* item);
+
     void setup_settings();
     void setup_manage_saves();
     void render_3D();

@@ -1,7 +1,12 @@
 #include "title.h"
 
-void Title::settings_action() {
-    printf("Callback\n");
+void Title::settings_onclick_action(Menu_Item* item) {
+    printf("Button pressed: %s\n",item->label.c_str());
+    item->value = std::to_string(global_settings.Gameplay.NAVBALL);
+}
+
+void Title::saves_onclick_action(Menu_Item* item) {
+    printf("Button pressed: %s\n",item->label.c_str());
 }
 
 void Title::setup_settings() 
@@ -11,41 +16,42 @@ void Title::setup_settings()
     submenu.titlebar = "Settings";
     submenu.titlebar_centered = true;
     submenu.select_base = 0;
+    submenu.scroll = 0;
 
     submenu.add_item("[Flight]:\n",nullptr,0); submenu.items.back().value = "";
-    submenu.add_item("Flight Cam: Orbit Speed:",settings_action,0);
-    submenu.add_item("Flight Cam: Zoom Speed:",settings_action,0);
-    submenu.add_item("Max Debris:",settings_action,0);
+    submenu.add_item("Flight Cam: Orbit Speed:",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Flight Cam: Zoom Speed:",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Max Debris:",[this](Menu_Item* item){ settings_onclick_action(item);},0);
     submenu.add_item("[Editor]:\n",nullptr,0); submenu.items.back().value = "";
-    submenu.add_item("Editor Cam: Orbit Speed:",settings_action,0);
-    submenu.add_item("Editor Cam: Zoom Speed:",settings_action,0);
+    submenu.add_item("Editor Cam: Orbit Speed:",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Editor Cam: Zoom Speed:",[this](Menu_Item* item){ settings_onclick_action(item);},0);
     submenu.add_item("[Graphics]:\n",nullptr,0); submenu.items.back().value = "";
-    submenu.add_item("Show Navball:",settings_action,0);
-    submenu.add_item("Sun Shadows:",settings_action,0);
-    submenu.add_item("Detailed Shadows:",settings_action,0);
-    submenu.add_item("Terrain Quality:",settings_action,0);
-    submenu.add_item("Show Skybox:",settings_action,0);
-    submenu.add_item("Ambient Light:",settings_action,0);
+    submenu.add_item("Show Navball:",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Sun Shadows:",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Detailed Shadows:",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Terrain Quality:",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Show Skybox:",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Ambient Light:",[this](Menu_Item* item){ settings_onclick_action(item);},0);
     //Controls
    //std::to_string(global_settings.Controls.S_K_PAD_N)
     submenu.add_item("[Controls]:\n",nullptr,0); submenu.items.back().value = "";
-    submenu.add_item("Pad N:\n",settings_action,0);
-    submenu.add_item("Pad S:\n",settings_action,0);
-    submenu.add_item("Pad E:\n",settings_action,0);
-    submenu.add_item("Pad W:\n",settings_action,0);
-    submenu.add_item("Pad NW:\n",settings_action,0);
-    submenu.add_item("Pad SW:\n",settings_action,0);
-    submenu.add_item("Pad NE:\n",settings_action,0);
-    submenu.add_item("Pad SE:\n",settings_action,0);
-    submenu.add_item("Warp Up:\n",settings_action,0);
-    submenu.add_item("Warp Down:\n",settings_action,0);
-    submenu.add_item("Editor Up:\n",settings_action,0);
-    submenu.add_item("Editor Down:\n",settings_action,0);
-    submenu.add_item("Editor In:\n",settings_action,0);
-    submenu.add_item("Editor Out:\n",settings_action,0);
-    submenu.add_item("Control:\n",settings_action,0);
-    submenu.add_item("Shift:\n",settings_action,0);
-    submenu.add_item("Map View:\n",settings_action,0);
+    submenu.add_item("Pad N:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Pad S:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Pad E:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Pad W:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Pad NW:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Pad SW:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Pad NE:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Pad SE:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Warp Up:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Warp Down:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Editor Up:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Editor Down:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Editor In:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Editor Out:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Control:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Shift:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
+    submenu.add_item("Map View:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
 
 
 
@@ -58,12 +64,13 @@ void Title::setup_manage_saves()
     submenu.titlebar = "Manage Saves";
     submenu.titlebar_centered = true;
     submenu.select_base = 0;
+    submenu.scroll = 0;
 
-    submenu.add_item("Default ",settings_action,0);
-    submenu.add_item("Default (0)",settings_action,0);
-    submenu.add_item("Default (1)",settings_action,0);
-    submenu.add_item("Default (2)",settings_action,0);
-    submenu.add_item("Default (3)",settings_action,0);
+    submenu.add_item("Default ",[this](Menu_Item* item){ saves_onclick_action(item);},0);
+    submenu.add_item("Default (0)",[this](Menu_Item* item){ saves_onclick_action(item);},0);
+    submenu.add_item("Default (1)",[this](Menu_Item* item){ saves_onclick_action(item);},0);
+    submenu.add_item("Default (2)",[this](Menu_Item* item){ saves_onclick_action(item);},0);
+    submenu.add_item("Default (3)",[this](Menu_Item* item){ saves_onclick_action(item);},0);
 
 }
 

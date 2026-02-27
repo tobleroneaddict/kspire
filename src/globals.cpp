@@ -112,4 +112,4 @@ void KSPIRE_Touchpad::Update() {
 }
 
 KSPIRE_Touchpad kspire_pad;
-
+GameSettings global_settings;
