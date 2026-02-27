@@ -66,6 +66,17 @@ int scene_pack_flight() {
 }
 int scene_pack_vab() {
     cursor.set_cursor_visibility(false);
+
+    //MOVE TO A BETTER SPOT. cannot be in destroy model because of part tree move. removes the links.
+    //Clear highlights
+    for(Part &p : vab.part_tree)
+    {
+        if (Parts.get_part_by_id(p.shared_id) == nullptr) continue;
+        if (Parts.get_part_by_id(p.shared_id)->models.size() == 0) continue;
+        auto obj = Parts.get_part_by_id(p.shared_id)->models[0];
+        vab.highlight_part(obj,colorRGB(0.0f,0,0.0f)); //Move highlight part to a more global place
+    }
+
     //Shove vessel buffer (do other stuff like name soon)
     //Should you clear here? (but not on revert to vab ofc)
     loading_vessel_buffer.part_tree = std::move(vab.part_tree);

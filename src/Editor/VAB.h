@@ -25,6 +25,9 @@ public:
     
     void Update();
 
+    void highlight_part(ngl_object* obj,COLOR color); //Move this to Parts?
+
+
     //Stuff for the pallete menus
     int page_index = 0;
     bool page_key_held = false;
@@ -60,14 +63,13 @@ private:
     //when you place down a part
     bool stopped_grabbing = false;
     bool pad_held = false;  //Holding click
-    int grabbed_part; //Index
+    int grabbed_part = -1; //Index
     float part_raycast_threshold = 30.0f;
 
     void render();
     void editor_controls();
     void onClick_oneshot();
-
-    
+   
     linalg::vec<float,3> raycast_camera(linalg::vec<float,3> out);
 
     int tsx, tsy, tsx_o,tsy_o;
@@ -79,6 +81,7 @@ private:
     //Replace this with a better data type
     std::vector<int> test_pids;
     float pallete_r = 0.0f; //Rotator
+
 
     
 };

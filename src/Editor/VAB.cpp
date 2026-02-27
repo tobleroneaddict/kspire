@@ -1,12 +1,15 @@
 #include "VAB.h"
 
 void VAB::destroy_model() {
+
     me.free_group();
     node_g.free_group();
     full_scene.clear();
     part_tree.clear();
 
+    //DELETE
     test_pids.clear();
+
 }
 
 //Init script
@@ -323,8 +326,17 @@ void VAB::Update() {
     pallete_r += clock.dt * 50;
 }
 
-
-
+//Slightly hacky color highlighting. it uses kspire::ngl's shading feature.
+//This DOES color all parts the same color if you're not careful with timing.
+//(Hint: Race the beam)
+void VAB::highlight_part(ngl_object* obj,COLOR color) {
+    if (obj == nullptr) return;
+    if (obj->count_vertices == 0) return;
+    for (unsigned int i = 0; i < obj->count_vertices; i++) {
+        auto vt = &obj->vertices[i];
+        vt->c = color;
+    }
+}
 
 //VAB Render call
 void VAB::render() {
@@ -411,7 +423,7 @@ void VAB::render() {
 
 
         obj = parts_master->get_part_by_id(p.shared_id)->models[0]; //Only first object for now
-        auto highlit = parts_master->get_part_by_id(p.shared_id)->models.back(); //Highlit
+        //auto highlit = parts_master->get_part_by_id(p.shared_id)->models.back(); //Highlit
         glPushMatrix();
         //Standard origin
         glTranslatef(0,130,0);
@@ -422,15 +434,24 @@ void VAB::render() {
             p.pos.z);
 
         glScale3f(10,10,10);
-        if (&p == found && highlit != nullptr && !has_grabbed_part) { //Highlight (unless grabbed)
-          glPushMatrix();
-          glBindTexture(highlit->texture);
-          nglDrawArray(highlit->vertices, highlit->count_vertices, highlit->positions, highlit->count_positions, processed, highlit->draw_mode, true);
-          glPopMatrix();
-        } else {
-            glBindTexture(obj->texture);
-            nglDrawArray(obj->vertices, obj->count_vertices, obj->positions, obj->count_positions, processed, obj->draw_mode, true);
+        
+
+        //Super cool highlight, please move this
+        //^ Later its really hard cus of found
+        //There IS a bug here, if you look in the editor the current part will likely be highlit but theres nothing you can really do ig
+        if (obj->count_vertices > 0) {
+            if (&p == found || &p == &part_tree[grabbed_part]) {
+                if (obj->vertices[0].c == 0) //Green
+                    highlight_part(obj,colorRGB(0.6f,0,0.6f));
+            } else {
+                if (obj->vertices[0].c != 0) //No HL
+                    highlight_part(obj,colorRGB(0.0f,0,0.0f));
+            }
         }
+        
+        //Draw model
+        glBindTexture(obj->texture);
+        nglDrawArray(obj->vertices, obj->count_vertices, obj->positions, obj->count_positions, processed, obj->draw_mode, true);
 
         //Show nodes on grab
          if (has_grabbed_part /* && grabbed_part == &p*/) {
@@ -462,6 +483,8 @@ void VAB::render() {
 
 
     glPopMatrix(); //End Camera
+
+    //UI HERE
 
     //Show pallete texture at 4x X-res
     if (show_pallete) {
