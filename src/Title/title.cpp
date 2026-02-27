@@ -18,6 +18,7 @@ void Title::setup_settings()
     submenu.select_base = 0;
     submenu.scroll = 0;
 
+    //oh my god
     submenu.add_item("[Flight]:\n",nullptr,0); submenu.items.back().value = "";
     submenu.add_item("Flight Cam: Orbit Speed:",[this](Menu_Item* item){ settings_onclick_action(item);},0);
     submenu.add_item("Flight Cam: Zoom Speed:",[this](Menu_Item* item){ settings_onclick_action(item);},0);
@@ -33,8 +34,8 @@ void Title::setup_settings()
     submenu.add_item("Show Skybox:",[this](Menu_Item* item){ settings_onclick_action(item);},0);
     submenu.add_item("Ambient Light:",[this](Menu_Item* item){ settings_onclick_action(item);},0);
     //Controls
-   //std::to_string(global_settings.Controls.S_K_PAD_N)
     submenu.add_item("[Controls]:\n",nullptr,0); submenu.items.back().value = "";
+    submenu.add_item("RESET CONTROLS TO DEFAULTS\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);submenu.items.back().value = "";
     submenu.add_item("Pad N:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
     submenu.add_item("Pad S:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
     submenu.add_item("Pad E:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
@@ -53,9 +54,9 @@ void Title::setup_settings()
     submenu.add_item("Shift:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
     submenu.add_item("Map View:\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);
 
-
-
-
+    submenu.add_item("[Misc]:\n",nullptr,0); submenu.items.back().value = "";
+    submenu.add_item("RESET ALL TO DEFAULTS\n",[this](Menu_Item* item){ settings_onclick_action(item);},0);submenu.items.back().value = "";
+    
 }
 void Title::setup_manage_saves() 
 {
@@ -89,6 +90,7 @@ void Title::load_title(Bundle* resources,ngl_object* _obj,ngl_object* _moon)
     
     
     submenu.init(resources,screen,0,32,200,280,fonts);
+    
 }
 
 int Title::Update() 
