@@ -8,6 +8,7 @@
 #include "Utility/cursor.h"
 #include "Title/title.h"
 #include "Vessel/Part.h"
+#include "Menu/unimenu.h"
 #if defined(KSPIRE_PLATFORM_WINDOWS) || defined(KSPIRE_PLATFORM_LINUX)
 #include <filesystem>
 #include <format>
@@ -168,6 +169,12 @@ int scene_pack_menu() {
     return 0;
 }
 
+
+void test_callback() {
+    printf("Callback\n");
+}
+
+
 // get_binary_directory () -> load_asset_bundle ( path ) -> bundle
 // get_binary_directory() -> std::string
 #if defined(KSPIRE_PLATFORM_WINDOWS) || defined(KSPIRE_PLATFORM_LINUX)
@@ -282,8 +289,8 @@ int main()
 
     //vab.hide_vab = true;
     //Debug init scene
-    //scene_load_menu();
-    scene_load_flight();
+    scene_load_menu();
+    //scene_load_flight();
     //scene_load_vab();
 
     //return 1;
@@ -300,21 +307,32 @@ int main()
     ui_altitude.tex.transparent_color = 0x00;
 
 
-    //Shading test
 
+    //Menu test
+    Menu this_menu;
+    this_menu.init(&resource_bundle,screen,0,32,200,280,&fonts);
+    this_menu.centered_to_screen = true;
+    this_menu.titlebar = "Settings";
+    this_menu.titlebar_centered = true;
 
-    // auto ref = uni.planetarium.celestials[1].me;
-
-    // for (unsigned int i = 0; i < ref->count_vertices; i++) {
-        
-    //     auto v = &ref->vertices[i];
-    //     auto p = &ref->positions[v->index];
-    //     if (p->z > (GLFix)0) {
-    //         ref->vertices[i].c = colorRGB(0.9f,0.9f,0.9f);
-    //     }
-    // }
-
-
+    this_menu.add_item("Flight Cam: Orbit Speed:",test_callback,0);
+    this_menu.add_item("Flight Cam: Zoom Speed:",test_callback,0);
+    this_menu.add_item("Editor Cam: Orbit Speed:",test_callback,0);
+    this_menu.add_item("Editor Cam: Zoom Speed:",test_callback,0);
+    this_menu.add_item("Max Debris:",test_callback,-50);
+    this_menu.add_item("Show Navball:",test_callback,0);
+    this_menu.add_item("Sun Shadows:",test_callback,0);
+    this_menu.add_item("Detailed Shadows:",test_callback,0);
+    this_menu.add_item("Terrain Quality:",test_callback,0);
+    this_menu.add_item("Show Skybox:",test_callback,0);
+    this_menu.add_item("Ambient Light:",test_callback,0);
+    this_menu.add_item("Test item!12",test_callback,0);
+    this_menu.add_item("Test item!7",test_callback,0);
+    this_menu.add_item("Test item!8",test_callback,0);
+    this_menu.add_item("Test item!9",test_callback,0);
+    this_menu.add_item("Test item!10",test_callback,0);
+    this_menu.add_item("Test item!11",test_callback,0);
+    this_menu.add_item("Test item!12",test_callback,0);
 
 
     #ifdef KSPIRE_PLATFORM_NSPIRE
@@ -492,6 +510,9 @@ int main()
             if (res == 600) {
                 scene_pack_menu(); scene_load_vab();
             }
+
+            this_menu.Update();
+
         }
 
         nglDisplay();

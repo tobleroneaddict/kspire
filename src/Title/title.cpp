@@ -10,6 +10,7 @@ void Title::load_title(Bundle* resources,ngl_object* _obj,ngl_object* _moon) {
 
     //Move this to a new delete
     texture_set.init(resources,"resources/ui/title.png",screen);
+    
 }
 
 int Title::Update() {

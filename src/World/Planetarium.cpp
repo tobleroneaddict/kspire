@@ -38,7 +38,7 @@ void Planetarium::update_planet_lighting(bool called_from_menu,float menu_angle)
         auto _sun_dir = linalg::normalize(linalg::vec<float,3>(planet_pos));
 
         if (called_from_menu) {
-            _sun_dir = {0,0,-1};
+            _sun_dir = {0,1,-0.2};
         }
         //printf("SD: {%f,%f,%f}\n",_sun_dir.x,_sun_dir.y,_sun_dir.z);
         //Sun rotation
