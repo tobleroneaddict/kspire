@@ -8,7 +8,7 @@
 #include "Utility/cursor.h"
 #include "Title/title.h"
 #include "Vessel/Part.h"
-#include "Menu/unimenu.h"
+
 #if defined(KSPIRE_PLATFORM_WINDOWS) || defined(KSPIRE_PLATFORM_LINUX)
 #include <filesystem>
 #include <format>
@@ -170,10 +170,6 @@ int scene_pack_menu() {
 }
 
 
-void test_callback() {
-    printf("Callback\n");
-}
-
 
 // get_binary_directory () -> load_asset_bundle ( path ) -> bundle
 // get_binary_directory() -> std::string
@@ -235,8 +231,10 @@ int main()
     uni.planetarium.processed = processed;
     vab.processed = processed;
     title.processed = processed;
+    title.fonts = &fonts;
     vab.parts_master = &Parts;
     uni.parts_master = &Parts;
+    
 
     //TODO: Stop using the firebird preprocessor and just do this check
     //Check for firebird dev env presense to affix absolute mouse mode, otherwise stay in relative mode
@@ -308,35 +306,13 @@ int main()
 
 
 
-    //Menu test
-    Menu this_menu;
-    this_menu.init(&resource_bundle,screen,0,32,200,280,&fonts);
-    this_menu.centered_to_screen = true;
-    this_menu.titlebar = "Settings";
-    this_menu.titlebar_centered = true;
 
-    this_menu.add_item("Flight Cam: Orbit Speed:",test_callback,0);
-    this_menu.add_item("Flight Cam: Zoom Speed:",test_callback,0);
-    this_menu.add_item("Editor Cam: Orbit Speed:",test_callback,0);
-    this_menu.add_item("Editor Cam: Zoom Speed:",test_callback,0);
-    this_menu.add_item("Max Debris:",test_callback,-50);
-    this_menu.add_item("Show Navball:",test_callback,0);
-    this_menu.add_item("Sun Shadows:",test_callback,0);
-    this_menu.add_item("Detailed Shadows:",test_callback,0);
-    this_menu.add_item("Terrain Quality:",test_callback,0);
-    this_menu.add_item("Show Skybox:",test_callback,0);
-    this_menu.add_item("Ambient Light:",test_callback,0);
-    this_menu.add_item("Test item!12",test_callback,0);
-    this_menu.add_item("Test item!7",test_callback,0);
-    this_menu.add_item("Test item!8",test_callback,0);
-    this_menu.add_item("Test item!9",test_callback,0);
-    this_menu.add_item("Test item!10",test_callback,0);
-    this_menu.add_item("Test item!11",test_callback,0);
-    this_menu.add_item("Test item!12",test_callback,0);
+    
+
 
 
     #ifdef KSPIRE_PLATFORM_NSPIRE
-    while(!isKeyPressed(K_ESC) && break_game == 0)
+    while(!isKeyPressed(K_QUIT) && break_game == 0)
     #else
     while (break_game == 0 && sdl_event.type != SDL_QUIT)
     #endif
@@ -347,7 +323,7 @@ int main()
 
         SDL_PollEvent(&sdl_event);
         if (sdl_event.type == SDL_KEYDOWN) {
-            if (sdl_event.key.keysym.sym == SDLK_ESCAPE) // ESC key
+            if (sdl_event.key.keysym.sym == K_QUIT) // ESC key
                         break_game = true;
         }
         #endif
@@ -386,6 +362,18 @@ int main()
 
             }
             scene_load_vab();
+        }
+        if (isKeyPressed(K_DEBUG_SCENE_3)  && !loading) {
+            switch (current_state) {
+                case GameStates::EDITOR:
+                scene_pack_vab();break;
+                case GameStates::FLIGHT:
+                scene_pack_flight();break;
+                default:
+                break;
+
+            }
+            scene_load_menu();
         }
 
         
@@ -510,9 +498,6 @@ int main()
             if (res == 600) {
                 scene_pack_menu(); scene_load_vab();
             }
-
-            this_menu.Update();
-
         }
 
         nglDisplay();

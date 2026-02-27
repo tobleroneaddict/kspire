@@ -27,7 +27,9 @@
 #define K_EDITOR_OUT        K_CTRL
 #define K_DEBUG_SCENE_1     KEY_NSPIRE_1
 #define K_DEBUG_SCENE_2     KEY_NSPIRE_2
+#define K_DEBUG_SCENE_3     KEY_NSPIRE_3
 #define K_MAP               KEY_NSPIRE_M
+#define K_QUIT              KEY_NSPIRE_SPACE
 
 #endif
 
@@ -54,6 +56,8 @@
 #define K_SHIFT             SDLK_LSHIFT
 #define K_DEBUG_SCENE_1     SDLK_1
 #define K_DEBUG_SCENE_2     SDLK_2
+#define K_DEBUG_SCENE_3     SDLK_3
 #define K_MAP               SDLK_m
+#define K_QUIT              SDLK_BACKSPACE
 
 #endif

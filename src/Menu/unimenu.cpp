@@ -52,6 +52,7 @@ void Menu::Update()
         val_calc_x = x + w - 60;
     }
     
+    //Show all items
     for (unsigned int i = 0; i < items.size(); i++) {
         int calc_y = 0;
         if (centered_to_screen) {
@@ -76,6 +77,12 @@ void Menu::Update()
         {scroll++; buttons_wiped = false;}
     if (isKeyPressed(K_PAD_N) && buttons_wiped)
         {scroll--; buttons_wiped = false;}
+    if (allow_scroll_jump) {
+        if (isKeyPressed(K_PAD_E) && buttons_wiped)
+            {scroll+=5; buttons_wiped = false;}
+        if (isKeyPressed(K_PAD_W) && buttons_wiped)
+            {scroll-=5; buttons_wiped = false;}
+    }
     if (!isKeyPressed(K_PAD_N) && !isKeyPressed(K_PAD_S)) buttons_wiped = true;
 
     if (scroll < -select_base) scroll = -select_base;

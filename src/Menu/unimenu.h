@@ -29,18 +29,25 @@ public:
     Fonts* _fonts);
 
     void add_item(std::string label, void(*callback)(),int x_offset);
+    std::vector<Menu_Item> items;
 
     void Update();
     
     //Which one is green (selected)
     int select_base = 4;
 
+    //Allow 5pt jumping with L/R keys?
+    bool allow_scroll_jump = true;
+
 private:
     GameTexture texture_set;
     TEXTURE* screen;
-    std::vector<Menu_Item> items;
+    
     Fonts* fonts;
     int scroll = 0;
     int buttons_wiped = false;
     void render_frame();
+
+    void setup_settings();
+    void setup_manage_saves();
 };
