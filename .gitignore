@@ -40,3 +40,4 @@ build/*
 !build/
 !build/*.tar.gz.tns
 !build/*.dll
+!build/*.json

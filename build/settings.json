@@ -1,0 +1,45 @@
+{
+    "Gameplay": {
+        "FLIGHT_CAM_ORB_SPEED":1,
+        "FLIGHT_CAM_ZOOM_SPEED":1,
+        "VAB_CAM_ORB_SPEED":1,
+        "VAB_CAM_ZOOM_SPEED":1,
+        "MAX_DEBRIS":32,
+        "NAVBALL":1
+    },
+    "Graphics": {
+        "SHADOWS":1,
+        "SHADOWS_HIRES":0,
+        "TERRAIN_QUAL":0,
+        "SKYBOX":1,
+        "AMBIENT_LIGHT":0
+    },
+    "Controls": {
+        "K_ESC" :               0,
+        "K_PAD_N" :             0,
+        "K_PAD_S" :             0,
+        "K_PAD_E" :             0,
+        "K_PAD_W" :             0,
+        "K_PAD_NW" :            0,
+        "K_PAD_SW" :            0,
+        "K_PAD_NE" :            0,
+        "K_PAD_SE" :            0,
+        "K_WARP_UP" :           0,
+        "K_WARP_DOWN" :         0,
+        "K_ENTER" :             0,
+        "K_EDITOR_DOWN" :       0,
+        "K_EDITOR_UP" :         0,
+        "K_CTRL" :              0,
+        "K_SHIFT" :             0,
+        "K_EDITOR_IN" :         0,
+        "K_EDITOR_OUT" :        0,
+        "K_DEBUG_SCENE_1" :     0,
+        "K_DEBUG_SCENE_2" :     0,
+        "K_MAP" :               0
+    },
+    "Mods": {
+        "MODS_ENABLED":1,
+        "BUNDLES": [
+        ]
+    }
+}
