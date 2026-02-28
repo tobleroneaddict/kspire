@@ -12,10 +12,11 @@ void Menu::init(Bundle* resources,TEXTURE* _screen, int _x, int _y, int _h, int 
     scroll = 0;
 }
 
-void Menu::add_item(std::string label, std::function<void(Menu_Item*)> callback,int x_offset) 
+void Menu::add_item(std::string label, std::function<void(Menu_Item*)> callback,
+int x_offset, int id) 
 {
     Menu_Item item;
-    item.label = label;
+    item.label = label; item.id = id;
     item.on_click = callback;
     item.x_offset = x_offset;
     items.push_back(item);
@@ -73,51 +74,52 @@ void Menu::Update()
         fonts->drawString(items[i+scroll].value.c_str(),calc_color,*screen,val_calc_x+items[i+scroll].x_offset,calc_y);
     }
 
+    //Controls
+    if (!lock_inputs) {
+        //Scroll
+        if (isKeyPressed(K_PAD_S) && buttons_wiped)
+            {scroll++; buttons_wiped = false;}
+        if (isKeyPressed(K_PAD_N) && buttons_wiped)
+            {scroll--; buttons_wiped = false;}
 
-    //Scroll
-    if (isKeyPressed(K_PAD_S) && buttons_wiped)
-        {scroll++; buttons_wiped = false;}
-    if (isKeyPressed(K_PAD_N) && buttons_wiped)
-        {scroll--; buttons_wiped = false;}
 
-
-    if (allow_scroll_jump) {
-        //Find, and jump to the next or last category '['
-        if (isKeyPressed(K_PAD_E) && buttons_wiped)
-        {
-            for (int i = scroll; i < (int)items.size(); i++) {
-                if (i >= (int)items.size()) continue;
-                if (items[i].label.contains('[') && i != (int)scroll) {
-                    scroll = i;break;                }
+        if (allow_scroll_jump) {
+            //Find, and jump to the next or last category '['
+            if (isKeyPressed(K_PAD_E) && buttons_wiped)
+            {
+                for (int i = scroll; i < (int)items.size(); i++) {
+                    if (i >= (int)items.size()) continue;
+                    if (items[i].label.contains('[') && i != (int)scroll) {
+                        scroll = i;break;                }
+                }
+                buttons_wiped = false;
             }
+            if (isKeyPressed(K_PAD_W) && buttons_wiped)
+            {
+                for (int i = scroll; i >= 0; i--) {
+                    if (i < 0) continue;
+                    if (items[i].label.contains('[') && i != (int)scroll) {
+                        scroll = i;break;                }
+                }
+                buttons_wiped = false;
+            }
+
+        }
+        if (!isKeyPressed(K_ENTER) && !isKeyPressed(K_PAD_N) && !isKeyPressed(K_PAD_S) && !isKeyPressed(K_PAD_W) && !isKeyPressed(K_PAD_E)) buttons_wiped = true;
+    
+        //if (scroll < 0) scroll = 0;
+        if (scroll < -select_base) scroll = -select_base;
+        if (scroll > ((int)items.size()-select_base-1)) scroll = ((int)items.size()-select_base-1);
+        
+
+        //On click updates
+
+        if (isKeyPressed(K_ENTER) && (unsigned int)scroll < items.size() && scroll >= 0 && buttons_wiped) {
+            if (items[scroll].on_click)
+                items[scroll].on_click(&items[scroll]);
             buttons_wiped = false;
         }
-        if (isKeyPressed(K_PAD_W) && buttons_wiped)
-        {
-            for (int i = scroll; i >= 0; i--) {
-                if (i < 0) continue;
-                if (items[i].label.contains('[') && i != (int)scroll) {
-                    scroll = i;break;                }
-            }
-            buttons_wiped = false;
-        }
-
-    }
-    if (!isKeyPressed(K_ENTER) && !isKeyPressed(K_PAD_N) && !isKeyPressed(K_PAD_S) && !isKeyPressed(K_PAD_W) && !isKeyPressed(K_PAD_E)) buttons_wiped = true;
-    
-    //if (scroll < 0) scroll = 0;
-    if (scroll < -select_base) scroll = -select_base;
-    if (scroll > ((int)items.size()-select_base-1)) scroll = ((int)items.size()-select_base-1);
-    
-
-    //On click updates
-
-    if (isKeyPressed(K_ENTER) && (unsigned int)scroll < items.size() && scroll >= 0 && buttons_wiped) {
-        if (items[scroll].on_click)
-             items[scroll].on_click(&items[scroll]);
-        buttons_wiped = false;
-    }
-
+    }   
     // for (unsigned int i = 0; i < items.size(); i++) {
     //     if (items[i].on_click)
     //         items[i].on_click();

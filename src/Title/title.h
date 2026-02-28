@@ -32,6 +32,12 @@ private:
     bool submenu_open = false;
     bool submenu_settings = true; //FALSE manage saves, TRUE manage settings
 
+    //Third level UI element
+    bool select_box_open = false;
+    Menu select_box;
+    bool waiting_for_any_key = false;
+    int menu_clicked_key_id = -1;
+
     //callback
     void settings_onclick_action(Menu_Item* item);
     void saves_onclick_action(Menu_Item* item);
@@ -39,4 +45,8 @@ private:
     void setup_settings();
     void setup_manage_saves();
     void render_3D();
+
+
+    //Set key config from select box
+    void set_key_config(int key);
 };

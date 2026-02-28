@@ -9,7 +9,7 @@ struct Menu_Item {
     std::string value = "null";
     int x_offset = 0;
     std::function<void(Menu_Item*)> on_click = nullptr;
-
+    int id = -1;
 };
 
 class Menu {
@@ -28,7 +28,9 @@ public:
         int _x, int _y, int _h, int _w,
     Fonts* _fonts);
 
-    void add_item(std::string label, std::function<void(Menu_Item*)> callback,int x_offset);
+    void add_item(std::string label, 
+        std::function<void(Menu_Item*)> callback,
+        int x_offset, int id);
     std::vector<Menu_Item> items;
 
     void Update();
@@ -39,6 +41,8 @@ public:
     //Allow category jumping with L/R keys?
     bool allow_scroll_jump = true;
 
+    bool lock_inputs = false;
+    
 private:
     GameTexture texture_set;
     TEXTURE* screen;
