@@ -305,12 +305,6 @@ int main()
     ui_altitude.tex.transparent_color = 0x00;
 
 
-
-
-    
-
-
-
     #ifdef KSPIRE_PLATFORM_NSPIRE
     while(!isKeyPressed(K_QUIT) && break_game == 0)
     #else
@@ -442,17 +436,6 @@ int main()
 
             }
 
-            
-            /*
-            debug_print("SMA ",uni.focused_vessel->orbit.semi_major_axis,10,10,screen);
-            debug_print("ECC ",uni.focused_vessel->orbit.eccentricity,10,30,screen);
-            debug_print("PRD ",uni.focused_vessel->orbit.period,10,50,screen);
-            debug_print("SPD ",uni.focused_vessel->orbit.orbital_speed,10,70,screen);
-            debug_print("INC ",uni.focused_vessel->orbit.inclination,10,90,screen);
-            debug_print("M-A ",uni.focused_vessel->orbit.mean_anomaly,10,110,screen);
-            debug_print("LAN ",uni.focused_vessel->orbit.long_ascending_node,10,130,screen);
-            debug_print("EPC ",uni.focused_vessel->orbit.epoch,10,150,screen);
-            */
         }
 
         if (current_state == GameStates::EDITOR) {
@@ -461,16 +444,19 @@ int main()
 
             //Show CATEGORY
             auto cat_list = Parts.list_categories;
-            if ((unsigned int)vab.page_index < Parts.list_categories.size() && vab.page_index >= 0 && vab.show_pallete) {
-                //printf("%s\n",cat_list[vab.page_index].c_str());
-                fonts.drawStringCenter(cat_list[vab.page_index].c_str(),
-            0xFFFF, *screen,
-            67,-1);
-    
+            if ((unsigned int)vab.page_index < Parts.list_categories.size() 
+            && vab.page_index >= 0 && vab.show_pallete) {
+                    //printf("%s\n",cat_list[vab.page_index].c_str());
+                    fonts.drawStringCenter(cat_list[vab.page_index].c_str(),
+                0xFFFF, *screen,
+                67,-1);
+            }
+
         }
 
-        if (vab.show_pallete || current_state != GameStates::EDITOR) {
-            
+        if (current_state == GameStates::MENU) {
+            auto res = title.Update(); 
+
             #if defined(KSPIRE_PLATFORM_LINUX)
             const char* VERSION = "PC_" BUILD_DATE "_" BUILD_TIME;
             fonts.drawString(VERSION,0xFFFF,*screen,10,220);
@@ -486,13 +472,6 @@ int main()
             }
             #endif
 
-            }
-            
-
-        }
-
-        if (current_state == GameStates::MENU) {
-            auto res = title.Update(); 
             uni.planetarium.update_planet_lighting(true,title.angle);
             if (res == -1) break_game = true;
             if (res == 600) {

@@ -178,6 +178,30 @@ void Planetarium::render_celestials(
 
                     nglDrawArray(obj->vertices, obj->count_vertices, obj->positions, obj->count_positions, processed, obj->draw_mode);
                 }
+
+
+                //Post render: See if LOD needs to be changed.
+                CelestialBody::LODLevels calc_lod;
+
+                //Use angular diameter: it's not linked to the changing fixed_bubble
+                auto lodsize = (int)(angular_diameter*1000);
+
+                if (lodsize <= 7) {
+                    calc_lod = CelestialBody::LODLevels::LOD1;
+                } else if (lodsize < 100) {
+                    calc_lod = CelestialBody::LODLevels::LOD2;
+                } else if (lodsize < 1200) {
+                    calc_lod = CelestialBody::LODLevels::LOD3;
+                } else if (lodsize < 4000) {
+                    calc_lod = CelestialBody::LODLevels::LOD4;
+                } else {
+                    calc_lod = CelestialBody::LODLevels::LOD1;
+                    printf("Weird ang size reached? of %f",angular_diameter);
+                }
+
+                c.switch_lod(calc_lod);
+
+
         
                 //reformat
                 if (focused_vessel != nullptr) {

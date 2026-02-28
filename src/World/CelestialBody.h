@@ -3,11 +3,17 @@
 #include "orbit.h"
 
 
-
 //Uses system / Proto_body for storing relationships. this stores data.
 class CelestialBody {
     public:
     
+    enum LODLevels {
+        LOD1,
+        LOD2,
+        LOD3,
+        LOD4
+    };
+
     std::string name = "";
 
     std::string parent = "";
@@ -31,6 +37,8 @@ class CelestialBody {
     
     int switch_texture(std::string name);
 
+    void switch_lod(LODLevels level);
+
     void clear_model();
     ~CelestialBody();
     ngl_object* me;
@@ -43,5 +51,7 @@ class CelestialBody {
     ModelGroup group; //INDIVDUAL group. stores texture data (!)
     Bundle* my_assets;
 
+    std::string _stored_texture_name = "";
+    LODLevels _stored_lod_level = LOD3;
 };
 

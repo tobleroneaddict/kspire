@@ -111,6 +111,11 @@ void Universe::Update() {
     map_zoom = linalg::clamp(map_zoom,-20000,150);
     //printf("z:%f\n",map_zoom);
 
+    if (isKeyPressed(K_EDITOR_IN)) {
+        focused_vessel->orbit.VEL.z -= 10;
+    }if (isKeyPressed(K_EDITOR_OUT)) {
+        focused_vessel->orbit.VEL.z += 10;
+    }
 
     if (isKeyPressed(K_MAP) && map_button_held == false) {
         map_button_held = true;

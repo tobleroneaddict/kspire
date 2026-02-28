@@ -214,7 +214,7 @@ void Title::setup_settings()
 {
     submenu.items.clear();
     submenu.centered_to_screen = true;
-    submenu.titlebar = "Settings";
+    submenu.titlebar = "Settings (DOES NOTHING)";
     submenu.titlebar_centered = true;
     submenu.select_base = 0;
     submenu.scroll = 0;
@@ -265,7 +265,7 @@ void Title::setup_manage_saves()
 {
     submenu.items.clear();
     submenu.centered_to_screen = true;
-    submenu.titlebar = "Manage Saves";
+    submenu.titlebar = "Manage Saves (DOES NOTHING)";
     submenu.titlebar_centered = true;
     submenu.select_base = 0;
     submenu.scroll = 0;
