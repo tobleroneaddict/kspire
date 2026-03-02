@@ -111,7 +111,6 @@ int Title::Update()
 
 
             #else
-            angle += 100;
 
             #endif
         }
