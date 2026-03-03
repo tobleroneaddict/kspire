@@ -332,10 +332,12 @@ void VAB::Update() {
 void VAB::highlight_part(ngl_object* obj,COLOR color) {
     if (obj == nullptr) return;
     if (obj->count_vertices == 0) return;
+    if (obj->vertices[0].c == color) return;
     for (unsigned int i = 0; i < obj->count_vertices; i++) {
         auto vt = &obj->vertices[i];
         vt->c = color;
     }
+    printf("A\n");
 }
 
 //VAB Render call
@@ -436,16 +438,18 @@ void VAB::render() {
         glScale3f(10,10,10);
         
 
+
+
         //Super cool highlight, please move this
         //^ Later its really hard cus of found
         //There IS a bug here, if you look in the editor the current part will likely be highlit but theres nothing you can really do ig
         if (obj->count_vertices > 0) {
             if (&p == found || &p == &part_tree[grabbed_part]) {
-                if (obj->vertices[0].c == 0) //Green
-                    highlight_part(obj,colorRGB(0.6f,0,0.6f));
+                highlight_part(obj,colorRGB(0.6f,0,0.6f));
+            } else if (!p.attached) { //Not root and not attached
+                highlight_part(obj,colorRGB(0.2f,0.2f,0.2f));
             } else {
-                if (obj->vertices[0].c != 0) //No HL
-                    highlight_part(obj,colorRGB(0.0f,0,0.0f));
+                highlight_part(obj,colorRGB(0.0f,0,0.0f));
             }
         }
         
