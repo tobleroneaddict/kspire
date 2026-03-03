@@ -47,7 +47,9 @@ void Universe::step_rails_orbit_for_v(Vessel* v) {
 }
 void Universe::step_physics_orbit_for_v(Vessel* v) {
     if ( v == nullptr) return;
-    //v->home_body = planetarium.get_attractor(v);
+    v->home_body = planetarium.get_attractor(v);
+    if (v->last_home_body != v->home_body) printf("SWITCH TO %d\n",v->home_body);
+    v->last_home_body = v->home_body;
 
     double calc_mu = planetarium.celestials[v->home_body].mass * 6.6743E-11;
     v->orbit.mu = calc_mu;
@@ -111,11 +113,6 @@ void Universe::Update() {
     map_zoom = linalg::clamp(map_zoom,-20000,150);
     //printf("z:%f\n",map_zoom);
 
-    if (isKeyPressed(K_EDITOR_IN)) {
-        focused_vessel->orbit.VEL.z -= 10;
-    }if (isKeyPressed(K_EDITOR_OUT)) {
-        focused_vessel->orbit.VEL.z += 10;
-    }
 
     if (isKeyPressed(K_MAP) && map_button_held == false) {
         map_button_held = true;

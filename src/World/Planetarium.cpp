@@ -125,7 +125,7 @@ void Planetarium::render_celestials(
         //Get draw length of body
         auto delta = pp - vp;
         float len = linalg::length(delta);
-        float altitude = len - (c.radius);
+        float altitude = len - 2*(c.radius);
 
 
         //printf("LEN %f\n",len);
@@ -205,7 +205,7 @@ void Planetarium::render_celestials(
         
                 //reformat
                 if (focused_vessel != nullptr) {
-                    if (c.name == "Earth") {
+                    if (&c == &celestials[focused_vessel->home_body]) {
                         focused_vessel->protoVessel.altitude = altitude; //SL alt
 
                     }
@@ -260,6 +260,7 @@ double Planetarium::get_soi(int index) {
 
 //Find closest attractor to a vessel
 int Planetarium::get_attractor(Vessel *v) {
+    printf("THIS ALGORITHM IS BROKEN SOMEHOW!!!\n");
     int best = -1;
     double best_score = INFINITY;
 

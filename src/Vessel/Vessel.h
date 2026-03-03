@@ -11,7 +11,7 @@ class Vessel {
     Orbit orbit; //Both rails and phys
 
     int home_body = 1;
-
+    int last_home_body = 1;
 
     enum Situation {
         LANDED,

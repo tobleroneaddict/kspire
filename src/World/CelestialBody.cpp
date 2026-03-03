@@ -53,7 +53,7 @@ void CelestialBody::switch_lod(LODLevels level) {
         default:
         me = group.get_object("LOD1");break;
     }
-    printf("%s switched LOD level to LOD{%d}.\n",name.c_str(),level);
+//    printf("%s switched LOD level to LOD{%d}.\n",name.c_str(),level);
     switch_texture(_stored_texture_name);
     _stored_lod_level = level;
 }

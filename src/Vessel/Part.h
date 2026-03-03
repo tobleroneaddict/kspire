@@ -104,6 +104,12 @@ class Part {
     int symmetry_mode;
     
 
+    unsigned int find_NODEID__path_to_root();
+
+    std::vector<unsigned int> get_tanks_to_decoupler();
+
+    void get_children();
+
     //Family
     std::vector<unsigned int> children;    
     unsigned int parent = -1;

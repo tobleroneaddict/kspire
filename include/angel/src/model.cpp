@@ -91,12 +91,12 @@ namespace angel {
 
     int ModelGroup::swap_texture(Bundle* asset_bundle, std::string model_name,std::string texture_name) {
         ngl_object* obj = get_object(model_name);        
-        printf("%s IS LOOKING FOR %s\n",model_name.c_str(),texture_name.c_str());
+        //printf("%s IS LOOKING FOR %s\n",model_name.c_str(),texture_name.c_str());
         if (obj == nullptr) { printf("58581: swap error\n"); return 1;}
 
         //Gonna have to add uv prescaling to affix new textures that might differ from the originally loaded textures, do later.
 
-        printf("Using texture: %s\n",texture_name.c_str());          
+        //printf("Using texture: %s\n",texture_name.c_str());          
         int error = load_texture_into_material(asset_bundle,texture_name,get_material_by_name(obj->material),false);
         if (error) {printf("Error loading texture %s into material.\n",texture_name.c_str());}
         //printf("Applied to %s\n",group_materials.back().name.c_str());

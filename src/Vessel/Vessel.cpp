@@ -5,6 +5,35 @@
 //Used for vessel-specific code such as aerodynamics + acceleration, resource drain, and staging + recalculations.
 void Vessel::Update()
 {
+    //DEBUG STUFF
+    if (isKeyPressed(SDLK_i)) {
+        orbit.VEL.z -= 10;
+    }if (isKeyPressed(SDLK_k)) {
+        orbit.VEL.z += 10;
+    }
+    
+    if (isKeyPressed(SDLK_j)) {
+        orbit.VEL.x -= 10;
+    }if (isKeyPressed(SDLK_l)) {
+        orbit.VEL.x += 10;
+    }
+    
+    if (isKeyPressed(SDLK_u)) {
+        orbit.VEL.y -= 10;
+    }if (isKeyPressed(SDLK_o)) {
+        orbit.VEL.y += 10;
+    }
+    
+
+
+
+
+
+
+
+
+
+
     //Focused-specific stuff
     if (is_focused) {
         //......
