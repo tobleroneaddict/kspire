@@ -81,6 +81,13 @@ int scene_pack_vab() {
     //Shove vessel buffer (do other stuff like name soon)
     //Should you clear here? (but not on revert to vab ofc)
     loading_vessel_buffer.part_tree = std::move(vab.vessel.part_tree);
+    //Delete non attached parts
+    for (unsigned int i = 0; i < loading_vessel_buffer.part_tree.size(); i++) {
+        if (!loading_vessel_buffer.part_tree[i].attached) {
+            loading_vessel_buffer.part_tree.erase(loading_vessel_buffer.part_tree.begin() + i);
+        }
+    }
+
     vab.destroy_model();
     return 0;
 }
