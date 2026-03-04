@@ -175,7 +175,7 @@ namespace angel {
         COLOR temporary_color = colorRGB(0.0f,0.0f,0.0f);
 
 
-        printf("Parsing model...\n");
+        //printf("Parsing model...\n");
     
         
 
@@ -537,14 +537,14 @@ namespace angel {
                     while (lineidx < mat.size() && mat[lineidx] != '\n') { //Rip name
                         usemat_name += mat[lineidx++];
                     }      
-                    printf("Using texture: %s\n",usemat_name.c_str());          
+                    //printf("Using texture: %s\n",usemat_name.c_str());          
                     
                     //Combine path obtained in the first steps of load_group, to allow for semi relative pathing in mats.
                     std::string full_path = path + usemat_name;
                     int error = load_texture_into_material(asset_bundle,full_path,&group_materials.back(),true);
 
                     if (error) {printf("Error loading texture %s into material.\n",usemat_name.c_str());}
-                    printf("Applied to %s\n",group_materials.back().name.c_str());
+                    //printf("Applied to %s\n",group_materials.back().name.c_str());
                 }
 
 
@@ -561,7 +561,7 @@ namespace angel {
 
         //Store model data to the object
         for (ngl_object& n : objects) {
-            printf("Writing model %s data...\n",n.name.c_str());
+            //printf("Writing model %s data...\n",n.name.c_str());
             n.positions = positions.data();    //PTR to my positions
             n.count_positions = positions.size();
             n.count_vertices = n.vertices_list.size();

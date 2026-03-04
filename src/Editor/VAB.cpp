@@ -5,7 +5,7 @@ void VAB::destroy_model() {
     me.free_group();
     node_g.free_group();
     full_scene.clear();
-    part_tree.clear();
+    vessel.part_tree.clear();
 
     //DELETE
     test_pids.clear();
@@ -15,17 +15,18 @@ void VAB::destroy_model() {
 //Init script
 int VAB::Start(Bundle* assets) {
     destroy_model();
-    part_tree.clear();
+    vessel.part_tree.clear();
 
     cam.yaw = 180;
     cam.pitch = 30;
     camera_zoom -= 30;
 
     //DEBUG STUFF
+    //Place root part
     Part part;
     part = parts_master->get_part_by_id(5817571)->default_data;
     int randInt = std::rand();
-
+    part.attached = true;
                                                             //429493081 Max
     part.unique_id = (unsigned int)(part.shared_id + randInt) % 1000000;
     //This is how nodes ID's are assigned. do this on instantiation
@@ -33,7 +34,7 @@ int VAB::Start(Bundle* assets) {
         part.nodes[i].unique_id = i + (part.unique_id * 10);
     }
     part.pos.y += 10;
-    part_tree.push_back(std::move(part));
+    vessel.part_tree.push_back(std::move(part));
 
     //END DEBUG STUFF
 
@@ -98,7 +99,7 @@ void VAB::onClick_oneshot() {
         
         if (has_grabbed_part) { //Holding part?
             has_grabbed_part = false;
-            part_tree.erase(part_tree.begin()+grabbed_part); //Need to make this work with a whole subtree
+            vessel.part_tree.erase(vessel.part_tree.begin()+grabbed_part); //Need to make this work with a whole subtree
         } else { //Create new part
             //Get the Part ID
 
@@ -110,10 +111,13 @@ void VAB::onClick_oneshot() {
                     Part part;
                     part = parts_master->get_part_by_id(cat_self_list[part_sel_index])->default_data;
 
+                    //Also pls move this
                     //Do i have to calc this on calc diff...
                     int randInt = std::rand();
 
-                                                                                
+                    part.attached = false;       
+                    if (vessel.part_tree.size() == 0) part.attached = true; //Root part?
+
                     part.unique_id = (unsigned int)(part.shared_id + randInt) % 1000000;
 
                     for (unsigned int i = 0; i < part.nodes.size(); i++) {
@@ -121,12 +125,12 @@ void VAB::onClick_oneshot() {
                     }
                     part.pos = {0,-500,0 };
                     //Shove it in tree
-                    part_tree.push_back(std::move(part));
+                    vessel.part_tree.push_back(std::move(part));
                     //Put it in the hand
                     has_grabbed_part = true;
-                    grabbed_part = part_tree.size()-1;
+                    grabbed_part = vessel.part_tree.size()-1;
                     show_pallete = false;
-                printf("Spawned new part of ID:%d\n",part.unique_id);
+                                                                        printf("Spawned new part of ID:%d\n",part.unique_id);
                 }
             }
 
@@ -141,8 +145,8 @@ void VAB::onClick_oneshot() {
         int found = -1;
         auto point = raycast_camera(current_cam_rotation);
         
-        for (size_t i = 0; i < part_tree.size(); ++i) {
-            float off = linalg::length(part_tree[i].pos - point);
+        for (size_t i = 0; i < vessel.part_tree.size(); ++i) {
+            float off = linalg::length(vessel.part_tree[i].pos - point);
             if (off < part_raycast_threshold) {
                 found = i;
                 has_grabbed_part = true;
@@ -154,7 +158,7 @@ void VAB::onClick_oneshot() {
                 //Super cool algorithm that finds the other node, and takes this node, and sets it to DETACHED magic val
                 Node* detachee = nullptr;
 
-                for (Node &n : part_tree[i].nodes) {
+                for (Node &n : vessel.part_tree[i].nodes) {
                     if (n.attached_node != DETACHED_NODE) {
                         detachee = &n;
                         break;
@@ -166,11 +170,12 @@ void VAB::onClick_oneshot() {
                 //Other part
                 //find node with id
                 int ex = 0; //cus like two depth
-                for (Part &t_p : part_tree) {
+                for (Part &t_p : vessel.part_tree) {
                     for (Node &t_n : t_p.nodes) {
                         if ((int)t_n.unique_id == detachee->attached_node) {
                             //printf("Detaching: %d\n",t_n.attached_node);
                             t_n.attached_node = DETACHED_NODE;
+                            vessel.part_tree[grabbed_part].attached = false;
                             ex = 1; break;
                         }
                     }
@@ -185,8 +190,8 @@ void VAB::onClick_oneshot() {
         }
 
         if (found != -1)
-            part_tree[found].pos = point;
-    } else {                                                //TLDR Place the part
+        vessel.part_tree[found].pos = point;
+    } else {   //ATTACH                                             //TLDR Place the part
 
         //MOVE THIS !!!!!!!!!!!
         //TODO: make this node::size dependent
@@ -194,19 +199,20 @@ void VAB::onClick_oneshot() {
         float mult = 22.0f;
         //NOT SNAPPING, CHECK pdate
         if (has_grabbed_part) { 
-            for(Part &p : part_tree)
+            for(Part &p : vessel.part_tree)
             {
-                if (&p == &part_tree[grabbed_part]) continue; //Skip self
+                if (&p == &vessel.part_tree[grabbed_part]) continue; //Skip self
 
                 for (Node &n : p.nodes) { //Client nodes
                     auto client_pos = (mult*n.position) + p.pos;
-                    for (Node &n_2 : part_tree[grabbed_part].nodes) { //Host node
-                        auto host_pos = (mult*n_2.position) + part_tree[grabbed_part].pos;
+                    for (Node &n_2 : vessel.part_tree[grabbed_part].nodes) { //Host node
+                        auto host_pos = (mult*n_2.position) + vessel.part_tree[grabbed_part].pos;
                         float len = linalg::length(host_pos - client_pos);
                         if (len < snap_thresh && n.attached_node == DETACHED_NODE) {
-                            part_tree[grabbed_part].pos = client_pos - (mult*n_2.position);
+                            vessel.part_tree[grabbed_part].pos = client_pos - (mult*n_2.position);
                             n.attached_node = n_2.unique_id;    //Link
-                            n_2.attached_node = n.unique_id;    //Link
+                            n_2.attached_node = n.unique_id;    //Link.
+                            vessel.part_tree[grabbed_part].attached = true;
                             //printf("Linked N%d <-> N%d.",n_2.unique_id,n.unique_id);
                             //printf("Linked nodes.\n");
                             break;
@@ -272,9 +278,9 @@ void VAB::Update() {
 
     //Translate grabbed part
     if (has_grabbed_part) {
-        for(Part &p : part_tree)
+        for(Part &p : vessel.part_tree)
         {
-            if (&p == &part_tree[grabbed_part])
+            if (&p == &vessel.part_tree[grabbed_part])
                 p.pos = raycast_camera(current_cam_rotation);
         }
     }
@@ -285,17 +291,17 @@ void VAB::Update() {
     float mult = 22.0f;
     //Snapping, reversible
     if (has_grabbed_part) {
-        for(Part &p : part_tree)
+        for(Part &p : vessel.part_tree)
         {
-            if (&p == &part_tree[grabbed_part]) continue; //Skip self
+            if (&p == &vessel.part_tree[grabbed_part]) continue; //Skip self
 
             for (Node &n : p.nodes) { //Client nodes
                 auto client_pos = (mult*n.position) + p.pos;
-                for (Node &n_2 : part_tree[grabbed_part].nodes) { //Host node
-                    auto host_pos = (mult*n_2.position) + part_tree[grabbed_part].pos;
+                for (Node &n_2 : vessel.part_tree[grabbed_part].nodes) { //Host node
+                    auto host_pos = (mult*n_2.position) + vessel.part_tree[grabbed_part].pos;
                     float len = linalg::length(host_pos - client_pos);
                     if (len < snap_thresh && n.attached_node == DETACHED_NODE) {
-                        part_tree[grabbed_part].pos = client_pos - (mult*n_2.position);
+                        vessel.part_tree[grabbed_part].pos = client_pos - (mult*n_2.position);
                         // n.attached_node = n_2.unique_id;    //Link
                         // n_2.attached_node = n.unique_id;    //Link
                         break;
@@ -326,19 +332,7 @@ void VAB::Update() {
     pallete_r += clock.dt * 50;
 }
 
-//Slightly hacky color highlighting. it uses kspire::ngl's shading feature.
-//This DOES color all parts the same color if you're not careful with timing.
-//(Hint: Race the beam)
-void VAB::highlight_part(ngl_object* obj,COLOR color) {
-    if (obj == nullptr) return;
-    if (obj->count_vertices == 0) return;
-    if (obj->vertices[0].c == color) return;
-    for (unsigned int i = 0; i < obj->count_vertices; i++) {
-        auto vt = &obj->vertices[i];
-        vt->c = color;
-    }
-    printf("A\n");
-}
+
 
 //VAB Render call
 void VAB::render() {
@@ -406,10 +400,10 @@ void VAB::render() {
     Part* found = nullptr;
     auto point = raycast_camera(current_cam_rotation);
         
-    for (size_t i = 0; i < part_tree.size(); ++i) {
-        float off = linalg::length(part_tree[i].pos - point);
+    for (size_t i = 0; i < vessel.part_tree.size(); ++i) {
+        float off = linalg::length(vessel.part_tree[i].pos - point);
         if (off < part_raycast_threshold) {
-            found = &part_tree[i];
+            found = &vessel.part_tree[i];
             break;
         }
     }
@@ -418,7 +412,7 @@ void VAB::render() {
 
 
     //Part tree also contains detached parts. ( No parent )if there are any theyre nuked.
-    for(Part &p : part_tree) //Loop through AnGL scene
+    for(Part &p : vessel.part_tree) //Loop through AnGL scene
     {
         if (parts_master->get_part_by_id(p.shared_id) == nullptr) continue;
         if (parts_master->get_part_by_id(p.shared_id)->models.size() == 0) continue;
@@ -444,10 +438,10 @@ void VAB::render() {
         //^ Later its really hard cus of found
         //There IS a bug here, if you look in the editor the current part will likely be highlit but theres nothing you can really do ig
         if (obj->count_vertices > 0) {
-            if (&p == found || &p == &part_tree[grabbed_part]) {
+            if (&p == found || &p == &vessel.part_tree[grabbed_part]) {
                 highlight_part(obj,colorRGB(0.6f,0,0.6f));
             } else if (!p.attached) { //Not root and not attached
-                highlight_part(obj,colorRGB(0.2f,0.2f,0.2f));
+                highlight_part(obj,colorRGB(0.3f,0.3f,0.3f));
             } else {
                 highlight_part(obj,colorRGB(0.0f,0,0.0f));
             }
@@ -577,4 +571,17 @@ linalg::vec<float,3> VAB::raycast_camera(linalg::vec<float,3> out /*camera out*/
     float c_y = t_off_y * mult * linalg::cos(out.x * 0.01745329) + camera_height;
 
     return {c_x,c_y,c_z};
+}
+
+//Slightly hacky color highlighting. it uses kspire::ngl's shading feature.
+//This DOES color all parts the same color if you're not careful with timing.
+//(Hint: Race the beam)
+void VAB::highlight_part(ngl_object* obj,COLOR color) {
+    if (obj == nullptr) return;
+    if (obj->count_vertices == 0) return;
+    if (obj->vertices[0].c == color) return;
+    for (unsigned int i = 0; i < obj->count_vertices; i++) {
+        auto vt = &obj->vertices[i];
+        vt->c = color;
+    }
 }

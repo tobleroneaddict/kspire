@@ -4,7 +4,7 @@
 #include "../Utility/GameTexture.h"
 #include "../Vessel/Part.h"
 #include "../Utility/PartLoader.h"
-
+#include "../Vessel/Vessel.h"
 
 class VAB {
 public:
@@ -17,7 +17,8 @@ public:
     bool show_pallete = false;
     bool hide_vab = false;
 
-    std::vector<Part> part_tree;
+    Vessel vessel; //Vessel contains all the nodegraph stuff
+    //std::vector<Part> part_tree;
 
     //Load ANGEL model
     int Start(Bundle* assets);
@@ -79,7 +80,7 @@ private:
 
     /*    PALLETE RENDERER    */
     //Replace this with a better data type
-    std::vector<int> test_pids;
+    std::vector<int> test_pids; //TO DELETE
     float pallete_r = 0.0f; //Rotator
 
 

@@ -70,7 +70,7 @@ int scene_pack_vab() {
 
     //MOVE TO A BETTER SPOT. cannot be in destroy model because of part tree move. removes the links.
     //Clear highlights
-    for(Part &p : vab.part_tree)
+    for(Part &p : vab.vessel.part_tree)
     {
         if (Parts.get_part_by_id(p.shared_id) == nullptr) continue;
         if (Parts.get_part_by_id(p.shared_id)->models.size() == 0) continue;
@@ -80,7 +80,7 @@ int scene_pack_vab() {
 
     //Shove vessel buffer (do other stuff like name soon)
     //Should you clear here? (but not on revert to vab ofc)
-    loading_vessel_buffer.part_tree = std::move(vab.part_tree);
+    loading_vessel_buffer.part_tree = std::move(vab.vessel.part_tree);
     vab.destroy_model();
     return 0;
 }
@@ -92,7 +92,7 @@ int scene_load_flight() {
     glColor3f(0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     current_state = GameStates::FLIGHT;
-    fonts.drawString("Loading planets...",0xFFFF,*screen,10,220);
+    fonts.drawString("Loading Flight...",0xFFFF,*screen,10,220);
     nglDisplay();
 
     scene_pack_flight();
@@ -100,8 +100,9 @@ int scene_load_flight() {
     uni.skybox.load_group(&resource_bundle,"resources/skybox/skybox");
 
     uni.planetarium.clear_celestial_models();
-    uni.planetarium.load_celestial_bodies(&resource_bundle);
-    printf("LOADED CELESTIALS\n");
+    if(uni.planetarium.celestials.size() == 0)
+        uni.planetarium.load_celestial_bodies(&resource_bundle);
+    //printf("LOADED CELESTIALS\n");
     //Only using earth moon and sun right now
     uni.planetarium.celestials[0].load_model(&planet_bundle);
     uni.planetarium.celestials[1].load_model(&planet_bundle);
@@ -121,11 +122,7 @@ int scene_load_flight() {
 
     //Push buffer
     uni.focused_vessel->part_tree = loading_vessel_buffer.part_tree;
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    fonts.drawString("Loading complete!",0xFFFF,*screen,10,220);
-    nglDisplay();
-    printf("Loading complete!\n");
     loading = false;
     return 0;
 }
@@ -149,8 +146,14 @@ int scene_load_vab() {
 int scene_load_menu() {
     current_state = GameStates::MENU;
     loading = true;
+    glColor3f(0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    fonts.drawString("Loading Menu...",0xFFFF,*screen,10,220);
+    nglDisplay();
+
     uni.planetarium.clear_celestial_models();
-    uni.planetarium.load_celestial_bodies(&resource_bundle);
+    if(uni.planetarium.celestials.size() == 0)
+        uni.planetarium.load_celestial_bodies(&resource_bundle);
     //Only using earth and moon
     uni.planetarium.celestials[1].load_model(&planet_bundle);
     uni.planetarium.celestials[2].load_model(&planet_bundle);
@@ -287,8 +290,8 @@ int main()
 
     //vab.hide_vab = true;
     //Debug init scene
-    //scene_load_menu();
-    scene_load_flight();
+    scene_load_menu();
+    //scene_load_flight();
     //scene_load_vab();
 
     //return 1;

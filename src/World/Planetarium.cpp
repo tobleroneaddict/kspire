@@ -310,7 +310,7 @@ void Planetarium::clear_celestial_models() {
 int Planetarium::load_celestial_bodies(Bundle* resources) {
     celestials.clear();
 
-    printf("LOADING BODIES FROM JSON\n");
+    //printf("LOADING BODIES FROM JSON\n");
     std::vector<uint8_t> raw = resources->load_raw_data("resources/system/system.json");
     std::string json(raw.begin(),raw.end());
 
@@ -422,7 +422,7 @@ int Planetarium::load_celestial_bodies(Bundle* resources) {
         cb.orbit.VEL = {0,0,0};
 
         celestials.push_back(cb);
-        printf("Added body %s.\n",cb.name.c_str());
+        //printf("Added body %s.\n",cb.name.c_str());
 
     }
     

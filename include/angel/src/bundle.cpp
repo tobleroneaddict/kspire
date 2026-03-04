@@ -101,8 +101,7 @@ namespace angel {
         unsigned int  n = 0;
         uint8_t buf[512];
 
-
-        printf("Name of : %s\n",name);
+        //printf("Name of : %s\n",name);
         file = gzopen(name, "rb");
 
         //Return if borked

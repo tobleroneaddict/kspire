@@ -97,9 +97,8 @@ void Orbit::calculate_state_from_keplers(double _UNIVERSAL_TIME) {
     double true_anomaly = -1;
     //Calc MA, Ecc-A TA, and Radius.
     if (eccentricity < 1.0) { //SOLVE ELLIPTICAL / CIRCULAR
-        //if (eccentricity < 1E-05) { printf("ECC edge case\n");}
+
         //Calc MA
-        //mean_anomaly = ObT / period * 2.0 * pi;
         double n = linalg::sqrt(mu / (semi_major_axis*semi_major_axis*semi_major_axis));
         mean_anomaly = mean_anomaly_at_epoch + n * ObT;
         mean_anomaly = fmod(mean_anomaly, 2.0*pi);
@@ -162,10 +161,6 @@ void Orbit::calculate_state_from_keplers(double _UNIVERSAL_TIME) {
     v_pf.y = v_r * linalg::sin(true_anomaly) + v_theta * linalg::cos(true_anomaly); //POST
     v_pf.z = 0.0;
 
-    //Didnt fix
-    //double p = (h_mag*h_mag)/mu ;
-    //v_pf.x = -linalg::sqrt(mu/p)*sin(true_anomaly);
-    //v_pf.y = linalg::sqrt(mu/p)*(eccentricity+cos(true_anomaly));
     //Rotation matrix
     linalg::mat<double,3,3> RM;
 
@@ -208,11 +203,6 @@ void Orbit::calculate_state_from_keplers(double _UNIVERSAL_TIME) {
 //https://orbital-mechanics.space/classical-orbital-elements/orbital-elements-and-the-state-vector.html
 //Calculate on-rails orbital elements given keplarian elements
 void Orbit::physics_to_rails(double epoch) {
-
-//     printf("1POS: (%f,%f,%f)\n", POS.x, POS.y, POS.z);
-// printf("1VEL: (%f,%f,%f)\n", VEL.x, VEL.y, VEL.z);
-// printf("1ECC: %f\n", eccentricity);
-
 
     //Use return codes later
     if (mu == 0 ) { printf("E 134814: MU NOT SET!!!!\n"); return;}
@@ -319,10 +309,6 @@ void Orbit::physics_to_rails(double epoch) {
     } else {
         a = (h_mag*h_mag) / (mu * (1 - (e_mag*e_mag)));
     }
-    
-
-    
-
     
     double p = (h_mag * h_mag) / mu;
     eccentricity = e_mag;

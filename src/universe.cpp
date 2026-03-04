@@ -47,7 +47,7 @@ void Universe::step_rails_orbit_for_v(Vessel* v) {
 }
 void Universe::step_physics_orbit_for_v(Vessel* v) {
     if ( v == nullptr) return;
-    v->home_body = planetarium.get_attractor(v);
+    //v->home_body = planetarium.get_attractor(v);
     if (v->last_home_body != v->home_body) printf("SWITCH TO %d\n",v->home_body);
     v->last_home_body = v->home_body;
 
@@ -83,7 +83,6 @@ void Universe::Update() {
         for (Vessel &v : vessels) {
             if (v.loaded) {
                 v.orbit.physics_to_rails(universal_time);
-                //v.orbit.calculate_state_from_keplers(universal_time);
             }
         }
         timewarp.entered_rails = false;

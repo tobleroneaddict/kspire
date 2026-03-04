@@ -78,7 +78,7 @@ struct Module {
 class Part {
     public:
     //Attachment
-    bool attached;
+    bool attached = false;
     linalg::vec<float,3> pos;
     linalg::vec<float,3> attPos;
     linalg::vec<float,4> attRotation;
