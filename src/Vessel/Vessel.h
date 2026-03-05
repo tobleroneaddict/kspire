@@ -42,6 +42,9 @@ class Vessel {
     //WARNINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
     std::vector<Part> part_tree;
 
+    int find_NODEID__path_to_root(int part);
+
+    std::vector<unsigned int> get_tanks_to_decoupler(unsigned int part);
 
     void Update();
     

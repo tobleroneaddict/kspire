@@ -35,6 +35,7 @@ struct Node {
 
     unsigned int unique_id;
     //Same, but for the node it's attached to.
+    //This being int and not unsigned int is bound to have some issues maybe
     int attached_node = -1; //detached node val
 };
 
@@ -103,10 +104,6 @@ class Part {
     std::vector<unsigned int> symmetry_tochters_uids;
     int symmetry_mode;
     
-
-    unsigned int find_NODEID__path_to_root();
-
-    std::vector<unsigned int> get_tanks_to_decoupler();
 
     void get_children();
 

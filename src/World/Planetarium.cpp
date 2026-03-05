@@ -171,6 +171,11 @@ void Planetarium::render_celestials(
                 float angular_diameter = 2.0f * (c.radius / len);
                 float render_radius = angular_diameter * fixed_bubble;
 
+                //Could break if sol name is changed
+                //Luminaries
+                if (c.parent == "Sol" || c.parent == "")
+                    render_radius = linalg::clamp(render_radius,100.0f,INFINITY);
+
                 glScale3f(render_radius, render_radius, render_radius);
 
                 if (obj->texture != nullptr && obj->positions != nullptr) {

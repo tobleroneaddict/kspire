@@ -74,3 +74,47 @@ void Vessel::Update_Static()
 {
 
 };
+
+
+
+//Find which node leads to the root part
+int Vessel::find_NODEID__path_to_root(int part) {
+    //Bad way to do this? find the part from part id
+    Part *target;
+    //apparently checking nullptr isnt enough
+    bool exists = false;
+    for (Part &p : part_tree) {
+        if (p.unique_id == (int)part) {
+            target = &p;
+            exists = true;
+            break;
+        }
+    }
+    //apparently checking nullptr isnt enough
+    if (exists == false) {
+        return -1;
+    }
+
+    //Iterate
+    for (Node &n : target->nodes) {
+
+        unsigned int found_part_id = -1;
+        //Find what part that belongs to (shitteh)
+        
+        
+        for (Part &p2 : part_tree) {
+            for (Node &n2 : p2.nodes) { 
+                if (n2.unique_id == (unsigned int)n.attached_node) { //Oh god
+                    found_part_id = p2.unique_id;
+                    break;
+                }
+            } //Break again here?
+        }
+        auto result = find_NODEID__path_to_root(found_part_id);
+        if (result != -1) return result;
+        
+    };
+    
+
+    return -1;
+}
