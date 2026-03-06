@@ -38,9 +38,13 @@ class Vessel {
     //Is this the current controller?    
     bool is_focused = false;
 
-    //Might this have to be unique ptr???
-    //WARNINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+    //Part Data
     std::vector<Part> part_tree;
+    //Map {id,part_tree index}
+    std::unordered_map<unsigned int,unsigned int> database;
+    //Rebase all parts, links, and shit
+    void rebase();
+
 
     int find_NODEID__path_to_root(int part);
 

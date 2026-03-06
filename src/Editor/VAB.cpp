@@ -123,9 +123,12 @@ void VAB::onClick_oneshot() {
                     for (unsigned int i = 0; i < part.nodes.size(); i++) {
                         part.nodes[i].unique_id = i + (part.unique_id * 10);   
                     }
+                    
                     part.pos = {0,-500,0 };
+                    
                     //Shove it in tree
                     vessel.part_tree.push_back(std::move(part));
+
                     //Put it in the hand
                     has_grabbed_part = true;
                     grabbed_part = vessel.part_tree.size()-1;
@@ -192,8 +195,8 @@ void VAB::onClick_oneshot() {
         if (found != -1)
         vessel.part_tree[found].pos = point;
     } else {   //ATTACH                                             //TLDR Place the part
-
-        //MOVE THIS !!!!!!!!!!!
+        //VAB::Link
+        //MOVE THIS !!!!!!!!!!! z
         //TODO: make this node::size dependent
         float snap_thresh = 6.0f;
         float mult = 22.0f;
@@ -208,22 +211,23 @@ void VAB::onClick_oneshot() {
                     for (Node &n_2 : vessel.part_tree[grabbed_part].nodes) { //Host node
                         auto host_pos = (mult*n_2.position) + vessel.part_tree[grabbed_part].pos;
                         float len = linalg::length(host_pos - client_pos);
-                        if (len < snap_thresh && n.attached_node == DETACHED_NODE) {
+                        if (len < snap_thresh && n.attached_node == DETACHED_NODE && n_2.attached_node == DETACHED_NODE) {
                             vessel.part_tree[grabbed_part].pos = client_pos - (mult*n_2.position);
                             n.attached_node = n_2.unique_id;    //Link
                             n_2.attached_node = n.unique_id;    //Link.
                             vessel.part_tree[grabbed_part].attached = true;
+                            vessel.rebase();
                             //printf("Linked N%d <-> N%d.",n_2.unique_id,n.unique_id);
                             //printf("Linked nodes.\n");
-                            break;
+                            //break;
+                            goto exit_vab_link;
                         }
                     }
                 }
             }
         }
-
-        
-
+        exit_vab_link:
+        //this is good code i love goto
 
         has_grabbed_part = false;
         stopped_grabbing = true;
