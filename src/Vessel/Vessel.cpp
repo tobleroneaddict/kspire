@@ -93,8 +93,8 @@ void Vessel::rebase() {
             if (n.attached_node == -1) continue; //Skip detached
             unsigned int att_part = n.attached_node;
 
-            
 
+            //TODO: what is the goal here?
         }
 
     }
