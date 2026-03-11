@@ -244,6 +244,8 @@ void Universe::render_flight()
     // IN CAM: PLANET
     glPushMatrix();
     // Move back
+
+    // NTS - Should this be transformed by CoM too? In Mode 1 perhaps?
     cam.pos.x = 0;
     cam.pos.y = 0;
     cam.pos.z = 0;
@@ -262,16 +264,15 @@ void Universe::render_flight()
     glPopMatrix();
     // IN CAM: VESSEL
     glPushMatrix();
-    // Move back
-    cam.pos.x = 0;
-    cam.pos.y = 0;
-    cam.pos.z = -200 + map_zoom;
 
+    // Move back zoom, before rotation
+    cam.pos.z = -200 + map_zoom;
     glTranslatef(-cam.pos.x, -cam.pos.y, -cam.pos.z);
+
     rotate_camera();
 
-    glTranslatef(focused_vessel->protoVessel.CoM.x, focused_vessel->protoVessel.CoM.y,
-                 focused_vessel->protoVessel.CoM.z);
+    glTranslatef(-focused_vessel->protoVessel.CoM.x, -focused_vessel->protoVessel.CoM.y,
+                 -focused_vessel->protoVessel.CoM.z);
 
     // printf("COM %f %f
     // %f\n",focused_vessel->protoVessel.CoM.x,focused_vessel->protoVessel.CoM.y,focused_vessel->protoVessel.CoM.z);

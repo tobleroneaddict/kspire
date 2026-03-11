@@ -65,7 +65,7 @@ void Vessel::Update_Physics()
             *com /= _mass;
         }
         // then relative to root part
-        *com = part_tree[0].pos - *com;
+        // *com = part_tree[0].pos - *com;
         protoVessel.mass = _mass;
     }
 };
