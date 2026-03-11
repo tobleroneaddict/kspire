@@ -1,19 +1,19 @@
 #pragma once
-#include "../globals.h"
-#include "ProtoVessel.h"
-#include "Part.h"
 #include "../World/orbit.h"
+#include "../globals.h"
+#include "Part.h"
+#include "ProtoVessel.h"
 
-
-class Vessel {
-    public:
-
-    Orbit orbit; //Both rails and phys
+class Vessel
+{
+  public:
+    Orbit orbit; // Both rails and phys
 
     int home_body = 1;
     int last_home_body = 1;
 
-    enum Situation {
+    enum Situation
+    {
         LANDED,
         SPLASHED,
         PRELAUNCH,
@@ -23,37 +23,36 @@ class Vessel {
         ESCAPING,
         DOCKED
     };
-    enum State {
+    enum State
+    {
         INACTIVE,
         ACTIVE,
         DEAD,
-
     };
 
-
     ProtoVessel protoVessel;
-    
-    //Are parts loaded? (Also Physics range)
+
+    // Are parts loaded? (Also Physics range)
     bool loaded = false;
-    //Is this the current controller?    
+    // Is this the current controller?
     bool is_focused = false;
 
-    //Part Data
+    // Part Data
     std::vector<Part> part_tree;
-    //Map {id,part_tree index}
-    std::unordered_map<unsigned int,unsigned int> database;
-    //Rebase all parts, links, and shit
+    // Map {id,part_tree index}
+    std::unordered_map<unsigned int, unsigned int> database;
+    // Rebase all parts, links, and shit
     void rebase();
-
-
-    int find_NODEID__path_to_root(int part);
 
     std::vector<unsigned int> get_tanks_to_decoupler(unsigned int part);
 
     void Update();
-    
-    private:
 
+  private:
     void Update_Physics();
     void Update_Static();
+
+  public:
+    unsigned int node_to_part(unsigned int node_id);
+    int node_index(unsigned int node_id);
 };

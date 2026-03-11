@@ -1,13 +1,13 @@
-#include "globals.h"
-#include "universe.h"
-#include "Utility/font.h"
-#include "World/LOD/planet-lod.h"
 #include "Editor/VAB.h"
+#include "Title/title.h"
 #include "Utility/GameTexture.h"
 #include "Utility/PartLoader.h"
 #include "Utility/cursor.h"
-#include "Title/title.h"
+#include "Utility/font.h"
 #include "Vessel/Part.h"
+#include "World/LOD/planet-lod.h"
+#include "globals.h"
+#include "universe.h"
 
 #if defined(KSPIRE_PLATFORM_WINDOWS) || defined(KSPIRE_PLATFORM_LINUX)
 #include <filesystem>
@@ -16,14 +16,14 @@
 #ifdef KSPIRE_PLATFORM_WINDOWS
 #include <direct.h>
 #endif
-enum GameStates {
+enum GameStates
+{
     MENU,
     EDITOR,
     FLIGHT,
     PRELOAD,
 };
-//If it crashes for some reason try rebuilding objects...
-
+// If it crashes for some reason try rebuilding objects...
 
 GameStates current_state = GameStates::PRELOAD;
 bool loading = true;
@@ -36,54 +36,62 @@ PartLoader Parts;
 Fonts fonts;
 Cursor cursor;
 
-//Angel Asset bundles
-Bundle resource_bundle; //RESOURCE
-Bundle planet_bundle;   //BODY
-Bundle parts_bundle;    //PARTS
+// Angel Asset bundles
+Bundle resource_bundle; // RESOURCE
+Bundle planet_bundle;   // BODY
+Bundle parts_bundle;    // PARTS
 
-//nGL stuff
+// nGL stuff
 TEXTURE *screen;
 ProcessedPosition *processed;
 Vessel loading_vessel_buffer;
 
-template <typename T> void screen_print(std::string preamble, T value, int x, int y, TEXTURE *screen, std::string unit = "") {
+template <typename T>
+void screen_print(std::string preamble, T value, int x, int y, TEXTURE *screen, std::string unit = "")
+{
     preamble.append(std::to_string(value));
     preamble.append(unit);
     fonts.drawString(preamble.c_str(), 0xFFFF, *screen, x, y);
 }
 
-template <typename T> void screen_print(T value, int x, int y, TEXTURE *screen) {
+template <typename T> void screen_print(T value, int x, int y, TEXTURE *screen)
+{
     std::string preamble = std::to_string(value);
     fonts.drawString(preamble.c_str(), 0xFFFF, *screen, x, y);
 }
 
+// TO BE MOVED
 
-//TO BE MOVED
-
-int scene_pack_flight() {
+int scene_pack_flight()
+{
     cursor.set_cursor_visibility(false);
     uni.pack();
     return 0;
 }
-int scene_pack_vab() {
+int scene_pack_vab()
+{
     cursor.set_cursor_visibility(false);
 
-    //MOVE TO A BETTER SPOT. cannot be in destroy model because of part tree move. removes the links.
-    //Clear highlights
-    for(Part &p : vab.vessel.part_tree)
+    // MOVE TO A BETTER SPOT. cannot be in destroy model because of part tree move. removes the links.
+    // Clear highlights
+    for (Part &p : vab.vessel.part_tree)
     {
-        if (Parts.get_part_by_id(p.shared_id) == nullptr) continue;
-        if (Parts.get_part_by_id(p.shared_id)->models.size() == 0) continue;
+        if (Parts.get_part_by_id(p.shared_id) == nullptr)
+            continue;
+        if (Parts.get_part_by_id(p.shared_id)->models.size() == 0)
+            continue;
         auto obj = Parts.get_part_by_id(p.shared_id)->models[0];
-        vab.highlight_part(obj,colorRGB(0.0f,0,0.0f)); //Move highlight part to a more global place
+        vab.highlight_part(obj, colorRGB(0.0f, 0, 0.0f)); // Move highlight part to a more global place
     }
 
-    //Shove vessel buffer (do other stuff like name soon)
-    //Should you clear here? (but not on revert to vab ofc)
+    // Shove vessel buffer (do other stuff like name soon)
+    // Should you clear here? (but not on revert to vab ofc)
     loading_vessel_buffer.part_tree = std::move(vab.vessel.part_tree);
-    //Delete non attached parts
-    for (unsigned int i = 0; i < loading_vessel_buffer.part_tree.size(); i++) {
-        if (!loading_vessel_buffer.part_tree[i].attached) {
+    // Delete non attached parts
+    for (unsigned int i = 0; i < loading_vessel_buffer.part_tree.size(); i++)
+    {
+        if (!loading_vessel_buffer.part_tree[i].attached)
+        {
             loading_vessel_buffer.part_tree.erase(loading_vessel_buffer.part_tree.begin() + i);
         }
     }
@@ -92,55 +100,55 @@ int scene_pack_vab() {
     return 0;
 }
 
-
-int scene_load_flight() {
+int scene_load_flight()
+{
     loading = true;
     uni.timewarp.exit_now();
     glColor3f(0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     current_state = GameStates::FLIGHT;
-    fonts.drawString("Loading Flight...",0xFFFF,*screen,10,220);
+    fonts.drawString("Loading Flight...", 0xFFFF, *screen, 10, 220);
     nglDisplay();
 
     scene_pack_flight();
 
-    uni.skybox.load_group(&resource_bundle,"resources/skybox/skybox");
+    uni.skybox.load_group(&resource_bundle, "resources/skybox/skybox");
 
     uni.planetarium.clear_celestial_models();
-    if(uni.planetarium.celestials.size() == 0)
+    if (uni.planetarium.celestials.size() == 0)
         uni.planetarium.load_celestial_bodies(&resource_bundle);
-    //printf("LOADED CELESTIALS\n");
-    //Only using earth moon and sun right now
+    // printf("LOADED CELESTIALS\n");
+    // Only using earth moon and sun right now
     uni.planetarium.celestials[0].load_model(&planet_bundle);
     uni.planetarium.celestials[1].load_model(&planet_bundle);
     uni.planetarium.celestials[2].load_model(&planet_bundle);
 
-    if (uni.node_g.load_group(&resource_bundle,"resources/vab/node")) return 1;
+    if (uni.node_g.load_group(&resource_bundle, "resources/vab/node"))
+        return 1;
     uni.node = uni.node_g.get_object("Sphere");
 
-    //DEBUG SHIHH
+    // DEBUG SHIHH
     Vessel new_vess;
-    new_vess.is_focused = new_vess.loaded = true;   //Setup for active + phys
+    new_vess.is_focused = new_vess.loaded = true; // Setup for active + phys
     uni.vessels.emplace_back(std::move(new_vess));
     uni.focused_vessel = &uni.vessels.back();
     uni.focused_vessel->home_body = uni.planetarium.find_body_by_name("Earth");
 
-    
-
-    //Push buffer
+    // Push buffer
     uni.focused_vessel->part_tree = loading_vessel_buffer.part_tree;
 
     loading = false;
     return 0;
 }
 
-int scene_load_vab() {
+int scene_load_vab()
+{
     scene_pack_vab();
     loading = true;
     glColor3f(0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     current_state = GameStates::EDITOR;
-    fonts.drawString("Loading VAB...",0xFFFF,*screen,10,220);
+    fonts.drawString("Loading VAB...", 0xFFFF, *screen, 10, 220);
     nglDisplay();
     printf("Loading VAB...\n");
     vab.Start(&resource_bundle);
@@ -149,42 +157,42 @@ int scene_load_vab() {
     return 0;
 }
 
-
-int scene_load_menu() {
+int scene_load_menu()
+{
     current_state = GameStates::MENU;
     loading = true;
     glColor3f(0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    fonts.drawString("Loading Menu...",0xFFFF,*screen,10,220);
+    fonts.drawString("Loading Menu...", 0xFFFF, *screen, 10, 220);
     nglDisplay();
 
     uni.planetarium.clear_celestial_models();
-    if(uni.planetarium.celestials.size() == 0)
+    if (uni.planetarium.celestials.size() == 0)
         uni.planetarium.load_celestial_bodies(&resource_bundle);
-    //Only using earth and moon
+    // Only using earth and moon
     uni.planetarium.celestials[1].load_model(&planet_bundle);
     uni.planetarium.celestials[2].load_model(&planet_bundle);
-    uni.planetarium.update_planet_lighting(true,0);
+    uni.planetarium.update_planet_lighting(true, 0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    title.load_title(&resource_bundle,uni.planetarium.celestials[1].me,uni.planetarium.celestials[2].me);
+    title.load_title(&resource_bundle, uni.planetarium.celestials[1].me, uni.planetarium.celestials[2].me);
     loading = false;
     cursor.set_cursor_visibility(false);
-    
+
     return 0;
 }
 
-int scene_pack_menu() {
+int scene_pack_menu()
+{
     title.pack_title();
     return 0;
 }
 
-
-
 // get_binary_directory () -> load_asset_bundle ( path ) -> bundle
 // get_binary_directory() -> std::string
 #if defined(KSPIRE_PLATFORM_WINDOWS) || defined(KSPIRE_PLATFORM_LINUX)
-char* get_binary_directory(const char* exe_path){
+char *get_binary_directory(const char *exe_path)
+{
     std::string directory;
     // ./kspire -> prune filename -> ./
     // ../../kspire -> prune -> ../../
@@ -195,48 +203,54 @@ char* get_binary_directory(const char* exe_path){
 #endif
 
 #if defined(KSPIRE_PLATFORM_WINDOWS) || defined(KSPIRE_PLATFORM_LINUX)
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 #else
 int main()
 #endif
 {
-    #if defined(KSPIRE_PLATFORM_LINUX) || defined(KSPIRE_PLATFORM_WINDOWS)
+#if defined(KSPIRE_PLATFORM_LINUX) || defined(KSPIRE_PLATFORM_WINDOWS)
     // switch dir to exedir using argv
-        char* directory = get_binary_directory(argv[0]);
-        int dir_change_code;
-        #ifdef KSPIRE_PLATFORM_LINUX
-            dir_change_code = chdir(directory);
-        #elifdef KSPIRE_PLATFORM_WINDOWS
-            dir_change_code = _chdir(directory);
-        #endif
-        if (dir_change_code!=0){
-            std::string s = std::format("failed to change to executable directory: {}",directory); 
-            printf("%s\n",s.c_str());
-        } else{
-            printf("changed directory to executable directory %s",directory);
-        }
-    #endif
+    char *directory = get_binary_directory(argv[0]);
+    int dir_change_code;
+#ifdef KSPIRE_PLATFORM_LINUX
+    dir_change_code = chdir(directory);
+#elifdef KSPIRE_PLATFORM_WINDOWS
+    dir_change_code = _chdir(directory);
+#endif
+    if (dir_change_code != 0)
+    {
+        std::string s = std::format("failed to change to executable directory: {}", directory);
+        printf("%s\n", s.c_str());
+    }
+    else
+    {
+        printf("changed directory to executable directory %s", directory);
+    }
+#endif
 
-    //Set pointers to bundles
+    // Set pointers to bundles
     uni.planet_bundle = &planet_bundle;
     uni.resource_bundle = &resource_bundle;
     uni.parts_bundle = &parts_bundle;
 
-	if (!is_touchpad) { return 0;} //Only CX/CXII supported
+    if (!is_touchpad)
+    {
+        return 0;
+    } // Only CX/CXII supported
     cursor.set_cursor_visibility(false);
-	SDL_Init(SDL_INIT_VIDEO); //Using SDL for timing
-    
+    SDL_Init(SDL_INIT_VIDEO); // Using SDL for timing
+
     // Initialize nGL
     nglInit();
     // Allocate the framebuffer
     screen = newTexture(SCREEN_WIDTH, SCREEN_HEIGHT, 0, false);
     nglSetBuffer(screen->bitmap);
-    vab.screen = screen;    
+    vab.screen = screen;
     title.screen = screen;
 
-    //Processed position for nGL
+    // Processed position for nGL
     processed = new ProcessedPosition[9999];
-    //Condense in a sec
+    // Condense in a sec
     uni.processed = processed;
     uni.planetarium.processed = processed;
     vab.processed = processed;
@@ -244,260 +258,267 @@ int main()
     title.fonts = &fonts;
     vab.parts_master = &Parts;
     uni.parts_master = &Parts;
-    
 
-    //TODO: Stop using the firebird preprocessor and just do this check
-    //Check for firebird dev env presense to affix absolute mouse mode, otherwise stay in relative mode
-    if (fopen("firebird.tns","r") != nullptr) {
+    // TODO: Stop using the firebird preprocessor and just do this check
+    // Check for firebird dev env presense to affix absolute mouse mode, otherwise stay in relative mode
+    if (fopen("firebird.tns", "r") != nullptr)
+    {
         kspire_pad.relative_mode = false;
         is_firebird = true;
     }
-    #if defined(KSPIRE_PLATFORM_LINUX)
+#if defined(KSPIRE_PLATFORM_LINUX)
     kspire_pad.relative_mode = false;
-    #endif
+#endif
 
-    //Global bundle
-    if (resource_bundle.load_asset_bundle("resources.tar.gz.tns")) {
+    // Global bundle
+    if (resource_bundle.load_asset_bundle("resources.tar.gz.tns"))
+    {
         printf("Asset load error!!\n");
         return 1;
     }
 
-    //Load font data
-    if (fonts.init(&resource_bundle) != 0) {
+    // Load font data
+    if (fonts.init(&resource_bundle) != 0)
+    {
         printf("Error loading fonts!\n");
     }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    fonts.drawString("Loading parts...",0xFFFF,*screen,10,220);
+    fonts.drawString("Loading parts...", 0xFFFF, *screen, 10, 220);
     nglDisplay();
-    
-    //Load part bundle
-    if (parts_bundle.load_asset_bundle("parts.tar.gz.tns")) {
+
+    // Load part bundle
+    if (parts_bundle.load_asset_bundle("parts.tar.gz.tns"))
+    {
         printf("Asset load error!!\n");
         return 1;
     }
-    //Load definitions
+    // Load definitions
     Parts.load_parts(&parts_bundle);
 
-
-    //LOAD PLANETS
+    // LOAD PLANETS
     glColor3f(0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    fonts.drawString("Loading planets...",0xFFFF,*screen,10,220);
+    fonts.drawString("Loading planets...", 0xFFFF, *screen, 10, 220);
     nglDisplay();
 
-    if (planet_bundle.load_asset_bundle("body.tar.gz.tns")) {
+    if (planet_bundle.load_asset_bundle("body.tar.gz.tns"))
+    {
         printf("Asset load error!!");
         return 1;
     }
-    
-    if (uni.planetarium.load_celestial_bodies(&resource_bundle)) return 1;
 
-    
+    if (uni.planetarium.load_celestial_bodies(&resource_bundle))
+        return 1;
 
-    //vab.hide_vab = true;
-    //Debug init scene
-    scene_load_menu();
-    //scene_load_flight();
-    //scene_load_vab();
+    // vab.hide_vab = true;
+    // Debug init scene
+    // scene_load_menu();
+    // scene_load_flight();
+    scene_load_vab();
 
-    //return 1;
+    // return 1;
 
-    //Test navball
+    // Test navball
     ModelGroup nav;
-    nav.load_group(&resource_bundle,"resources/ui/navball");
+    nav.load_group(&resource_bundle, "resources/ui/navball");
 
-
-    //Move this please!!! u toopid
+    // Move this please!!! u toopid
     GameTexture ui_altitude;
 
-    ui_altitude.init(&resource_bundle,"resources/ui/altitude.png",screen);
+    ui_altitude.init(&resource_bundle, "resources/ui/altitude.png", screen);
     ui_altitude.tex.transparent_color = 0x00;
 
-
-    #ifdef KSPIRE_PLATFORM_NSPIRE
-    while(!isKeyPressed(K_QUIT) && break_game == 0)
-    #else
+#ifdef KSPIRE_PLATFORM_NSPIRE
+    while (!isKeyPressed(K_QUIT) && break_game == 0)
+#else
     while (break_game == 0 && sdl_event.type != SDL_QUIT)
-    #endif
+#endif
     {
 
-        //Tell wayland were healthy and happy
-        #ifndef _TINSPIRE
+// Tell wayland were healthy and happy
+#ifndef _TINSPIRE
 
         SDL_PollEvent(&sdl_event);
-        if (sdl_event.type == SDL_KEYDOWN) {
+        if (sdl_event.type == SDL_KEYDOWN)
+        {
             if (sdl_event.key.keysym.sym == K_QUIT) // ESC key
-                        break_game = true;
+                break_game = true;
         }
-        #endif
+#endif
 
         kspire_pad.Update();
 
-        if (kspire_pad.true_contact) cursor.set_cursor_position(kspire_pad.x_screen,kspire_pad.y_screen);
+        if (kspire_pad.true_contact)
+            cursor.set_cursor_position(kspire_pad.x_screen, kspire_pad.y_screen);
 
+        // Contains physics and render code for the flight scene
+        // Uni contains the main code of handling the flight scene. this is probably
+        // Shitty but ill figure out how to do VAB stuff later. okay!
 
-
-        //Contains physics and render code for the flight scene
-        //Uni contains the main code of handling the flight scene. this is probably
-        //Shitty but ill figure out how to do VAB stuff later. okay!
-
-        if (isKeyPressed(K_DEBUG_SCENE_1) && !loading) {
-            switch (current_state) {
-                case GameStates::EDITOR:
-                scene_pack_vab();break;
-                case GameStates::FLIGHT:
-                scene_pack_flight();break;
-                default:
+        if (isKeyPressed(K_DEBUG_SCENE_1) && !loading)
+        {
+            switch (current_state)
+            {
+            case GameStates::EDITOR:
+                scene_pack_vab();
+                break;
+            case GameStates::FLIGHT:
+                scene_pack_flight();
+                break;
+            default:
                 break;
             }
             scene_load_flight();
         }
 
-        
-        if (isKeyPressed(K_DEBUG_SCENE_2)  && !loading) {
-            switch (current_state) {
-                case GameStates::EDITOR:
-                scene_pack_vab();break;
-                case GameStates::FLIGHT:
-                scene_pack_flight();break;
-                default:
+        if (isKeyPressed(K_DEBUG_SCENE_2) && !loading)
+        {
+            switch (current_state)
+            {
+            case GameStates::EDITOR:
+                scene_pack_vab();
                 break;
-
+            case GameStates::FLIGHT:
+                scene_pack_flight();
+                break;
+            default:
+                break;
             }
             scene_load_vab();
         }
-        if (isKeyPressed(K_DEBUG_SCENE_3)  && !loading) {
-            switch (current_state) {
-                case GameStates::EDITOR:
-                scene_pack_vab();break;
-                case GameStates::FLIGHT:
-                scene_pack_flight();break;
-                default:
+        if (isKeyPressed(K_DEBUG_SCENE_3) && !loading)
+        {
+            switch (current_state)
+            {
+            case GameStates::EDITOR:
+                scene_pack_vab();
                 break;
-
+            case GameStates::FLIGHT:
+                scene_pack_flight();
+                break;
+            default:
+                break;
             }
             scene_load_menu();
         }
 
-        
-        if (current_state == GameStates::FLIGHT) {
+        if (current_state == GameStates::FLIGHT)
+        {
 
-            if (uni.focused_vessel != nullptr) {
+            if (uni.focused_vessel != nullptr)
+            {
                 uni.Update();
 
-                //Altitude
-                ui_altitude.draw(0,0);
-                screen_print("",(int)(uni.universal_time),2,3,screen,"s");
-                screen_print("",(int)(uni.focused_vessel->protoVessel.altitude/1000),85,3,screen,"km");
-            
-                screen_print("Warp: x ",(int)(uni.timewarp.warp_rate + 0.5f),100,220,screen);
+                // Altitude
+                ui_altitude.draw(0, 0);
+                screen_print("", (int)(uni.universal_time), 2, 3, screen, "s");
+                screen_print("", (int)(uni.focused_vessel->protoVessel.altitude / 1000), 85, 3, screen, "km");
 
-                
-                //Navball
+                screen_print("Warp: x ", (int)(uni.timewarp.warp_rate + 0.5f), 100, 220, screen);
+
+                // Navball
                 {
                     nglSetProjectionMode(GLProjectionMode::GL_PROJECTION_ORTHOGRAPHIC);
 
                     glClear(GL_DEPTH_BUFFER_BIT);
                     glPushMatrix();
-                    //Test if navball exists...
-                    //Grrrr
+                    // Test if navball exists...
+                    // Grrrr
 
-                    //NAVBALL CASE
+                    // NAVBALL CASE
                     auto obj = &nav.objects[0];
 
-                    glTranslatef(
-                        280,200,
-                        500
-                    );
+                    glTranslatef(280, 200, 500);
 
-                    glScale3f(35,35,35);
+                    glScale3f(35, 35, 35);
                     glBindTexture(obj->texture);
-                    nglDrawArray(obj->vertices, obj->count_vertices, obj->positions, obj->count_positions, processed, obj->draw_mode);
+                    nglDrawArray(obj->vertices, obj->count_vertices, obj->positions, obj->count_positions, processed,
+                                 obj->draw_mode);
                     glPopMatrix();
                     glPushMatrix();
 
                     glClear(GL_DEPTH_BUFFER_BIT);
-                    //NAVBALL
+                    // NAVBALL
                     obj = &nav.objects[1];
 
-                    glTranslatef(
-                        280,200,
-                        280
-                    );
+                    glTranslatef(280, 200, 280);
 
                     auto stuff = uni.cam.wrapper();
-                    auto ang = linalg::atan2(uni.focused_vessel->orbit.POS.y,uni.focused_vessel->orbit.POS.z) * 57.29f * 1;
-                    if (ang < 0) ang = 360.0f - ang;
-                    nglRotateX((float)fmod(stuff.x+90+ang+270,360.0f));
-                    nglRotateZ((float)fmod(stuff.y,360.0f));
+                    auto ang =
+                        linalg::atan2(uni.focused_vessel->orbit.POS.y, uni.focused_vessel->orbit.POS.z) * 57.29f * 1;
+                    if (ang < 0)
+                        ang = 360.0f - ang;
+                    nglRotateX((float)fmod(stuff.x + 90 + ang + 270, 360.0f));
+                    nglRotateZ((float)fmod(stuff.y, 360.0f));
                     nglRotateY(270);
 
-                    glScale3f(37,37,37);
+                    glScale3f(37, 37, 37);
                     glBindTexture(obj->texture);
-                    nglDrawArray(obj->vertices, obj->count_vertices, obj->positions, obj->count_positions, processed, obj->draw_mode);
+                    nglDrawArray(obj->vertices, obj->count_vertices, obj->positions, obj->count_positions, processed,
+                                 obj->draw_mode);
 
                     glPopMatrix();
-                    //projection_mode = GLProjectionMode::GL_PROJECTION_PERSPECTIVE;
+                    // projection_mode = GLProjectionMode::GL_PROJECTION_PERSPECTIVE;
                     nglSetProjectionMode(GLProjectionMode::GL_PROJECTION_PERSPECTIVE);
-
                 }
-
-
             }
-
         }
 
-        if (current_state == GameStates::EDITOR) {
+        if (current_state == GameStates::EDITOR)
+        {
 
             vab.Update();
 
-            //Show CATEGORY
+            // Show CATEGORY
             auto cat_list = Parts.list_categories;
-            if ((unsigned int)vab.page_index < Parts.list_categories.size() 
-            && vab.page_index >= 0 && vab.show_pallete) {
-                    //printf("%s\n",cat_list[vab.page_index].c_str());
-                    fonts.drawStringCenter(cat_list[vab.page_index].c_str(),
-                0xFFFF, *screen,
-                67,-1);
+            if ((unsigned int)vab.page_index < Parts.list_categories.size() && vab.page_index >= 0 && vab.show_pallete)
+            {
+                // printf("%s\n",cat_list[vab.page_index].c_str());
+                fonts.drawStringCenter(cat_list[vab.page_index].c_str(), 0xFFFF, *screen, 67, -1);
             }
-
         }
 
-        if (current_state == GameStates::MENU) {
-            auto res = title.Update(); 
+        if (current_state == GameStates::MENU)
+        {
+            auto res = title.Update();
 
-            #if defined(KSPIRE_PLATFORM_LINUX)
-            const char* VERSION = "PC_" BUILD_DATE "_" BUILD_TIME;
-            fonts.drawString(VERSION,0xFFFF,*screen,10,220);
-            #endif
+#if defined(KSPIRE_PLATFORM_LINUX)
+            const char *VERSION = "PC_" BUILD_DATE "_" BUILD_TIME;
+            fonts.drawString(VERSION, 0xFFFF, *screen, 10, 220);
+#endif
 
-            #ifdef _TINSPIRE
-            if (is_firebird) {
-                const char* VERSION = "FB_" BUILD_DATE "_" BUILD_TIME;
-                fonts.drawString(VERSION,0xFFFF,*screen,10,220);
-            }else {
-                const char* VERSION = "TI_" BUILD_DATE "_" BUILD_TIME;
-                fonts.drawString(VERSION,0xFFFF,*screen,10,220);
+#ifdef _TINSPIRE
+            if (is_firebird)
+            {
+                const char *VERSION = "FB_" BUILD_DATE "_" BUILD_TIME;
+                fonts.drawString(VERSION, 0xFFFF, *screen, 10, 220);
             }
-            #endif
+            else
+            {
+                const char *VERSION = "TI_" BUILD_DATE "_" BUILD_TIME;
+                fonts.drawString(VERSION, 0xFFFF, *screen, 10, 220);
+            }
+#endif
 
-            uni.planetarium.update_planet_lighting(true,title.angle);
-            if (res == -1) break_game = true;
-            if (res == 600) {
-                scene_pack_menu(); scene_load_vab();
+            uni.planetarium.update_planet_lighting(true, title.angle);
+            if (res == -1)
+                break_game = true;
+            if (res == 600)
+            {
+                scene_pack_menu();
+                scene_load_vab();
             }
         }
 
         nglDisplay();
     }
 
-
     scene_pack_flight();
     scene_pack_vab();
     scene_pack_menu();
     uni.planetarium.clear_celestial_models();
-    uni.planetarium.celestials.clear(); //Only ever really call this here
+    uni.planetarium.celestials.clear(); // Only ever really call this here
 
     delete[] processed;
     // Deinitialize nGL

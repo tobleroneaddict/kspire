@@ -1,12 +1,14 @@
 #pragma once
 #include "../../globals.h"
 
-struct Camera {
-    float pitch,roll,yaw = 0;
-    linalg::vec<float,3> pos;
-    linalg::vec<float,3>  wrapper();
+struct Camera
+{
+    float pitch, roll, yaw = 0;
+    linalg::vec<float, 3> pos;
+    linalg::vec<float, 3> wrapper();
 
-    enum Mode {
+    enum Mode
+    {
         AUTO,
         FREE,
         ORBIT,
@@ -20,6 +22,6 @@ struct Camera {
 
     void camera_controller(Camera::Mode mode);
 
-    private:
+  private:
     float clamp_rotation_helper(float in);
 };

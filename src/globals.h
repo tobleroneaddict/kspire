@@ -4,29 +4,26 @@
 #define M_PI 3.14159265
 #endif
 
-
 #ifdef KSPIRE_PLATFORM_WINDOWS
 #define KSPIRE_PLATFORM_LINUX
 #include <SDL_main.h>
 #endif
 
-
 #include "../include/angel/angel.h"
-#include <SDL/SDL_config.h>
 #include <SDL/SDL.h>
+#include <SDL/SDL_config.h>
 #ifdef KSPIRE_PLATFORM_NSPIRE
 #include <os.h>
 #endif
 #include "../include/linalg.h"
-#include <memory>
 #include "Utility/xplatkeybinds.h"
+#include <memory>
 
-
-//Configuration
-#define CONTACT_THRESHOLD  47
+// Configuration
+#define CONTACT_THRESHOLD 47
 #define MOUSE_ACCELERATION 1.23f
 
-//Version
+// Version
 #ifndef BUILD_DATE
 #define BUILD_DATE "0"
 #endif
@@ -35,32 +32,32 @@
 #define BUILD_TIME "0"
 #endif
 
-
-using namespace::angel;
+using namespace ::angel;
 
 extern bool is_firebird;
-//PC Substitutions for TI things
+// PC Substitutions for TI things
 #ifndef _TINSPIRE
 #define is_touchpad 1
 extern SDL_Event sdl_event;
 
-
 extern bool isKeyPressed(unsigned int key);
 
-
-struct touchpad_info {
+struct touchpad_info
+{
     uint16_t height;
     uint16_t width;
 };
 static touchpad_info tp_thing;
 
-inline touchpad_info* touchpad_getinfo() {
+inline touchpad_info *touchpad_getinfo()
+{
     tp_thing.height = 240;
     tp_thing.width = 320;
     return &tp_thing;
 }
 
-struct touchpad_report_t {
+struct touchpad_report_t
+{
     bool pressed;
     bool contact;
     uint16_t x;
@@ -70,21 +67,18 @@ struct touchpad_report_t {
     uint16_t proximity;
     uint16_t dummy;
     uint16_t arrow;
-    
-
 };
-
-
 
 extern touchpad_report_t touchpad_scan(touchpad_report_t *tp);
 
 #endif
 
-//Read from this instead.
-struct KSPIRE_Touchpad : touchpad_report_t {
-    //SET
+// Read from this instead.
+struct KSPIRE_Touchpad : touchpad_report_t
+{
+    // SET
     bool relative_mode = true;
-    //GET
+    // GET
     bool true_contact;
     int w;
     int h;
@@ -94,31 +88,29 @@ struct KSPIRE_Touchpad : touchpad_report_t {
     float y_screen_normalized;
     KSPIRE_Touchpad();
     void Update();
-
-    
 };
 
-
-
-struct DT {
+struct DT
+{
     float dt = 0;
     float dt_last = 0;
 
-	void init() {
-		dt_last = SDL_GetTicks() * 0.001f;
-	}
-    void tick() {
+    void init()
+    {
+        dt_last = SDL_GetTicks() * 0.001f;
+    }
+    void tick()
+    {
         float dt_now = SDL_GetTicks() * 0.001f;
         dt = dt_now - dt_last;
         dt_last = dt_now;
     }
 };
 
-
-
 extern KSPIRE_Touchpad kspire_pad;
 
-struct GameplaySettings {
+struct GameplaySettings
+{
     float FLIGHT_CAM_ORB_SPEED = 1.0f;
     float FLIGHT_CAM_ZOOM_SPEED = 1.0f;
     float VAB_CAM_ORB_SPEED = 1.0f;
@@ -127,7 +119,8 @@ struct GameplaySettings {
     bool NAVBALL = true;
 };
 
-struct GraphicsSettings {
+struct GraphicsSettings
+{
     bool SHADOWS = true;
     bool SHADOWS_HIRES = false;
     int TERRAIN_QUAL = 0;
@@ -135,7 +128,8 @@ struct GraphicsSettings {
     bool AMBIENT_LIGHT = false;
 };
 
-struct ControlSettings {
+struct ControlSettings
+{
     int S_K_ESC = 0;
     int S_K_PAD_N = 0;
     int S_K_PAD_S = 0;
@@ -157,12 +151,14 @@ struct ControlSettings {
     int S_K_MAP = 0;
 };
 
-struct ModSettings {
+struct ModSettings
+{
     bool MODS_ENABLED = true;
     std::vector<std::string> BUNDLES;
 };
 
-struct GameSettings {
+struct GameSettings
+{
     GameplaySettings Gameplay;
     GraphicsSettings Graphics;
     ControlSettings Controls;

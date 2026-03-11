@@ -7,8 +7,9 @@
 #define PL111_cursor_pal 0xC0000C08
 #define PL111_cursor_pos 0xC0000C10
 
-struct Cursor {
-public:
+struct Cursor
+{
+  public:
     void set_cursor_visibility(bool _switch);
     void set_cursor_position(int _x, int _y);
 };
