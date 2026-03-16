@@ -234,8 +234,8 @@ void VAB::onClick_oneshot()
         {
             for (Part &p : vessel.part_tree)
             {
-                if (&p == &vessel.part_tree[grabbed_part])
-                    continue; // Skip self
+                if (&p == &vessel.part_tree[grabbed_part] || p.attached == false)
+                    continue; // Skip self && detached
 
                 for (Node &n : p.nodes)
                 { // Client nodes
@@ -337,7 +337,7 @@ void VAB::Update()
     {
         for (Part &p : vessel.part_tree)
         {
-            if (&p == &vessel.part_tree[grabbed_part])
+            if (&p == &vessel.part_tree[grabbed_part] || p.attached == false)
                 continue; // Skip self
 
             for (Node &n : p.nodes)

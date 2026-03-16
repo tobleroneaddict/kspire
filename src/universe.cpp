@@ -330,7 +330,6 @@ void Universe::render_skybox()
         nglRotateX(out.x);
         nglRotateY(out.y);
         nglRotateZ(out.z);
-        //}
     }
 
     // Horrific camera error
