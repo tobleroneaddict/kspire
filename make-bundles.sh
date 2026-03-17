@@ -3,6 +3,7 @@
 #Regenerate asset bundles from ASSETS/
 
 cd ASSETS/
+
 find . -type f -name "*~" -delete
 
 rm -rf resources.tar.gz.tns

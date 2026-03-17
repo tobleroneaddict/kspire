@@ -24,16 +24,16 @@
     
     "Nodes": [
         {
-            "position": [0.0, -0.4050379, 0.0],
+            "position": [0.0, -0.75, 0.0],
             "up": [0.0, -1.0, 0.0],
             "size": 1,
             "crossfeed": 1,
             "rigid_attach": 0
         },
         {
-            "position": [0.0, 0.6423756, 0.0],
+            "position": [0.0, 1, 0.0],
             "up": [0.0, 1.0, 0.0],
-            "size": 0,
+            "size": 1,
             "crossfeed": 1,
             "rigid_attach": 0
         }    

@@ -203,7 +203,7 @@ void Planetarium::render_celestials(float fixed_bubble, bool map_mode, linalg::v
                 else
                 {
                     calc_lod = CelestialBody::LODLevels::LOD1;
-                    printf("Weird ang size reached? of %f", angular_diameter);
+                    //reprintf("Weird ang size reached? of %f", angular_diameter);
                 }
 
                 c.switch_lod(calc_lod);
