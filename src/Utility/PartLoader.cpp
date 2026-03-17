@@ -208,7 +208,8 @@ int PartLoader::load_parts(Bundle *parts)
         // printf("WARNING::::: LIST ALL OBJECTS IN THE SCENE USING ANGEL SHIT\n");
         // Or just do part for now ig
         // EXPAND THIS TO A SEARCH (later)!! but not for "highlight"
-        p.models.emplace_back(p.group.get_object("part"));
+        // Final? Just get the first part. Export in blender with 'selected part only.'
+        p.models.emplace_back(&p.group.objects[0]);
         /*..............................................*/
         // Highlight objects no longer used lol
     }

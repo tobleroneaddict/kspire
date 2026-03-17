@@ -1,0 +1,70 @@
+{
+    "id" : 5817571,
+    "name" : "Mk1 Capsule",
+    "description" : "Lorem ipsum",
+    "category" : "Command",
+    "staging_icon" : "CAPSULE",    
+    "model" : "capsule",
+
+    "mass" : 0.8,
+    "drag_min" : 0.15,
+    "drag_max" : 0.2,
+    "drag_ang" : 2,
+
+    "temp_max" : 2400,
+
+    "CoPOffset": [0.0, 0.5, 0.0],
+    "CoLOffset": [0.0, -0.35, 0.0],
+    "CoBOffset": [0.0, 0.5, 0.0],
+    "buoyancy": 1.5,
+
+    "_comment" : "attachment rules: stack, srfAttach, allowStack, allowSrfAttach, allowCollision",
+    "attach_rules" : [1,0,1,1,0],
+    
+    
+    "Nodes": [
+        {
+            "position": [0.0, -0.4050379, 0.0],
+            "up": [0.0, -1.0, 0.0],
+            "size": 1,
+            "crossfeed": 1,
+            "rigid_attach": 0
+        },
+        {
+            "position": [0.0, 0.6423756, 0.0],
+            "up": [0.0, 1.0, 0.0],
+            "size": 0,
+            "crossfeed": 1,
+            "rigid_attach": 0
+        }    
+    ],
+
+    "Modules" : [
+        {
+            "type" : "MOD_Command",
+            "crew_max" : 1,
+            "crew_min" : 1
+        },
+        {
+            "type" : "MOD_Torque",
+            "torque_p" : 5,
+            "torque_y" : 5,
+            "torque_r" : 5,
+            "Resources" : [
+                {
+                    "name" : "ElectricCharge",
+                    "rate" : 0.25
+                }
+            ]
+            
+        }
+    ],
+
+    "Resources" : [
+        {
+            "name" : "ElectricCharge",
+            "amount" : 100,
+            "amount_max" : 100
+        }
+    ]
+}

@@ -1,0 +1,7 @@
+{
+    "_comment" : "Add folders here to be read by the game. Groups are determined by the part themselves. These are just organizers, in which you can add your own parts.",
+    "Banks" : [
+        "Capsules",
+        "Tanks"
+    ]
+}

@@ -1,7 +1,3 @@
-ASSETS/
-ASSETS
-ASSETS/*
-ASSETS/make-bundles.sh
 *.cfg
 *.zehn
 *.blend
@@ -20,11 +16,6 @@ models
 *.on
 *.ow
 *.zip
-*.mtl
-*.obj
-*.png
-*.bmp
-*.jpg
 .vscode
 *.so
 *.dylib

@@ -21,7 +21,6 @@ int VAB::Start(Bundle *assets)
     cam.yaw = 180;
     cam.pitch = 30;
     camera_zoom -= 30;
-    camera_height += 150;
 
     // DEBUG STUFF
     // Place root part
@@ -38,6 +37,8 @@ int VAB::Start(Bundle *assets)
     }
     part.pos.y += 150;
     vessel.part_tree.push_back(std::move(part));
+
+    camera_height = part.pos.y;
 
     // END DEBUG STUFF
 
