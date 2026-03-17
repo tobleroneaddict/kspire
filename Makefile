@@ -1,6 +1,6 @@
 
 nspire linux windows:
-	./ASSETS/make-bundles.sh
+	./make-bundles.sh
 	$(MAKE) -f Makefile.$@ $(filter-out $@,$(MAKECMDGOALS))
 
 %:      # thanks to chakrit
