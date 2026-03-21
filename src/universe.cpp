@@ -169,7 +169,7 @@ void Universe::Update()
     for (Vessel &v : vessels)
     {
         // All vessels
-        v.Update();
+        v.Update(timewarp.is_physics_warp,clock.dt);
     }
 
     // Camera rotation

@@ -44,15 +44,17 @@ class Vessel
     // Rebase all parts, links, and shit
     void rebase();
 
-    std::vector<unsigned int> get_tanks_to_decoupler(unsigned int part);
-
-    void Update();
+    void Update(bool is_physics,float _dt);
 
   private:
     void Update_Physics();
     void Update_Static();
+    float dt;
 
   public:
     unsigned int node_to_part(unsigned int node_id);
     int node_index(unsigned int node_id);
+  
+  private:
+    void calculate_com();
 };
